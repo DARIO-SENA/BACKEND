@@ -3,14 +3,14 @@ import cors from "cors";
 import morgan from "morgan";
 import authRoutes from "./routes/auth.routes.js";
 import { verifyToken } from "./middlewares/auth.middleware.js";
-
+import habitsRoutes from "./routes/habits.routes.js";
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
-
+app.use("/api/habits", habitsRoutes);
 app.get("/", (req, res) => {
   res.send("API funcionando 🚀");
 });
