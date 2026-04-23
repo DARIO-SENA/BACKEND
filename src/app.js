@@ -1,23 +1,29 @@
-import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import authRoutes from "./routes/auth.routes.js";
-import { verifyToken } from "./middlewares/auth.middleware.js";
-import habitsRoutes from "./routes/habits.routes.js";
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import { authRouter }    from './routes/auth.routes.js';
+import { habitosRouter } from './routes/habitos.routes.js';
+import { tareasRouter }  from './routes/tareas.routes.js';
+import { agendaRouter }  from './routes/agenda.routes.js';
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(morgan("dev"));
-app.use("/api/auth", authRoutes);
-app.use("/api/habits", habitsRoutes);
-app.get("/", (req, res) => {
-  res.send("API funcionando 🚀");
+app.use(morgan('dev'));
+
+app.use('/api/auth',    authRouter);
+app.use('/api/habitos', habitosRouter);
+app.use('/api/tareas',  tareasRouter);
+app.use('/api/agenda',  agendaRouter);
+
+app.get('/', (_req, res) => {
+  res.json({ ok: true, mensaje: 'API DARIO funcionando' });
 });
-app.get("/api/test", verifyToken, (req, res) => {
-  res.json({
-    message: "Ruta protegida funcionando 🔒",
-    user: req.user
-  });
+
+app.use((req, res) => {
+  console.log("Ruta no encontrada:", req.method, req.url);
+  res.status(404).json({ error: "Ruta no encontrada" });
 });
-export default app;
+
+export { app };
