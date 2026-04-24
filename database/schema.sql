@@ -190,3 +190,78 @@ BEGIN
         FOR EACH ROW EXECUTE FUNCTION actualizar_timestamp();
     END IF;
 END $$;
+
+-- =============================================
+-- SCHEMA: Módulo de Recordatorios - Dario
+-- Agregar al schema existente
+-- =============================================
+ 
+-- Preferencias de notificación por usuario
+CREATE TABLE IF NOT EXISTS preferencias_notificacion (
+  id                    SERIAL PRIMARY KEY,
+  usuario_id            INT REFERENCES usuarios(id) ON DELETE CASCADE UNIQUE,
+  notificaciones_activas BOOLEAN DEFAULT true,
+  hora_silencio_inicio  TIME DEFAULT '22:00',
+  hora_silencio_fin     TIME DEFAULT '07:00',
+  tipo_agenda           BOOLEAN DEFAULT true,
+  tipo_habitos          BOOLEAN DEFAULT true,
+  tipo_manual           BOOLEAN DEFAULT true,
+  creado_en             TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ 
+-- Recordatorios programados
+CREATE TABLE IF NOT EXISTS recordatorios (
+  id               SERIAL PRIMARY KEY,
+  usuario_id       INT REFERENCES usuarios(id) ON DELETE CASCADE,
+  tipo             VARCHAR(20) NOT NULL CHECK (tipo IN ('agenda', 'habito', 'manual')),
+  referencia_id    INT,
+  titulo           VARCHAR(200) NOT NULL,
+  mensaje          TEXT,
+  fecha_hora       TIMESTAMP NOT NULL,
+  anticipacion_min INT DEFAULT 0,
+  es_recurrente    BOOLEAN DEFAULT false,
+  regla_recurrencia VARCHAR(20) CHECK (regla_recurrencia IN ('diario', 'semanal', 'mensual', NULL)),
+  estado           VARCHAR(20) DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'enviado', 'cancelado', 'fallido')),
+  intentos         INT DEFAULT 0,
+  ultimo_intento   TIMESTAMP,
+  creado_en        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ 
+-- Historial de notificaciones enviadas
+CREATE TABLE IF NOT EXISTS notificaciones (
+  id           SERIAL PRIMARY KEY,
+  usuario_id   INT REFERENCES usuarios(id) ON DELETE CASCADE,
+  recordatorio_id INT REFERENCES recordatorios(id) ON DELETE SET NULL,
+  titulo       VARCHAR(200) NOT NULL,
+  mensaje      TEXT,
+  tipo         VARCHAR(20) DEFAULT 'app' CHECK (tipo IN ('app', 'push', 'email')),
+  leida        BOOLEAN DEFAULT false,
+  creado_en    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ 
+-- Índices
+CREATE INDEX IF NOT EXISTS idx_recordatorios_usuario    ON recordatorios(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_recordatorios_fecha_hora ON recordatorios(fecha_hora);
+CREATE INDEX IF NOT EXISTS idx_recordatorios_estado     ON recordatorios(estado);
+CREATE INDEX IF NOT EXISTS idx_notificaciones_usuario   ON notificaciones(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_notificaciones_leida     ON notificaciones(leida);
+-- crear funcion para actualizar actualizado_en
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.actualizado_en = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+ 
+-- Trigger actualizado_en en recordatorios
+CREATE OR REPLACE TRIGGER trigger_recordatorios_actualizado
+  BEFORE UPDATE ON recordatorios
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+ 
+-- Trigger actualizado_en en preferencias
+CREATE OR REPLACE TRIGGER trigger_preferencias_actualizado
+  BEFORE UPDATE ON preferencias_notificacion
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
