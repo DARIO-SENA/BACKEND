@@ -1,0 +1,39 @@
+// src/services/jobs/scheduler.js
+// Se llama una vez al iniciar el servidor para reprogramar recordatorios pendientes
+
+import * as recordatorioModel from '../../models/recordatorio.model.js';
+import { agregarJob, cancelarJob } from './queue.js';
+
+/**
+ * Al iniciar el servidor, recarga todos los recordatorios
+ * pendientes de la BD y los reprograma en BullMQ.
+ * Esto evita perder recordatorios si el servidor se reinicia.
+ */
+export const iniciarScheduler = async () => {
+  console.log('⏰ Iniciando scheduler de recordatorios...');
+
+  try {
+    const pendientes = await recordatorioModel.encontrarPendientes();
+    console.log(`${pendientes.length} recordatorio(s) pendiente(s) encontrado(s)`);
+
+    for (const rec of pendientes) {
+      // Cancelar job anterior si existe (evita duplicados)
+      await cancelarJob(rec.id);
+
+      // Reprogramar
+      await agregarJob(
+        {
+          recordatorioId: rec.id,
+          usuarioId:      rec.usuario_id,
+          titulo:         rec.titulo,
+          mensaje:        rec.mensaje,
+        },
+        new Date(rec.fecha_hora)
+      );
+    }
+
+    console.log('✅ Scheduler iniciado correctamente');
+  } catch (err) {
+    console.error('❌ Error al iniciar scheduler:', err.message);
+  }
+};
