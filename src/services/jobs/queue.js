@@ -1,15 +1,11 @@
-// src/services/jobs/queue.js
-
 import { Queue, QueueEvents } from 'bullmq';
+import { redisConfig } from '../../config/redis.js';
 
-export const conexionRedis = {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT) || 6379,
-  password: process.env.REDIS_PASSWORD || undefined,
-};
+console.log("REDIS CONFIG QUEUE:", redisConfig);
 
+// ─── COLA PRINCIPAL ─────────────────────────────
 export const colaRecordatorios = new Queue('recordatorios', {
-  connection: conexionRedis,
+  connection: redisConfig,
   defaultJobOptions: {
     attempts: 3,
     backoff: { type: 'exponential', delay: 5000 },
@@ -18,28 +14,72 @@ export const colaRecordatorios = new Queue('recordatorios', {
   },
 });
 
-const eventos = new QueueEvents('recordatorios', { connection: conexionRedis });
-eventos.on('completed', ({ jobId }) => console.log(`✅ Job ${jobId} completado`));
-eventos.on('failed',    ({ jobId, failedReason }) => console.error(`❌ Job ${jobId} falló: ${failedReason}`));
+// ─── EVENTOS DE LA COLA ─────────────────────────
+const eventos = new QueueEvents('recordatorios', {
+  connection: redisConfig,
+});
 
-/**
- * Agrega un recordatorio a la cola con delay calculado
- * @param {Object} datos - Payload del job
- * @param {Date}   fechaHora - Cuándo ejecutar
- */
+eventos.on('completed', ({ jobId }) => {
+  console.log(`✅ Job ${jobId} completado`);
+});
+
+eventos.on('failed', ({ jobId, failedReason }) => {
+  console.error(`❌ Job ${jobId} falló: ${failedReason}`);
+});
+
+// ─── AGREGAR JOB ───────────────────────────────
 export const agregarJob = async (datos, fechaHora) => {
-  const delay = Math.max(0, new Date(fechaHora).getTime() - Date.now());
-  return colaRecordatorios.add('enviar-recordatorio', datos, {
-    delay,
-    jobId: `rec-${datos.recordatorioId}`, // evita duplicados
-  });
+  try {
+    const now = Date.now();
+    const target = new Date(fechaHora).getTime();
+
+    // 🧠 lógica profesional: dev = inmediato, prod = programado
+    const delay =
+      process.env.NODE_ENV === 'development'
+        ? 0
+        : Math.max(0, target - now);
+
+    console.log("📤 ENVIANDO A REDIS:", {
+      datos,
+      fechaHora,
+      delayMs: delay,
+    });
+
+    if (delay > 0) {
+      console.log(`⏳ Job programado para dentro de ${delay}ms`);
+    } else {
+      console.log("⚡ Job inmediato (sin delay)");
+    }
+
+    const job = await colaRecordatorios.add(
+      'enviar-recordatorio',
+      datos,
+      {
+        delay,
+        jobId: `rec-${datos.recordatorioId}`,
+      }
+    );
+
+    console.log("✅ JOB AGREGADO:", {
+      id: job.id,
+      name: job.name,
+      delay,
+      estado: delay === 0 ? "inmediato" : "programado",
+    });
+
+    return job;
+
+  } catch (error) {
+    console.error("❌ ERROR AGREGANDO JOB:", error);
+    throw error;
+  }
 };
 
-/**
- * Cancela un job existente antes de reprogramar
- * @param {number} recordatorioId
- */
+// ─── CANCELAR JOB ──────────────────────────────
 export const cancelarJob = async (recordatorioId) => {
   const job = await colaRecordatorios.getJob(`rec-${recordatorioId}`);
-  if (job) await job.remove();
+  if (job) {
+    await job.remove();
+    console.log(`🗑️ JOB CANCELADO: ${recordatorioId}`);
+  }
 };
