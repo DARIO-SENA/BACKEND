@@ -1,4 +1,4 @@
-import pool from '../config/db.js';
+import pool from '../../config/db.js';
 
 const BLOQUES_BLOQUEADOS = {
   descanso_nocturno: { inicio: 23, fin: 7 },
@@ -60,7 +60,7 @@ export const encontrarSlotLibre = (bloquesOcupados, duracionMin, fechaBase) => {
 };
 
 export const programarTareasAutomaticamente = async (usuarioId, tareas) => {
-  const hoy    = new Date();
+  const hoy     = new Date();
   const en7dias = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
 
   const bloquesOcupados = await obtenerBloquesOcupados(usuarioId, hoy, en7dias);
@@ -96,9 +96,9 @@ export const programarTareasAutomaticamente = async (usuarioId, tareas) => {
       );
     } else {
       resultado.push({
-        tarea_id:  tarea.id,
+        tarea_id:   tarea.id,
         programada: false,
-        razon:     'Sin slots disponibles en los próximos 7 días',
+        razon:      'Sin slots disponibles en los próximos 7 días',
       });
     }
   }

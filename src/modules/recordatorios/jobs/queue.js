@@ -1,6 +1,5 @@
 import { Queue, QueueEvents } from 'bullmq';
-import { redisConfig } from '../../config/redis.js';
-
+import { redisConfig } from '../../../config/redis.js';
 console.log("REDIS CONFIG QUEUE:", redisConfig);
 
 // ─── COLA PRINCIPAL ─────────────────────────────

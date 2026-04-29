@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 import { app } from "./app.js";
-import './workers/reminder.processor.js';
+import './modules/recordatorios/jobs/reminder.processor.js';
 
 const PORT = process.env.PORT || 3000;
 

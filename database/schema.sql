@@ -265,3 +265,6 @@ CREATE OR REPLACE TRIGGER trigger_recordatorios_actualizado
 CREATE OR REPLACE TRIGGER trigger_preferencias_actualizado
   BEFORE UPDATE ON preferencias_notificacion
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+  -- Agregar valor al enum si no existe
+ALTER TYPE estado_tarea ADD VALUE IF NOT EXISTS 'en_progreso';

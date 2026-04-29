@@ -1,9 +1,8 @@
 // src/controllers/recordatorios.controller.js
 
-import * as recordatoriosService   from '../services/recordatorios.service.js';
-import * as notificacionesService  from '../services/notificaciones.service.js';
-import * as preferenciasService    from '../services/preferencias.service.js';
-
+import * as recordatoriosService  from './recordatorios.service.js';
+import * as notificacionesService from './notificaciones.service.js';
+import * as preferenciasService   from './preferencias.service.js';
 // ─── HELPER ERRORES ────────────────────────────────────────
 
 const manejarError = (res, err) => {

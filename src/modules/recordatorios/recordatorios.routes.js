@@ -1,8 +1,8 @@
 // src/routes/recordatorios.routes.js
 
 import { Router } from 'express';
-import { verificarToken } from '../middlewares/auth.middleware.js';
-import * as ctrl from '../controllers/recordatorios.controller.js';
+import { verificarToken } from '../../middlewares/auth.middleware.js';
+import * as ctrl from './recordatorios.controller.js';
 
 const router = Router();
 router.use(verificarToken);
