@@ -18,8 +18,20 @@ export const imprimirRutas = () => {
   console.log('DELETE /api/habitos/:id\n');
 
   console.log('📅 AGENDA');
-  console.log('no probada');
+  console.log('GET    /api/agenda');
+  console.log('POST   /api/agenda');
+  console.log('PUT    /api/agenda/:id');
+  console.log('DELETE /api/agenda/:id\n');
 
+  console.log('📊 ANALYTICS');
+  console.log('GET    /api/analytics\n');
+  console.log('GET    /api/analytics/dashboard');
+  console.log('GET    /api/analytics/semanal');
+  console.log('GET    /api/analytics/por-dia');
+  console.log('GET    /api/analytics/categorias');
+  console.log('GET    /api/analytics/racha');
+  console.log('POST   /api/analytics/progreso\n');
 
+  
   console.log('----------------------------------\n');
 };
