@@ -1,6 +1,5 @@
 // src/models/notificacion.model.js
-
-import pool from '../config/db.js';
+import pool from '../../config/db.js';
 
 export const encontrarPorUsuario = async (usuarioId, soloNoLeidas = false) => {
   const filtro = soloNoLeidas ? 'AND leida = false' : '';

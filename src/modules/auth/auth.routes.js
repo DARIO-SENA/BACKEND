@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { registrar, iniciarSesion } from '../controllers/auth.controller.js';
+import { registrar, iniciarSesion } from './auth.controller.js';
 
 const router = Router();
 

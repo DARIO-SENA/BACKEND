@@ -1,13 +1,11 @@
 import express from 'express';
-import { verificarToken } from '../middlewares/auth.middleware.js';
-import * as ctrl from '../controllers/tareas.controller.js';
+import { verificarToken } from '../../middlewares/auth.middleware.js';
+import * as ctrl from './tareas.controller.js';
 
 const router = express.Router();
 
-// 🔐 proteger todas las rutas
 router.use(verificarToken);
 
-// 📋 CRUD tareas
 router.get('/',             ctrl.obtenerTareas);
 router.get('/:id',          ctrl.obtenerTareaPorId);
 router.post('/',            ctrl.crearTarea);

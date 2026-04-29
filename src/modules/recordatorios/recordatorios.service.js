@@ -1,8 +1,8 @@
 // src/services/recordatorios.service.js
 
-import * as recordatorioModel from '../models/recordatorio.model.js';
-import { agregarJob, cancelarJob } from '../services/jobs/queue.js';
-import { calcularFechaReal } from '../utils/time.utils.js';
+import * as recordatorioModel from './recordatorio.model.js';
+import { agregarJob, cancelarJob } from './jobs/queue.js';
+import { calcularFechaReal } from '../../utils/time.utils.js';
 
 export const listar = async (usuarioId, filtros) => {
   return recordatorioModel.encontrarTodos(usuarioId, filtros);

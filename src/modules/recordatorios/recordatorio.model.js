@@ -1,6 +1,6 @@
 // src/models/recordatorio.model.js
 
-import pool from '../config/db.js';
+import pool from '../../config/db.js';
 
 export const encontrarTodos = async (usuarioId, filtros = {}) => {
   const { tipo, estado } = filtros;

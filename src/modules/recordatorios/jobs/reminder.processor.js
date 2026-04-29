@@ -1,8 +1,8 @@
 // src/workers/reminder.processor.js
 
 import { Worker } from 'bullmq';
-import { redisConfig } from '../config/redis.js';
-import pool from '../config/db.js';
+import { redisConfig } from '../../../config/redis.js';
+import pool from '../../../config/db.js'
 
 console.log("🔥 ARCHIVO WORKER CARGADO");
 console.log("🟢 INICIALIZANDO WORKER...");

@@ -1,6 +1,5 @@
-import * as habitosService from '../services/habitos.service.js';
+import * as habitosService from './habitos.service.js';
 
-// Crear hábito
 export const crearHabito = async (req, res) => {
   try {
     const data = await habitosService.crearHabito(req.usuario.id, req.body);
@@ -11,7 +10,6 @@ export const crearHabito = async (req, res) => {
   }
 };
 
-// Listar hábitos
 export const listarHabitos = async (req, res) => {
   try {
     const data = await habitosService.listarHabitos(req.usuario.id);
@@ -22,19 +20,10 @@ export const listarHabitos = async (req, res) => {
   }
 };
 
-// Actualizar hábito
 export const actualizarHabito = async (req, res) => {
   try {
-    const data = await habitosService.actualizarHabito(
-      req.params.id,
-      req.usuario.id,
-      req.body
-    );
-
-    if (!data) {
-      return res.status(404).json({ error: 'Hábito no encontrado' });
-    }
-
+    const data = await habitosService.actualizarHabito(req.params.id, req.usuario.id, req.body);
+    if (!data) return res.status(404).json({ error: 'Hábito no encontrado' });
     res.json(data);
   } catch (err) {
     console.error(err);
@@ -42,18 +31,10 @@ export const actualizarHabito = async (req, res) => {
   }
 };
 
-// Eliminar hábito
 export const eliminarHabito = async (req, res) => {
   try {
-    const ok = await habitosService.eliminarHabito(
-      req.params.id,
-      req.usuario.id
-    );
-
-    if (!ok) {
-      return res.status(404).json({ error: 'Hábito no encontrado' });
-    }
-
+    const ok = await habitosService.eliminarHabito(req.params.id, req.usuario.id);
+    if (!ok) return res.status(404).json({ error: 'Hábito no encontrado' });
     res.json({ message: 'Hábito eliminado' });
   } catch (err) {
     console.error(err);

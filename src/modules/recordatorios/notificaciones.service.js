@@ -1,6 +1,6 @@
 // src/services/notificaciones.service.js
 
-import * as notificacionModel from '../models/notificacion.model.js';
+import * as notificacionModel from './notificacion.model.js';
 
 export const listar = async (usuarioId, soloNoLeidas = false) => {
   const notificaciones = await notificacionModel.encontrarPorUsuario(usuarioId, soloNoLeidas);

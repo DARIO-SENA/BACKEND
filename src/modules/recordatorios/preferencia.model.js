@@ -1,6 +1,5 @@
 // src/models/preferencia.model.js
-
-import pool from '../config/db.js';
+import pool from '../../config/db.js';
 
 export const encontrarPorUsuario = async (usuarioId) => {
   const { rows } = await pool.query(
