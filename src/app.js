@@ -8,6 +8,7 @@ import { habitosRouter }       from './modules/habitos/habitos.routes.js';
 import { tareasRouter }        from './modules/tareas/tareas.routes.js';
 import { agendaRouter }        from './modules/agenda/agenda.routes.js';
 import { recordatoriosRouter } from './modules/recordatorios/recordatorios.routes.js';
+import { analyticsRouter }     from './modules/Analytics y métricas/analytics.routes.js';
 
 const app = express();
 
@@ -20,7 +21,7 @@ app.use('/api/habitos',       habitosRouter);
 app.use('/api/tareas',        tareasRouter);
 app.use('/api/agenda',        agendaRouter);
 app.use('/api/recordatorios', recordatoriosRouter);
-
+app.use('/api/analytics',     analyticsRouter);
 app.get('/', (_req, res) => {
   res.json({ ok: true, mensaje: 'API PlanIt funcionando 🚀' });
 });

@@ -1,4 +1,4 @@
-import pool from '../config/db.js';
+import pool from '../../config/db.js';
 
 const BLOQUES_BLOQUEADOS = {
   descanso_nocturno: { inicio: 23, fin: 7 },
