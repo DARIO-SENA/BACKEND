@@ -1,4 +1,4 @@
-import * as analyticsService from '../services/analytics.service.js';
+import * as analyticsService from './analytics.service.js';
 
 // 📊 Dashboard principal
 export const obtenerDashboard = async (req, res) => {

@@ -1,5 +1,5 @@
-import * as agendaService from '../services/agenda.service.js';
-import * as tareasService from '../services/tareas.service.js';
+import * as agendaService from './agenda.service.js';
+import * as tareasService from '../tareas/tareas.service.js';
 
 // 📅 Agenda del día
 export const obtenerAgendaDia = async (req, res) => {
