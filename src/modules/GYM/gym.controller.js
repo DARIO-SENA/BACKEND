@@ -1,5 +1,5 @@
 // modulos/GYM/controller/gym.controller.js
-import * as gymService from '../service/gym.service.js';
+import * as gymService from './gym.service.js';
 
 // ─────────────────────────────────────────
 // RUTINAS
@@ -139,5 +139,27 @@ export const verProgresion = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
+  }
+};
+
+// 📊 Estadísticas
+export const obtenerEstadisticas = async (req, res) => {
+  try {
+    const data = await gymService.obtenerEstadisticas(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) {
+    console.error('obtenerEstadisticas:', err.message);
+    res.status(500).json({ ok: false, error: 'Error al obtener estadísticas' });
+  }
+};
+
+// 💡 Sugerencia de peso
+export const sugerirPeso = async (req, res) => {
+  try {
+    const data = await gymService.sugerirPeso(req.usuario.id, req.params.ejercicioId);
+    res.json({ ok: true, data });
+  } catch (err) {
+    console.error('sugerirPeso:', err.message);
+    res.status(500).json({ ok: false, error: 'Error al sugerir peso' });
   }
 };

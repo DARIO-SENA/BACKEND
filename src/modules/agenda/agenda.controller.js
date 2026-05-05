@@ -80,3 +80,60 @@ export const reagendarVencidas = async (req, res) => {
     res.status(500).json({ ok: false, error: 'Error al reagendar tareas' });
   }
 };
+
+// ─── BLOQUES DE TIEMPO ────────────────────────────────────
+
+export const obtenerBloques = async (req, res) => {
+  try {
+    const bloques = await agendaService.obtenerBloques(req.usuario.id);
+    res.json({ ok: true, data: bloques });
+  } catch (err) {
+    console.error('obtenerBloques:', err.message);
+    res.status(500).json({ ok: false, error: 'Error al obtener bloques' });
+  }
+};
+
+export const crearBloque = async (req, res) => {
+  try {
+    const bloque = await agendaService.crearBloque(req.usuario.id, req.body);
+    res.status(201).json({ ok: true, data: bloque });
+  } catch (err) {
+    console.error('crearBloque:', err.message);
+    res.status(400).json({ ok: false, error: 'Error al crear bloque' });
+  }
+};
+
+export const actualizarBloque = async (req, res) => {
+  try {
+    const bloque = await agendaService.actualizarBloque(req.params.id, req.usuario.id, req.body);
+    if (!bloque) return res.status(404).json({ ok: false, error: 'Bloque no encontrado' });
+    res.json({ ok: true, data: bloque });
+  } catch (err) {
+    console.error('actualizarBloque:', err.message);
+    res.status(400).json({ ok: false, error: 'Error al actualizar bloque' });
+  }
+};
+
+export const eliminarBloque = async (req, res) => {
+  try {
+    const eliminado = await agendaService.eliminarBloque(req.params.id, req.usuario.id);
+    if (!eliminado) return res.status(404).json({ ok: false, error: 'Bloque no encontrado' });
+    res.json({ ok: true, message: 'Bloque eliminado correctamente' });
+  } catch (err) {
+    console.error('eliminarBloque:', err.message);
+    res.status(500).json({ ok: false, error: 'Error al eliminar bloque' });
+  }
+};
+
+// ─── VISTA SEMANAL MEJORADA ───────────────────────────────
+export const obtenerVistaSemanal = async (req, res) => {
+  try {
+    const fecha = req.query.fecha || new Date().toISOString().split('T')[0];
+    const data = await agendaService.obtenerVistaSemanal(req.usuario.id, fecha);
+    res.json({ ok: true, data });
+  } catch (err) {
+    console.error('obtenerVistaSemanal:', err.message);
+    res.status(500).json({ ok: false, error: 'Error al obtener vista semanal' });
+  }
+};
+

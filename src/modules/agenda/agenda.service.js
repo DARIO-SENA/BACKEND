@@ -117,3 +117,85 @@ export const sugerirReagendamiento = async (usuarioId) => {
   if (vencidas.length === 0) return [];
   return programarTareasAutomaticamente(usuarioId, vencidas);
 };
+
+// ─── BLOQUES DE TIEMPO PERSONALIZADOS ────────────────────
+
+export const obtenerBloques = async (usuarioId) => {
+  const { rows } = await pool.query(
+    `SELECT * FROM bloques_tiempo 
+     WHERE usuario_id = $1 AND activo = true
+     ORDER BY hora_inicio ASC`,
+    [usuarioId]
+  );
+  return rows;
+};
+
+export const crearBloque = async (usuarioId, data) => {
+  const { nombre, hora_inicio, hora_fin } = data;
+  const { rows } = await pool.query(
+    `INSERT INTO bloques_tiempo (usuario_id, nombre, hora_inicio, hora_fin)
+     VALUES ($1, $2, $3, $4) RETURNING *`,
+    [usuarioId, nombre, hora_inicio, hora_fin]
+  );
+  return rows[0];
+};
+
+export const actualizarBloque = async (id, usuarioId, data) => {
+  const { nombre, hora_inicio, hora_fin, activo } = data;
+  const { rows } = await pool.query(
+    `UPDATE bloques_tiempo 
+     SET nombre = COALESCE($1, nombre),
+         hora_inicio = COALESCE($2, hora_inicio),
+         hora_fin = COALESCE($3, hora_fin),
+         activo = COALESCE($4, activo)
+     WHERE id = $5 AND usuario_id = $6
+     RETURNING *`,
+    [nombre, hora_inicio, hora_fin, activo, id, usuarioId]
+  );
+  return rows[0] || null;
+};
+
+export const eliminarBloque = async (id, usuarioId) => {
+  const { rowCount } = await pool.query(
+    `DELETE FROM bloques_tiempo WHERE id = $1 AND usuario_id = $2`,
+    [id, usuarioId]
+  );
+  return rowCount > 0;
+};
+
+// ─── VISTA SEMANAL MEJORADA ───────────────────────────────
+export const obtenerVistaSemanal = async (usuarioId, fechaInicio) => {
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+  const { rows } = await pool.query(
+    `SELECT 
+       t.*,
+       c.nombre AS categoria_nombre,
+       c.color AS categoria_color,
+       EXTRACT(DOW FROM t.fecha_inicio) AS dia_semana,
+       EXTRACT(HOUR FROM t.fecha_inicio) AS hora
+     FROM tareas t
+     LEFT JOIN categorias c ON t.categoria_id = c.id
+     WHERE t.usuario_id = $1
+       AND t.fecha_inicio >= $2
+       AND t.fecha_inicio < $3
+       AND t.estado != 'cancelada'
+     ORDER BY t.fecha_inicio ASC`,
+    [usuarioId, inicio, fin]
+  );
+
+  // Agrupar por día
+  const semana = {0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
+  rows.forEach(tarea => {
+    const dia = parseInt(tarea.dia_semana);
+    semana[dia].push(tarea);
+  });
+
+  return {
+    fecha_inicio: inicio,
+    fecha_fin: fin,
+    dias: semana,
+    total: rows.length
+  };
+};
