@@ -1,5 +1,5 @@
 // modulos/GYM/service/gym.service.js
-import pool from '../../../config/db.js';
+import pool from '../../config/db.js';
 
 // ─────────────────────────────────────────
 // RUTINAS
@@ -186,4 +186,65 @@ export const verProgresion = async (usuarioId, ejercicioId) => {
     [usuarioId, ejercicioId]
   );
   return result.rows;
+};
+
+// ─────────────────────────────────────────
+// ESTADÍSTICAS
+// ─────────────────────────────────────────
+
+export const obtenerEstadisticas = async (usuarioId) => {
+  const { rows } = await pool.query(
+    `SELECT
+       COUNT(DISTINCT re.id)          AS total_entrenamientos,
+       COUNT(DISTINCT re.ejercicio_id) AS ejercicios_distintos,
+       COUNT(se.id)                   AS total_series,
+       COALESCE(SUM(se.repeticiones), 0) AS total_repeticiones,
+       COALESCE(MAX(se.peso_kg), 0)   AS peso_maximo,
+       COUNT(DISTINCT DATE(re.fecha)) AS dias_entrenados
+     FROM registros_entrenamiento re
+     LEFT JOIN series_entrenamiento se ON se.registro_id = re.id
+     WHERE re.usuario_id = $1`,
+    [usuarioId]
+  );
+  return rows[0];
+};
+
+// ─────────────────────────────────────────
+// SUGERENCIA DE PESO AUTOMÁTICO
+// ─────────────────────────────────────────
+
+export const sugerirPeso = async (usuarioId, ejercicioId) => {
+  const { rows } = await pool.query(
+    `SELECT
+       se.peso_kg,
+       se.repeticiones,
+       re.fecha
+     FROM registros_entrenamiento re
+     JOIN series_entrenamiento se ON se.registro_id = re.id
+     WHERE re.usuario_id = $1 AND re.ejercicio_id = $2
+     ORDER BY re.fecha DESC, se.numero_serie ASC
+     LIMIT 10`,
+    [usuarioId, ejercicioId]
+  );
+
+  if (rows.length === 0) {
+    return { sugerencia: null, mensaje: 'No hay historial para este ejercicio' };
+  }
+
+  const pesoMaximo = Math.max(...rows.map(r => r.peso_kg));
+  const promedioReps = rows.reduce((a, b) => a + b.repeticiones, 0) / rows.length;
+
+  // Si el promedio de reps es mayor a 12, sugiere aumentar el peso 5%
+  const sugerencia = promedioReps > 12
+    ? Math.round(pesoMaximo * 1.05 * 2) / 2  // redondear a 0.5
+    : pesoMaximo;
+
+  return {
+    peso_actual: pesoMaximo,
+    promedio_repeticiones: Math.round(promedioReps),
+    sugerencia_peso: sugerencia,
+    mensaje: promedioReps > 12
+      ? `Puedes aumentar el peso a ${sugerencia} kg`
+      : `Mantén el peso en ${pesoMaximo} kg`
+  };
 };

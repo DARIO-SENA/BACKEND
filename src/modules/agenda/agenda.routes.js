@@ -7,13 +7,26 @@ const router = express.Router();
 
 router.use(verificarToken);
 
-// 📅 agenda
-router.get('/dia', agendaCtrl.obtenerAgendaDia);
+// 📅 Agenda
+router.get('/dia',          agendaCtrl.obtenerAgendaDia);
 router.get('/estadisticas', agendaCtrl.obtenerEstadisticas);
 
-// 🏷️ categorias
-router.get('/categorias', tareaCtrl.obtenerCategorias);
-router.post('/categorias', tareaCtrl.crearCategoria);
-router.delete('/categorias/:id', tareaCtrl.eliminarCategoria);
+// 📆 Vista semanal mejorada
+router.get('/semanal',      agendaCtrl.obtenerVistaSemanal);
+
+// ⚙️ Auto scheduling
+router.post('/programar',   agendaCtrl.programarAutomatico);
+router.post('/reagendar',   agendaCtrl.reagendarVencidas);
+
+// 🕐 Bloques de tiempo personalizados
+router.get('/bloques',          agendaCtrl.obtenerBloques);
+router.post('/bloques',         agendaCtrl.crearBloque);
+router.put('/bloques/:id',      agendaCtrl.actualizarBloque);
+router.delete('/bloques/:id',   agendaCtrl.eliminarBloque);
+
+// 🏷️ Categorias
+router.get('/categorias',         tareaCtrl.obtenerCategorias);
+router.post('/categorias',        tareaCtrl.crearCategoria);
+router.delete('/categorias/:id',  tareaCtrl.eliminarCategoria);
 
 export { router as agendaRouter };

@@ -69,3 +69,14 @@ export const guardarProgreso = async (req, res) => {
     res.status(500).json({ ok: false, error: 'Error al guardar progreso' });
   }
 };
+
+// 📄 Reporte exportable
+export const generarReporte = async (req, res) => {
+  try {
+    const reporte = await analyticsService.generarReporte(req.usuario.id);
+    res.json({ ok: true, data: reporte });
+  } catch (err) {
+    console.error('generarReporte:', err.message);
+    res.status(500).json({ ok: false, error: 'Error al generar reporte' });
+  }
+};

@@ -142,3 +142,25 @@ export const guardarProgreso = async (usuarioId, tipo, valor) => {
   );
   return rows[0];
 };
+
+// 📄 Reporte exportable completo
+export const generarReporte = async (usuarioId) => {
+  const [dashboard, semanal, porDia, categorias, racha] = await Promise.all([
+    obtenerDashboard(usuarioId),
+    obtenerProductividadSemanal(usuarioId),
+    obtenerProductividadPorDia(usuarioId),
+    obtenerTareasPorCategoria(usuarioId),
+    obtenerRacha(usuarioId),
+  ]);
+
+  return {
+    generado_en: new Date().toISOString(),
+    resumen: dashboard,
+    productividad: {
+      semanal,
+      por_dia: porDia,
+    },
+    categorias,
+    racha,
+  };
+};
