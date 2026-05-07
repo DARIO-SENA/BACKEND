@@ -1,0 +1,1413 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict GZIH3EcuGlCbDMimxdkkYCB1NXfx2440nxcOUol0T4qSz2lj2ZPUFRtSid8uJ3m
+
+-- Dumped from database version 18.3
+-- Dumped by pg_dump version 18.3
+
+-- Started on 2026-05-07 15:11:41
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2 (class 3079 OID 32932)
+-- Name: citext; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS citext WITH SCHEMA public;
+
+
+--
+-- TOC entry 5331 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION citext; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION citext IS 'data type for case-insensitive character strings';
+
+
+--
+-- TOC entry 930 (class 1247 OID 33038)
+-- Name: estado_tarea; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.estado_tarea AS ENUM (
+    'pendiente',
+    'completada',
+    'cancelada',
+    'en_progreso'
+);
+
+
+ALTER TYPE public.estado_tarea OWNER TO postgres;
+
+--
+-- TOC entry 936 (class 1247 OID 33054)
+-- Name: frecuencia_habito; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.frecuencia_habito AS ENUM (
+    'diario',
+    'semanal',
+    'mensual'
+);
+
+
+ALTER TYPE public.frecuencia_habito OWNER TO postgres;
+
+--
+-- TOC entry 933 (class 1247 OID 33046)
+-- Name: prioridad_tarea; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.prioridad_tarea AS ENUM (
+    'alta',
+    'media',
+    'baja'
+);
+
+
+ALTER TYPE public.prioridad_tarea OWNER TO postgres;
+
+--
+-- TOC entry 300 (class 1255 OID 33186)
+-- Name: actualizar_timestamp(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.actualizar_timestamp() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW.actualizado_en = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.actualizar_timestamp() OWNER TO postgres;
+
+--
+-- TOC entry 263 (class 1255 OID 41287)
+-- Name: update_updated_at(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW.actualizado_en = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.update_updated_at() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 229 (class 1259 OID 33140)
+-- Name: categorias; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.categorias (
+    id integer NOT NULL,
+    usuario_id integer NOT NULL,
+    nombre character varying(80) NOT NULL,
+    color character varying(7) DEFAULT '#7F77DD'::character varying,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.categorias OWNER TO postgres;
+
+--
+-- TOC entry 228 (class 1259 OID 33139)
+-- Name: categorias_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.categorias_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.categorias_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5332 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: categorias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.categorias_id_seq OWNED BY public.categorias.id;
+
+
+--
+-- TOC entry 248 (class 1259 OID 57759)
+-- Name: eventos_gamificacion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.eventos_gamificacion (
+    id integer NOT NULL,
+    usuario_id integer NOT NULL,
+    tipo character varying(50) NOT NULL,
+    referencia_id integer NOT NULL,
+    referencia_tipo character varying(20) NOT NULL,
+    puntos integer NOT NULL,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.eventos_gamificacion OWNER TO postgres;
+
+--
+-- TOC entry 247 (class 1259 OID 57758)
+-- Name: eventos_gamificacion_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.eventos_gamificacion_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.eventos_gamificacion_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5333 (class 0 OID 0)
+-- Dependencies: 247
+-- Name: eventos_gamificacion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.eventos_gamificacion_id_seq OWNED BY public.eventos_gamificacion.id;
+
+
+--
+-- TOC entry 223 (class 1259 OID 33079)
+-- Name: habitos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.habitos (
+    id integer NOT NULL,
+    usuario_id integer NOT NULL,
+    titulo character varying(100) NOT NULL,
+    descripcion text,
+    frecuencia public.frecuencia_habito,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    completado boolean DEFAULT false
+);
+
+
+ALTER TABLE public.habitos OWNER TO postgres;
+
+--
+-- TOC entry 222 (class 1259 OID 33078)
+-- Name: habitos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.habitos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.habitos_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5334 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: habitos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.habitos_id_seq OWNED BY public.habitos.id;
+
+
+--
+-- TOC entry 246 (class 1259 OID 57739)
+-- Name: historial_puntos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.historial_puntos (
+    id integer NOT NULL,
+    usuario_id integer,
+    puntos integer NOT NULL,
+    motivo character varying(100) NOT NULL,
+    referencia_tipo character varying(20),
+    referencia_id integer,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.historial_puntos OWNER TO postgres;
+
+--
+-- TOC entry 245 (class 1259 OID 57738)
+-- Name: historial_puntos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.historial_puntos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.historial_puntos_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5335 (class 0 OID 0)
+-- Dependencies: 245
+-- Name: historial_puntos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.historial_puntos_id_seq OWNED BY public.historial_puntos.id;
+
+
+--
+-- TOC entry 242 (class 1259 OID 57699)
+-- Name: logros; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.logros (
+    id integer NOT NULL,
+    codigo character varying(50) NOT NULL,
+    titulo character varying(100) NOT NULL,
+    descripcion text NOT NULL,
+    icono character varying(10) DEFAULT '🏆'::character varying,
+    puntos integer DEFAULT 50,
+    condicion jsonb NOT NULL,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.logros OWNER TO postgres;
+
+--
+-- TOC entry 241 (class 1259 OID 57698)
+-- Name: logros_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.logros_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.logros_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5336 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: logros_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.logros_id_seq OWNED BY public.logros.id;
+
+
+--
+-- TOC entry 244 (class 1259 OID 57718)
+-- Name: logros_usuario; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.logros_usuario (
+    id integer NOT NULL,
+    usuario_id integer,
+    logro_id integer,
+    obtenido_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.logros_usuario OWNER TO postgres;
+
+--
+-- TOC entry 243 (class 1259 OID 57717)
+-- Name: logros_usuario_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.logros_usuario_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.logros_usuario_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5337 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: logros_usuario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.logros_usuario_id_seq OWNED BY public.logros_usuario.id;
+
+
+--
+-- TOC entry 237 (class 1259 OID 41258)
+-- Name: notificaciones; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.notificaciones (
+    id integer NOT NULL,
+    usuario_id integer,
+    recordatorio_id integer,
+    titulo character varying(200) NOT NULL,
+    mensaje text,
+    tipo character varying(20) DEFAULT 'app'::character varying,
+    leida boolean DEFAULT false,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT notificaciones_tipo_check CHECK (((tipo)::text = ANY ((ARRAY['app'::character varying, 'push'::character varying, 'email'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.notificaciones OWNER TO postgres;
+
+--
+-- TOC entry 236 (class 1259 OID 41257)
+-- Name: notificaciones_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.notificaciones_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.notificaciones_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5338 (class 0 OID 0)
+-- Dependencies: 236
+-- Name: notificaciones_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.notificaciones_id_seq OWNED BY public.notificaciones.id;
+
+
+--
+-- TOC entry 240 (class 1259 OID 57676)
+-- Name: perfil_gamificacion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.perfil_gamificacion (
+    id integer NOT NULL,
+    usuario_id integer,
+    puntos_totales integer DEFAULT 0,
+    nivel integer DEFAULT 1,
+    xp_actual integer DEFAULT 0,
+    xp_siguiente integer DEFAULT 100,
+    racha_actual integer DEFAULT 0,
+    mejor_racha integer DEFAULT 0,
+    ultima_actividad date,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.perfil_gamificacion OWNER TO postgres;
+
+--
+-- TOC entry 239 (class 1259 OID 57675)
+-- Name: perfil_gamificacion_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.perfil_gamificacion_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.perfil_gamificacion_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5339 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: perfil_gamificacion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.perfil_gamificacion_id_seq OWNED BY public.perfil_gamificacion.id;
+
+
+--
+-- TOC entry 233 (class 1259 OID 41208)
+-- Name: preferencias_notificacion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.preferencias_notificacion (
+    id integer NOT NULL,
+    usuario_id integer,
+    notificaciones_activas boolean DEFAULT true,
+    hora_silencio_inicio time without time zone DEFAULT '22:00:00'::time without time zone,
+    hora_silencio_fin time without time zone DEFAULT '07:00:00'::time without time zone,
+    tipo_agenda boolean DEFAULT true,
+    tipo_habitos boolean DEFAULT true,
+    tipo_manual boolean DEFAULT true,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.preferencias_notificacion OWNER TO postgres;
+
+--
+-- TOC entry 232 (class 1259 OID 41207)
+-- Name: preferencias_notificacion_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.preferencias_notificacion_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.preferencias_notificacion_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5340 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: preferencias_notificacion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.preferencias_notificacion_id_seq OWNED BY public.preferencias_notificacion.id;
+
+
+--
+-- TOC entry 231 (class 1259 OID 33163)
+-- Name: progreso; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.progreso (
+    id integer NOT NULL,
+    usuario_id integer NOT NULL,
+    tipo character varying(50),
+    valor integer,
+    fecha date
+);
+
+
+ALTER TABLE public.progreso OWNER TO postgres;
+
+--
+-- TOC entry 230 (class 1259 OID 33162)
+-- Name: progreso_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.progreso_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.progreso_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5341 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: progreso_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.progreso_id_seq OWNED BY public.progreso.id;
+
+
+--
+-- TOC entry 235 (class 1259 OID 41231)
+-- Name: recordatorios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.recordatorios (
+    id integer NOT NULL,
+    usuario_id integer,
+    tipo character varying(20) NOT NULL,
+    referencia_id integer,
+    titulo character varying(200) NOT NULL,
+    mensaje text,
+    fecha_hora timestamp without time zone NOT NULL,
+    anticipacion_min integer DEFAULT 0,
+    es_recurrente boolean DEFAULT false,
+    regla_recurrencia character varying(20),
+    estado character varying(20) DEFAULT 'pendiente'::character varying,
+    intentos integer DEFAULT 0,
+    ultimo_intento timestamp without time zone,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT recordatorios_estado_check CHECK (((estado)::text = ANY ((ARRAY['pendiente'::character varying, 'enviado'::character varying, 'cancelado'::character varying, 'fallido'::character varying])::text[]))),
+    CONSTRAINT recordatorios_regla_recurrencia_check CHECK (((regla_recurrencia)::text = ANY ((ARRAY['diario'::character varying, 'semanal'::character varying, 'mensual'::character varying, NULL::character varying])::text[]))),
+    CONSTRAINT recordatorios_tipo_check CHECK (((tipo)::text = ANY ((ARRAY['agenda'::character varying, 'habito'::character varying, 'manual'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.recordatorios OWNER TO postgres;
+
+--
+-- TOC entry 234 (class 1259 OID 41230)
+-- Name: recordatorios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.recordatorios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.recordatorios_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5342 (class 0 OID 0)
+-- Dependencies: 234
+-- Name: recordatorios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.recordatorios_id_seq OWNED BY public.recordatorios.id;
+
+
+--
+-- TOC entry 225 (class 1259 OID 33098)
+-- Name: registros_habitos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.registros_habitos (
+    id integer NOT NULL,
+    habito_id integer NOT NULL,
+    completado boolean DEFAULT false,
+    fecha date NOT NULL
+);
+
+
+ALTER TABLE public.registros_habitos OWNER TO postgres;
+
+--
+-- TOC entry 224 (class 1259 OID 33097)
+-- Name: registros_habitos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.registros_habitos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.registros_habitos_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5343 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: registros_habitos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.registros_habitos_id_seq OWNED BY public.registros_habitos.id;
+
+
+--
+-- TOC entry 227 (class 1259 OID 33114)
+-- Name: tareas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tareas (
+    id integer NOT NULL,
+    usuario_id integer NOT NULL,
+    titulo character varying(100) NOT NULL,
+    descripcion text,
+    estado public.estado_tarea DEFAULT 'pendiente'::public.estado_tarea,
+    prioridad public.prioridad_tarea DEFAULT 'media'::public.prioridad_tarea,
+    fecha_limite timestamp without time zone,
+    fecha_inicio timestamp without time zone,
+    fecha_fin timestamp without time zone,
+    duracion_minutos integer DEFAULT 30,
+    todo_el_dia boolean DEFAULT false,
+    es_recurrente boolean DEFAULT false,
+    recurrencia character varying(20),
+    auto_programado boolean DEFAULT false,
+    categoria_id integer,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT tareas_recurrencia_check CHECK (((recurrencia)::text = ANY ((ARRAY['diario'::character varying, 'semanal'::character varying, 'mensual'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.tareas OWNER TO postgres;
+
+--
+-- TOC entry 226 (class 1259 OID 33113)
+-- Name: tareas_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tareas_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.tareas_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5344 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: tareas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tareas_id_seq OWNED BY public.tareas.id;
+
+
+--
+-- TOC entry 238 (class 1259 OID 49483)
+-- Name: usuario_gamificacion; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.usuario_gamificacion (
+    usuario_id integer NOT NULL,
+    xp integer DEFAULT 0,
+    nivel integer DEFAULT 1,
+    streak integer DEFAULT 0,
+    ultimo_registro timestamp without time zone
+);
+
+
+ALTER TABLE public.usuario_gamificacion OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 33062)
+-- Name: usuarios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.usuarios (
+    id integer NOT NULL,
+    nombre character varying(100) NOT NULL,
+    email public.citext NOT NULL,
+    password character varying(255) NOT NULL,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.usuarios OWNER TO postgres;
+
+--
+-- TOC entry 220 (class 1259 OID 33061)
+-- Name: usuarios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.usuarios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.usuarios_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5345 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: usuarios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.usuarios_id_seq OWNED BY public.usuarios.id;
+
+
+--
+-- TOC entry 5044 (class 2604 OID 33143)
+-- Name: categorias id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categorias ALTER COLUMN id SET DEFAULT nextval('public.categorias_id_seq'::regclass);
+
+
+--
+-- TOC entry 5089 (class 2604 OID 57762)
+-- Name: eventos_gamificacion id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.eventos_gamificacion ALTER COLUMN id SET DEFAULT nextval('public.eventos_gamificacion_id_seq'::regclass);
+
+
+--
+-- TOC entry 5029 (class 2604 OID 33082)
+-- Name: habitos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.habitos ALTER COLUMN id SET DEFAULT nextval('public.habitos_id_seq'::regclass);
+
+
+--
+-- TOC entry 5087 (class 2604 OID 57742)
+-- Name: historial_puntos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historial_puntos ALTER COLUMN id SET DEFAULT nextval('public.historial_puntos_id_seq'::regclass);
+
+
+--
+-- TOC entry 5081 (class 2604 OID 57702)
+-- Name: logros id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros ALTER COLUMN id SET DEFAULT nextval('public.logros_id_seq'::regclass);
+
+
+--
+-- TOC entry 5085 (class 2604 OID 57721)
+-- Name: logros_usuario id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros_usuario ALTER COLUMN id SET DEFAULT nextval('public.logros_usuario_id_seq'::regclass);
+
+
+--
+-- TOC entry 5065 (class 2604 OID 41261)
+-- Name: notificaciones id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notificaciones ALTER COLUMN id SET DEFAULT nextval('public.notificaciones_id_seq'::regclass);
+
+
+--
+-- TOC entry 5072 (class 2604 OID 57679)
+-- Name: perfil_gamificacion id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.perfil_gamificacion ALTER COLUMN id SET DEFAULT nextval('public.perfil_gamificacion_id_seq'::regclass);
+
+
+--
+-- TOC entry 5049 (class 2604 OID 41211)
+-- Name: preferencias_notificacion id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.preferencias_notificacion ALTER COLUMN id SET DEFAULT nextval('public.preferencias_notificacion_id_seq'::regclass);
+
+
+--
+-- TOC entry 5048 (class 2604 OID 33166)
+-- Name: progreso id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.progreso ALTER COLUMN id SET DEFAULT nextval('public.progreso_id_seq'::regclass);
+
+
+--
+-- TOC entry 5058 (class 2604 OID 41234)
+-- Name: recordatorios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recordatorios ALTER COLUMN id SET DEFAULT nextval('public.recordatorios_id_seq'::regclass);
+
+
+--
+-- TOC entry 5033 (class 2604 OID 33101)
+-- Name: registros_habitos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registros_habitos ALTER COLUMN id SET DEFAULT nextval('public.registros_habitos_id_seq'::regclass);
+
+
+--
+-- TOC entry 5035 (class 2604 OID 33117)
+-- Name: tareas id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tareas ALTER COLUMN id SET DEFAULT nextval('public.tareas_id_seq'::regclass);
+
+
+--
+-- TOC entry 5026 (class 2604 OID 33065)
+-- Name: usuarios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios ALTER COLUMN id SET DEFAULT nextval('public.usuarios_id_seq'::regclass);
+
+
+--
+-- TOC entry 5116 (class 2606 OID 33151)
+-- Name: categorias categorias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categorias
+    ADD CONSTRAINT categorias_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5154 (class 2606 OID 57771)
+-- Name: eventos_gamificacion eventos_gamificacion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.eventos_gamificacion
+    ADD CONSTRAINT eventos_gamificacion_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5156 (class 2606 OID 57773)
+-- Name: eventos_gamificacion eventos_gamificacion_usuario_id_referencia_tipo_referencia__key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.eventos_gamificacion
+    ADD CONSTRAINT eventos_gamificacion_usuario_id_referencia_tipo_referencia__key UNIQUE (usuario_id, referencia_tipo, referencia_id, tipo);
+
+
+--
+-- TOC entry 5102 (class 2606 OID 33091)
+-- Name: habitos habitos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.habitos
+    ADD CONSTRAINT habitos_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5151 (class 2606 OID 57748)
+-- Name: historial_puntos historial_puntos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historial_puntos
+    ADD CONSTRAINT historial_puntos_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5142 (class 2606 OID 57716)
+-- Name: logros logros_codigo_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros
+    ADD CONSTRAINT logros_codigo_key UNIQUE (codigo);
+
+
+--
+-- TOC entry 5144 (class 2606 OID 57714)
+-- Name: logros logros_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros
+    ADD CONSTRAINT logros_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5147 (class 2606 OID 57725)
+-- Name: logros_usuario logros_usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros_usuario
+    ADD CONSTRAINT logros_usuario_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5149 (class 2606 OID 57727)
+-- Name: logros_usuario logros_usuario_usuario_id_logro_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros_usuario
+    ADD CONSTRAINT logros_usuario_usuario_id_logro_id_key UNIQUE (usuario_id, logro_id);
+
+
+--
+-- TOC entry 5132 (class 2606 OID 41271)
+-- Name: notificaciones notificaciones_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notificaciones
+    ADD CONSTRAINT notificaciones_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5138 (class 2606 OID 57690)
+-- Name: perfil_gamificacion perfil_gamificacion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.perfil_gamificacion
+    ADD CONSTRAINT perfil_gamificacion_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5140 (class 2606 OID 57692)
+-- Name: perfil_gamificacion perfil_gamificacion_usuario_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.perfil_gamificacion
+    ADD CONSTRAINT perfil_gamificacion_usuario_id_key UNIQUE (usuario_id);
+
+
+--
+-- TOC entry 5121 (class 2606 OID 41222)
+-- Name: preferencias_notificacion preferencias_notificacion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.preferencias_notificacion
+    ADD CONSTRAINT preferencias_notificacion_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5123 (class 2606 OID 41224)
+-- Name: preferencias_notificacion preferencias_notificacion_usuario_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.preferencias_notificacion
+    ADD CONSTRAINT preferencias_notificacion_usuario_id_key UNIQUE (usuario_id);
+
+
+--
+-- TOC entry 5119 (class 2606 OID 33170)
+-- Name: progreso progreso_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.progreso
+    ADD CONSTRAINT progreso_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5128 (class 2606 OID 41251)
+-- Name: recordatorios recordatorios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recordatorios
+    ADD CONSTRAINT recordatorios_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5107 (class 2606 OID 33107)
+-- Name: registros_habitos registros_habitos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registros_habitos
+    ADD CONSTRAINT registros_habitos_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5114 (class 2606 OID 33133)
+-- Name: tareas tareas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tareas
+    ADD CONSTRAINT tareas_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5135 (class 2606 OID 49491)
+-- Name: usuario_gamificacion usuario_gamificacion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuario_gamificacion
+    ADD CONSTRAINT usuario_gamificacion_pkey PRIMARY KEY (usuario_id);
+
+
+--
+-- TOC entry 5098 (class 2606 OID 33077)
+-- Name: usuarios usuarios_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 5100 (class 2606 OID 33075)
+-- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5117 (class 1259 OID 33185)
+-- Name: idx_categorias_usuario_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_categorias_usuario_id ON public.categorias USING btree (usuario_id);
+
+
+--
+-- TOC entry 5103 (class 1259 OID 33177)
+-- Name: idx_habitos_usuario_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_habitos_usuario_id ON public.habitos USING btree (usuario_id);
+
+
+--
+-- TOC entry 5152 (class 1259 OID 57756)
+-- Name: idx_historial_usuario; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_historial_usuario ON public.historial_puntos USING btree (usuario_id);
+
+
+--
+-- TOC entry 5145 (class 1259 OID 57755)
+-- Name: idx_logros_usuario_uid; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_logros_usuario_uid ON public.logros_usuario USING btree (usuario_id);
+
+
+--
+-- TOC entry 5129 (class 1259 OID 41286)
+-- Name: idx_notificaciones_leida; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_notificaciones_leida ON public.notificaciones USING btree (leida);
+
+
+--
+-- TOC entry 5130 (class 1259 OID 41285)
+-- Name: idx_notificaciones_usuario; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_notificaciones_usuario ON public.notificaciones USING btree (usuario_id);
+
+
+--
+-- TOC entry 5136 (class 1259 OID 57754)
+-- Name: idx_perfil_usuario; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_perfil_usuario ON public.perfil_gamificacion USING btree (usuario_id);
+
+
+--
+-- TOC entry 5124 (class 1259 OID 41284)
+-- Name: idx_recordatorios_estado; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_recordatorios_estado ON public.recordatorios USING btree (estado);
+
+
+--
+-- TOC entry 5125 (class 1259 OID 41283)
+-- Name: idx_recordatorios_fecha_hora; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_recordatorios_fecha_hora ON public.recordatorios USING btree (fecha_hora);
+
+
+--
+-- TOC entry 5126 (class 1259 OID 41282)
+-- Name: idx_recordatorios_usuario; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_recordatorios_usuario ON public.recordatorios USING btree (usuario_id);
+
+
+--
+-- TOC entry 5104 (class 1259 OID 33179)
+-- Name: idx_registros_fecha; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_registros_fecha ON public.registros_habitos USING btree (fecha);
+
+
+--
+-- TOC entry 5105 (class 1259 OID 33178)
+-- Name: idx_registros_habito_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_registros_habito_id ON public.registros_habitos USING btree (habito_id);
+
+
+--
+-- TOC entry 5108 (class 1259 OID 33181)
+-- Name: idx_tareas_estado; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_tareas_estado ON public.tareas USING btree (estado);
+
+
+--
+-- TOC entry 5109 (class 1259 OID 33183)
+-- Name: idx_tareas_fecha_inicio; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_tareas_fecha_inicio ON public.tareas USING btree (fecha_inicio);
+
+
+--
+-- TOC entry 5110 (class 1259 OID 33184)
+-- Name: idx_tareas_fecha_limite; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_tareas_fecha_limite ON public.tareas USING btree (fecha_limite);
+
+
+--
+-- TOC entry 5111 (class 1259 OID 33182)
+-- Name: idx_tareas_prioridad; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_tareas_prioridad ON public.tareas USING btree (prioridad);
+
+
+--
+-- TOC entry 5112 (class 1259 OID 33180)
+-- Name: idx_tareas_usuario_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_tareas_usuario_id ON public.tareas USING btree (usuario_id);
+
+
+--
+-- TOC entry 5096 (class 1259 OID 33176)
+-- Name: idx_usuarios_email; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_usuarios_email ON public.usuarios USING btree (email);
+
+
+--
+-- TOC entry 5133 (class 1259 OID 41290)
+-- Name: uniq_notificacion_recordatorio; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uniq_notificacion_recordatorio ON public.notificaciones USING btree (recordatorio_id, usuario_id);
+
+
+--
+-- TOC entry 5157 (class 1259 OID 57774)
+-- Name: unique_evento_gamificacion; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX unique_evento_gamificacion ON public.eventos_gamificacion USING btree (usuario_id, tipo, referencia_tipo, referencia_id);
+
+
+--
+-- TOC entry 5175 (class 2620 OID 33190)
+-- Name: categorias trigger_categorias_updated; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_categorias_updated BEFORE UPDATE ON public.categorias FOR EACH ROW EXECUTE FUNCTION public.actualizar_timestamp();
+
+
+--
+-- TOC entry 5173 (class 2620 OID 33188)
+-- Name: habitos trigger_habitos_updated; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_habitos_updated BEFORE UPDATE ON public.habitos FOR EACH ROW EXECUTE FUNCTION public.actualizar_timestamp();
+
+
+--
+-- TOC entry 5178 (class 2620 OID 57757)
+-- Name: perfil_gamificacion trigger_perfil_actualizado; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_perfil_actualizado BEFORE UPDATE ON public.perfil_gamificacion FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+
+--
+-- TOC entry 5176 (class 2620 OID 41289)
+-- Name: preferencias_notificacion trigger_preferencias_actualizado; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_preferencias_actualizado BEFORE UPDATE ON public.preferencias_notificacion FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+
+--
+-- TOC entry 5177 (class 2620 OID 41288)
+-- Name: recordatorios trigger_recordatorios_actualizado; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_recordatorios_actualizado BEFORE UPDATE ON public.recordatorios FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+
+
+--
+-- TOC entry 5174 (class 2620 OID 33189)
+-- Name: tareas trigger_tareas_updated; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_tareas_updated BEFORE UPDATE ON public.tareas FOR EACH ROW EXECUTE FUNCTION public.actualizar_timestamp();
+
+
+--
+-- TOC entry 5172 (class 2620 OID 33187)
+-- Name: usuarios trigger_usuarios_updated; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER trigger_usuarios_updated BEFORE UPDATE ON public.usuarios FOR EACH ROW EXECUTE FUNCTION public.actualizar_timestamp();
+
+
+--
+-- TOC entry 5162 (class 2606 OID 33152)
+-- Name: categorias categorias_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.categorias
+    ADD CONSTRAINT categorias_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5160 (class 2606 OID 33157)
+-- Name: tareas fk_tareas_categoria; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tareas
+    ADD CONSTRAINT fk_tareas_categoria FOREIGN KEY (categoria_id) REFERENCES public.categorias(id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5158 (class 2606 OID 33092)
+-- Name: habitos habitos_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.habitos
+    ADD CONSTRAINT habitos_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5171 (class 2606 OID 57749)
+-- Name: historial_puntos historial_puntos_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historial_puntos
+    ADD CONSTRAINT historial_puntos_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5169 (class 2606 OID 57733)
+-- Name: logros_usuario logros_usuario_logro_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros_usuario
+    ADD CONSTRAINT logros_usuario_logro_id_fkey FOREIGN KEY (logro_id) REFERENCES public.logros(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5170 (class 2606 OID 57728)
+-- Name: logros_usuario logros_usuario_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.logros_usuario
+    ADD CONSTRAINT logros_usuario_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5166 (class 2606 OID 41277)
+-- Name: notificaciones notificaciones_recordatorio_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notificaciones
+    ADD CONSTRAINT notificaciones_recordatorio_id_fkey FOREIGN KEY (recordatorio_id) REFERENCES public.recordatorios(id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5167 (class 2606 OID 41272)
+-- Name: notificaciones notificaciones_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.notificaciones
+    ADD CONSTRAINT notificaciones_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5168 (class 2606 OID 57693)
+-- Name: perfil_gamificacion perfil_gamificacion_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.perfil_gamificacion
+    ADD CONSTRAINT perfil_gamificacion_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5164 (class 2606 OID 41225)
+-- Name: preferencias_notificacion preferencias_notificacion_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.preferencias_notificacion
+    ADD CONSTRAINT preferencias_notificacion_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5163 (class 2606 OID 33171)
+-- Name: progreso progreso_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.progreso
+    ADD CONSTRAINT progreso_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5165 (class 2606 OID 41252)
+-- Name: recordatorios recordatorios_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recordatorios
+    ADD CONSTRAINT recordatorios_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5159 (class 2606 OID 33108)
+-- Name: registros_habitos registros_habitos_habito_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registros_habitos
+    ADD CONSTRAINT registros_habitos_habito_id_fkey FOREIGN KEY (habito_id) REFERENCES public.habitos(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5161 (class 2606 OID 33134)
+-- Name: tareas tareas_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tareas
+    ADD CONSTRAINT tareas_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+
+-- Completed on 2026-05-07 15:11:41
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict GZIH3EcuGlCbDMimxdkkYCB1NXfx2440nxcOUol0T4qSz2lj2ZPUFRtSid8uJ3m
+

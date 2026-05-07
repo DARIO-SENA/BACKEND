@@ -11,7 +11,7 @@ import { recordatoriosRouter } from './modules/recordatorios/recordatorios.route
 import { analyticsRouter } from './modules/analytics/analytics.routes.js';
 import { gymRouter } from './modules/GYM/gym.routes.js';
 import { socialRouter } from './modules/social/social.routes.js';
-
+import { gamificacionRouter } from './modules/gamificacion/gamificacion.routes.js';
 const app = express();
 
 app.use(cors());
@@ -26,6 +26,7 @@ app.use('/api/recordatorios', recordatoriosRouter);
 app.use('/api/analytics',     analyticsRouter);
 app.use('/api/gym',           gymRouter);
 app.use('/api/social',        socialRouter);
+app.use('/api/gamificacion', gamificacionRouter);
 
 app.get('/', (_req, res) => {
   res.json({ ok: true, mensaje: 'API PlanIt funcionando 🚀' });
