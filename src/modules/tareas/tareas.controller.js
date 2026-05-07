@@ -1,5 +1,5 @@
 import * as tareasService from './tareas.service.js';
-
+import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 const manejarError = (res, error) => {
   console.error(error);
   if (
@@ -61,9 +61,36 @@ export const eliminarTarea = async (req, res) => {
 export const cambiarEstado = async (req, res) => {
   try {
     const tarea = await tareasService.cambiarEstado(req.params.id, req.usuario.id, req.body.estado);
-    if (!tarea) return res.status(404).json({ error: 'Tarea no encontrada' });
+
+    if (!tarea) {
+      return res.status(404).json({ error: 'Tarea no encontrada' });
+    }
+
+    // SOLO otorgar XP si pasa a completada
+    if (req.body.estado === 'completada') {
+
+      // Verificar si ya recibió XP antes
+      const historial = await gamificacionService.obtenerHistorialPuntos(req.usuario.id, 1000);
+
+      const yaOtorgado = historial.some(
+        h =>
+          h.referencia_tipo === 'tarea' &&
+          h.referencia_id === tarea.id
+      );
+
+      if (!yaOtorgado) {
+        await gamificacionService.procesarTareaCompletada(
+          req.usuario.id,
+          tarea
+        );
+      }
+    }
+
     res.json(tarea);
-  } catch (error) { manejarError(res, error); }
+
+  } catch (error) {
+    manejarError(res, error);
+  }
 };
 
 export const obtenerAgendaDia = async (req, res) => {
