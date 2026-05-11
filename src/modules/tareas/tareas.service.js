@@ -1,5 +1,6 @@
 import pool from '../../config/db.js';
 import { programarTareasAutomaticamente } from '../agenda/agenda.service.js';
+import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 
 export const obtenerTareas = async (usuarioId, filtros = {}) => {
   const { estado, prioridad, desde, hasta, categoria_id } = filtros;
@@ -101,11 +102,40 @@ export const eliminarTarea = async (id, usuarioId) => {
 };
 
 export const cambiarEstado = async (id, usuarioId, estado) => {
+
+  // 1. Obtener tarea actual
+  const tareaActual = await obtenerTareaPorId(id, usuarioId);
+
+  if (!tareaActual) return null;
+
+  // 2. Actualizar estado
   const { rows } = await pool.query(
-    'UPDATE tareas SET estado = $1 WHERE id = $2 AND usuario_id = $3 RETURNING *',
+    `UPDATE tareas
+     SET estado = $1,
+         actualizado_en = NOW()
+     WHERE id = $2 AND usuario_id = $3
+     RETURNING *`,
     [estado, id, usuarioId]
   );
-  return rows[0] || null;
+
+  const tareaActualizada = rows[0];
+
+  // 3. Si pasó de NO completada → completada
+  if (
+    tareaActual.estado !== 'completada' &&
+    estado === 'completada'
+  ) {
+
+    await gamificacionService.procesarTareaCompletada(
+      usuarioId,
+      {
+        id: tareaActualizada.id,
+        prioridad: tareaActualizada.prioridad
+      }
+    );
+  }
+
+  return tareaActualizada;
 };
 
 export const obtenerAgendaDia = async (usuarioId, fecha) => {
