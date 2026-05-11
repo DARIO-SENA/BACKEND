@@ -32,3 +32,10 @@ app.get('/', (_req, res) => {
 });
 
 export { app };
+
+
+// Con los otros imports
+import { integracionesRouter } from './modules/integraciones/integraciones.routes.js';
+
+// Con los otros app.use
+app.use('/api/integraciones', integracionesRouter);
