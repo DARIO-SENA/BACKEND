@@ -6,16 +6,14 @@ const pool = new Pool({
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT),
+  port: parseInt(process.env.DB_PORT) || 5432,
+  max: parseInt(process.env.DB_POOL_MAX) || 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
 
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? { rejectUnauthorized: false }
-      : false,
+  ssl: process.env.DB_SSL === "true"
+    ? { rejectUnauthorized: false }
+    : false,
 });
 
 export default pool;
-
-pool.query("SELECT NOW()")
-  .then(res => console.log("🟢 DB conectada:", res.rows[0]))
-  .catch(err => console.error("🔴 Error DB:", err));

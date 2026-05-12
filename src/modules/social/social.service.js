@@ -8,6 +8,15 @@ export const enviarSolicitud = async (solicitanteId, receptorId) => {
   if (solicitanteId === receptorId) {
     throw new Error('No puedes enviarte una solicitud a ti mismo');
   }
+  const existente = await pool.query(
+    `SELECT estado FROM amistades
+     WHERE (solicitante_id = $1 AND receptor_id = $2)
+        OR (solicitante_id = $2 AND receptor_id = $1)`,
+    [solicitanteId, receptorId]
+  );
+  if (existente.rows.length > 0) {
+    throw new Error('Ya existe una solicitud o amistad entre estos usuarios');
+  }
   const { rows } = await pool.query(
     `INSERT INTO amistades (solicitante_id, receptor_id)
      VALUES ($1, $2) RETURNING *`,
@@ -17,9 +26,13 @@ export const enviarSolicitud = async (solicitanteId, receptorId) => {
 };
 
 export const responderSolicitud = async (amistad_id, receptorId, estado) => {
+  const validos = ['aceptada', 'rechazada'];
+  if (!validos.includes(estado)) {
+    throw new Error('Estado inválido. Use: aceptada o rechazada');
+  }
   const { rows } = await pool.query(
     `UPDATE amistades SET estado = $1
-     WHERE id = $2 AND receptor_id = $3
+     WHERE id = $2 AND receptor_id = $3 AND estado = 'pendiente'
      RETURNING *`,
     [estado, amistad_id, receptorId]
   );
@@ -118,35 +131,56 @@ export const obtenerProyecto = async (proyectoId, usuarioId) => {
 };
 
 export const agregarMiembro = async (proyectoId, usuarioId, nuevoUsuarioId, rol = 'miembro') => {
-  // Verificar que quien agrega es admin
-  const { rows: adminCheck } = await pool.query(
-    `SELECT rol FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
-    [proyectoId, usuarioId]
-  );
-  if (!adminCheck[0] || adminCheck[0].rol !== 'admin') {
-    throw new Error('Solo los administradores pueden agregar miembros');
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows: adminCheck } = await client.query(
+      `SELECT rol FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
+      [proyectoId, usuarioId]
+    );
+    if (!adminCheck[0] || adminCheck[0].rol !== 'admin') {
+      await client.query('ROLLBACK');
+      throw new Error('Solo los administradores pueden agregar miembros');
+    }
+    const { rows } = await client.query(
+      `INSERT INTO proyecto_miembros (proyecto_id, usuario_id, rol)
+       VALUES ($1, $2, $3) RETURNING *`,
+      [proyectoId, nuevoUsuarioId, rol]
+    );
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
-  const { rows } = await pool.query(
-    `INSERT INTO proyecto_miembros (proyecto_id, usuario_id, rol)
-     VALUES ($1, $2, $3) RETURNING *`,
-    [proyectoId, nuevoUsuarioId, rol]
-  );
-  return rows[0];
 };
 
 export const eliminarMiembro = async (proyectoId, usuarioId, miembroId) => {
-  const { rows: adminCheck } = await pool.query(
-    `SELECT rol FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
-    [proyectoId, usuarioId]
-  );
-  if (!adminCheck[0] || adminCheck[0].rol !== 'admin') {
-    throw new Error('Solo los administradores pueden eliminar miembros');
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows: adminCheck } = await client.query(
+      `SELECT rol FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
+      [proyectoId, usuarioId]
+    );
+    if (!adminCheck[0] || adminCheck[0].rol !== 'admin') {
+      await client.query('ROLLBACK');
+      throw new Error('Solo los administradores pueden eliminar miembros');
+    }
+    const { rowCount } = await client.query(
+      `DELETE FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
+      [proyectoId, miembroId]
+    );
+    await client.query('COMMIT');
+    return rowCount > 0;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
-  const { rowCount } = await pool.query(
-    `DELETE FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
-    [proyectoId, miembroId]
-  );
-  return rowCount > 0;
 };
 
 // ─────────────────────────────────────────
@@ -155,6 +189,11 @@ export const eliminarMiembro = async (proyectoId, usuarioId, miembroId) => {
 
 export const crearTareaCompartida = async (usuarioId, proyectoId, data) => {
   const { titulo, descripcion, asignado_a, prioridad, fecha_limite } = data;
+  const { rows: miembro } = await pool.query(
+    'SELECT id FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2',
+    [proyectoId, usuarioId]
+  );
+  if (!miembro[0]) throw new Error('No eres miembro de este proyecto');
   const { rows } = await pool.query(
     `INSERT INTO tareas_compartidas
        (proyecto_id, creado_por, asignado_a, titulo, descripcion, prioridad, fecha_limite)
@@ -165,22 +204,34 @@ export const crearTareaCompartida = async (usuarioId, proyectoId, data) => {
 };
 
 export const listarTareasCompartidas = async (proyectoId, usuarioId) => {
+  const { rows: miembro } = await pool.query(
+    'SELECT id FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2',
+    [proyectoId, usuarioId]
+  );
+  if (!miembro[0]) throw new Error('No eres miembro de este proyecto');
   const { rows } = await pool.query(
     `SELECT tc.*, 
        u1.nombre AS creado_por_nombre,
        u2.nombre AS asignado_a_nombre
      FROM tareas_compartidas tc
-     JOIN proyecto_miembros pm ON pm.proyecto_id = tc.proyecto_id AND pm.usuario_id = $2
      LEFT JOIN usuarios u1 ON u1.id = tc.creado_por
      LEFT JOIN usuarios u2 ON u2.id = tc.asignado_a
      WHERE tc.proyecto_id = $1
      ORDER BY tc.creado_en DESC`,
-    [proyectoId, usuarioId]
+    [proyectoId]
   );
   return rows;
 };
 
 export const actualizarTareaCompartida = async (tareaId, usuarioId, data) => {
+  const { rows: miembro } = await pool.query(
+    `SELECT pm.id FROM proyecto_miembros pm
+     JOIN tareas_compartidas tc ON tc.proyecto_id = pm.proyecto_id
+     WHERE tc.id = $1 AND pm.usuario_id = $2`,
+    [tareaId, usuarioId]
+  );
+  if (!miembro[0]) throw new Error('No eres miembro del proyecto de esta tarea');
+
   const allowed = ['titulo', 'descripcion', 'estado', 'prioridad', 'fecha_limite', 'asignado_a'];
   const fields = [];
   const params = [];
@@ -210,6 +261,14 @@ export const actualizarTareaCompartida = async (tareaId, usuarioId, data) => {
 // ─────────────────────────────────────────
 
 export const agregarComentario = async (tareaId, usuarioId, contenido) => {
+  if (!contenido || !contenido.trim()) throw new Error('El comentario no puede estar vacío');
+  const { rows: miembro } = await pool.query(
+    `SELECT pm.id FROM proyecto_miembros pm
+     JOIN tareas_compartidas tc ON tc.proyecto_id = pm.proyecto_id
+     WHERE tc.id = $1 AND pm.usuario_id = $2`,
+    [tareaId, usuarioId]
+  );
+  if (!miembro[0]) throw new Error('No eres miembro del proyecto de esta tarea');
   const { rows } = await pool.query(
     `INSERT INTO comentarios (tarea_id, usuario_id, contenido)
      VALUES ($1, $2, $3) RETURNING *`,

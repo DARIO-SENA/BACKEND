@@ -1,6 +1,7 @@
 import pool from '../../config/db.js';
 import { programarTareasAutomaticamente } from '../agenda/agenda.service.js';
-import * as gamificacionService from '../gamificacion/gamificacion.service.js';
+import eventBus from '../../eventBus/index.js';
+import { EVENTS } from '../../eventBus/events.js';
 
 export const obtenerTareas = async (usuarioId, filtros = {}) => {
   const { estado, prioridad, desde, hasta, categoria_id } = filtros;
@@ -56,6 +57,9 @@ export const crearTarea = async (usuarioId, datos) => {
      fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id,
      es_recurrente, recurrencia, auto_programado]
   );
+
+  eventBus.emit(EVENTS.TASK_CREATED, { usuarioId, tarea: rows[0] });
+
   return rows[0];
 };
 
@@ -120,19 +124,11 @@ export const cambiarEstado = async (id, usuarioId, estado) => {
 
   const tareaActualizada = rows[0];
 
-  // 3. Si pasó de NO completada → completada
-  if (
-    tareaActual.estado !== 'completada' &&
-    estado === 'completada'
-  ) {
-
-    await gamificacionService.procesarTareaCompletada(
+  if (tareaActual.estado !== 'completada' && estado === 'completada') {
+    eventBus.emit(EVENTS.TASK_DONE, {
       usuarioId,
-      {
-        id: tareaActualizada.id,
-        prioridad: tareaActualizada.prioridad
-      }
-    );
+      tarea: { id: tareaActualizada.id, prioridad: tareaActualizada.prioridad }
+    });
   }
 
   return tareaActualizada;

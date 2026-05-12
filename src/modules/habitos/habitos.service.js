@@ -1,4 +1,6 @@
 import pool from '../../config/db.js';
+import eventBus from '../../eventBus/index.js';
+import { EVENTS } from '../../eventBus/events.js';
 
 export const crearHabito = async (usuarioId, { titulo, descripcion, frecuencia }) => {
   const { rows } = await pool.query(
@@ -53,12 +55,36 @@ export const actualizarHabito = async (id, usuarioId, datos) => {
 
   const habitoActualizado = rows[0];
 
-  // 🔥 4. DISPARAR GAMIFICACIÓN
-  // Solo si antes NO estaba completado
-  // y ahora SÍ está completado
-
   if (!habitoActual.completado && completado === true) {
-    await gamificacionService.procesarHabitoCompletado(usuarioId, id);
+    eventBus.emit(EVENTS.HABIT_COMPLETED, { usuarioId, habitoId: id });
+  }
+
+  return habitoActualizado;
+};
+
+export const cambiarEstadoHabito = async (id, usuarioId, estado) => {
+  const actual = await pool.query(
+    `SELECT * FROM habitos WHERE id = $1 AND usuario_id = $2`,
+    [id, usuarioId]
+  );
+
+  if (actual.rows.length === 0) return null;
+
+  const habitoActual = actual.rows[0];
+  const completado = estado === 'completada';
+
+  const { rows } = await pool.query(
+    `UPDATE habitos
+     SET completado = $1, actualizado_en = NOW()
+     WHERE id = $2 AND usuario_id = $3
+     RETURNING *`,
+    [completado, id, usuarioId]
+  );
+
+  const habitoActualizado = rows[0];
+
+  if (!habitoActual.completado && completado) {
+    eventBus.emit(EVENTS.HABIT_COMPLETED, { usuarioId, habitoId: id });
   }
 
   return habitoActualizado;

@@ -5,15 +5,17 @@ import {
   listarHabitos,
   actualizarHabito,
   eliminarHabito,
+  cambiarEstado,
 } from './habitos.controller.js';
 
 const router = Router();
 
 router.use(verificarToken);
 
-router.post('/',      crearHabito);
-router.get('/',       listarHabitos);
-router.put('/:id',    actualizarHabito);
-router.delete('/:id', eliminarHabito);
+router.post('/',          crearHabito);
+router.get('/',           listarHabitos);
+router.put('/:id',        actualizarHabito);
+router.patch('/:id/estado', cambiarEstado);
+router.delete('/:id',     eliminarHabito);
 
 export { router as habitosRouter };

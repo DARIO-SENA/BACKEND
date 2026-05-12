@@ -5,16 +5,14 @@ export const obtenerDashboard = async (usuarioId) => {
   const hoy = new Date().toISOString().split('T')[0];
 
   const [tareas, habitos, progreso] = await Promise.all([
-pool.query(
-  `SELECT
-     COUNT(*) AS total
-   FROM habitos WHERE usuario_id = $1`,
-  [usuarioId]
-),
     pool.query(
-      `SELECT
-         COUNT(*) AS total,
-         COUNT(*) FILTER (WHERE activo = true) AS activos
+      `SELECT COUNT(*) AS total,
+              COUNT(*) FILTER (WHERE estado = 'completada') AS completadas
+       FROM tareas WHERE usuario_id = $1`,
+      [usuarioId]
+    ),
+    pool.query(
+      `SELECT COUNT(*) AS total
        FROM habitos WHERE usuario_id = $1`,
       [usuarioId]
     ),
@@ -27,8 +25,8 @@ pool.query(
 
 return {
   fecha: hoy,
-  tareas: tareas.rows[0],
-  habitos: { total: habitos.rows[0].total },
+  tareas: { total: parseInt(tareas.rows[0].total), completadas: parseInt(tareas.rows[0].completadas) },
+  habitos: { total: parseInt(habitos.rows[0].total) },
   puntos_totales: progreso.rows[0].puntos_totales,
 };
 };
@@ -133,10 +131,15 @@ export const guardarProgreso = async (usuarioId, tipo, valor) => {
   const hoy = new Date().toISOString().split('T')[0];
 
   const { rows } = await pool.query(
-    `INSERT INTO progreso (usuario_id, tipo, valor, fecha)
-     VALUES ($1, $2, $3, $4)
-     ON CONFLICT (usuario_id, tipo, fecha)
-     DO UPDATE SET valor = progreso.valor + EXCLUDED.valor
+    `WITH upsert AS (
+       UPDATE progreso
+       SET valor = COALESCE(progreso.valor, 0) + $3
+       WHERE usuario_id = $1 AND tipo = $2 AND fecha = $4
+       RETURNING *
+     )
+     INSERT INTO progreso (usuario_id, tipo, valor, fecha)
+     SELECT $1, $2, $3, $4
+     WHERE NOT EXISTS (SELECT 1 FROM upsert)
      RETURNING *`,
     [usuarioId, tipo, valor, hoy]
   );

@@ -1,5 +1,4 @@
 import * as habitosService from './habitos.service.js';
-import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 
 export const crearHabito = async (req, res) => {
   try {
@@ -53,14 +52,6 @@ export const cambiarEstado = async (req, res) => {
 
     if (!habito) {
       return res.status(404).json({ error: 'Hábito no encontrado' });
-    }
-
-    // SOLO gamificación si se completa
-    if (req.body.estado === 'completada') {
-      await gamificacionService.procesarHabitoCompletado(
-        req.usuario.id,
-        habito
-      );
     }
 
     res.json(habito);

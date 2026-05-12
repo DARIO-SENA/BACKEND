@@ -1,3 +1,9 @@
+const validarId = (id) => {
+  const n = parseInt(id, 10);
+  if (isNaN(n) || n < 1) throw new Error('ID inválido');
+  return n;
+};
+
 import * as socialService from './social.service.js';
 
 // ─────────────────────────────────────────
@@ -6,6 +12,7 @@ import * as socialService from './social.service.js';
 
 export const enviarSolicitud = async (req, res) => {
   try {
+    validarId(req.body.receptor_id);
     const data = await socialService.enviarSolicitud(req.usuario.id, req.body.receptor_id);
     res.status(201).json({ ok: true, data });
   } catch (err) {
@@ -17,7 +24,7 @@ export const enviarSolicitud = async (req, res) => {
 export const responderSolicitud = async (req, res) => {
   try {
     const data = await socialService.responderSolicitud(
-      req.params.id, req.usuario.id, req.body.estado
+      validarId(req.params.id), req.usuario.id, req.body.estado
     );
     if (!data) return res.status(404).json({ ok: false, error: 'Solicitud no encontrada' });
     res.json({ ok: true, data });
@@ -49,7 +56,7 @@ export const listarSolicitudesPendientes = async (req, res) => {
 
 export const eliminarAmigo = async (req, res) => {
   try {
-    const ok = await socialService.eliminarAmigo(req.usuario.id, req.params.amigoId);
+    const ok = await socialService.eliminarAmigo(req.usuario.id, validarId(req.params.amigoId));
     if (!ok) return res.status(404).json({ ok: false, error: 'Amistad no encontrada' });
     res.json({ ok: true, message: 'Amigo eliminado correctamente' });
   } catch (err) {
@@ -84,7 +91,7 @@ export const listarProyectos = async (req, res) => {
 
 export const obtenerProyecto = async (req, res) => {
   try {
-    const data = await socialService.obtenerProyecto(req.params.id, req.usuario.id);
+    const data = await socialService.obtenerProyecto(validarId(req.params.id), req.usuario.id);
     if (!data) return res.status(404).json({ ok: false, error: 'Proyecto no encontrado' });
     res.json({ ok: true, data });
   } catch (err) {
@@ -95,8 +102,9 @@ export const obtenerProyecto = async (req, res) => {
 
 export const agregarMiembro = async (req, res) => {
   try {
+    validarId(req.body.usuario_id);
     const data = await socialService.agregarMiembro(
-      req.params.id, req.usuario.id, req.body.usuario_id, req.body.rol
+      validarId(req.params.id), req.usuario.id, req.body.usuario_id, req.body.rol
     );
     res.status(201).json({ ok: true, data });
   } catch (err) {
@@ -108,7 +116,7 @@ export const agregarMiembro = async (req, res) => {
 export const eliminarMiembro = async (req, res) => {
   try {
     const ok = await socialService.eliminarMiembro(
-      req.params.id, req.usuario.id, req.params.usuarioId
+      validarId(req.params.id), req.usuario.id, validarId(req.params.usuarioId)
     );
     if (!ok) return res.status(404).json({ ok: false, error: 'Miembro no encontrado' });
     res.json({ ok: true, message: 'Miembro eliminado correctamente' });
@@ -125,7 +133,7 @@ export const eliminarMiembro = async (req, res) => {
 export const crearTareaCompartida = async (req, res) => {
   try {
     const data = await socialService.crearTareaCompartida(
-      req.usuario.id, req.params.proyectoId, req.body
+      req.usuario.id, validarId(req.params.proyectoId), req.body
     );
     res.status(201).json({ ok: true, data });
   } catch (err) {
@@ -137,19 +145,19 @@ export const crearTareaCompartida = async (req, res) => {
 export const listarTareasCompartidas = async (req, res) => {
   try {
     const data = await socialService.listarTareasCompartidas(
-      req.params.proyectoId, req.usuario.id
+      validarId(req.params.proyectoId), req.usuario.id
     );
     res.json({ ok: true, data });
   } catch (err) {
     console.error('listarTareasCompartidas:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al listar tareas' });
+    res.status(400).json({ ok: false, error: err.message });
   }
 };
 
 export const actualizarTareaCompartida = async (req, res) => {
   try {
     const data = await socialService.actualizarTareaCompartida(
-      req.params.tareaId, req.usuario.id, req.body
+      validarId(req.params.tareaId), req.usuario.id, req.body
     );
     if (!data) return res.status(404).json({ ok: false, error: 'Tarea no encontrada' });
     res.json({ ok: true, data });
@@ -166,7 +174,7 @@ export const actualizarTareaCompartida = async (req, res) => {
 export const agregarComentario = async (req, res) => {
   try {
     const data = await socialService.agregarComentario(
-      req.params.tareaId, req.usuario.id, req.body.contenido
+      validarId(req.params.tareaId), req.usuario.id, req.body.contenido
     );
     res.status(201).json({ ok: true, data });
   } catch (err) {
@@ -177,7 +185,7 @@ export const agregarComentario = async (req, res) => {
 
 export const listarComentarios = async (req, res) => {
   try {
-    const data = await socialService.listarComentarios(req.params.tareaId);
+    const data = await socialService.listarComentarios(validarId(req.params.tareaId));
     res.json({ ok: true, data });
   } catch (err) {
     console.error('listarComentarios:', err.message);
@@ -188,7 +196,7 @@ export const listarComentarios = async (req, res) => {
 export const eliminarComentario = async (req, res) => {
   try {
     const ok = await socialService.eliminarComentario(
-      req.params.comentarioId, req.usuario.id
+      validarId(req.params.comentarioId), req.usuario.id
     );
     if (!ok) return res.status(404).json({ ok: false, error: 'Comentario no encontrado' });
     res.json({ ok: true, message: 'Comentario eliminado correctamente' });

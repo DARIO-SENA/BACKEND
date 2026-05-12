@@ -1,7 +1,7 @@
 // src/services/jobs/scheduler.js
 // Se llama una vez al iniciar el servidor para reprogramar recordatorios pendientes
 
-import * as recordatorioModel from '../../models/recordatorio.model.js';
+import * as recordatorioModel from '../recordatorio.model.js';
 import { agregarJob, cancelarJob } from './queue.js';
 
 /**

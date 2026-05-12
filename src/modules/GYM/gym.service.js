@@ -1,5 +1,7 @@
 // modulos/GYM/service/gym.service.js
 import pool from '../../config/db.js';
+import eventBus from '../../eventBus/index.js';
+import { EVENTS } from '../../eventBus/events.js';
 
 // ─────────────────────────────────────────
 // RUTINAS
@@ -40,10 +42,20 @@ export const obtenerRutina = async (id, usuarioId) => {
 
 // Editar una rutina
 export const actualizarRutina = async (id, usuarioId, body) => {
-  const { nombre, descripcion, dificultad } = body;
+  const actual = await pool.query(
+    `SELECT * FROM rutinas WHERE id = $1 AND usuario_id = $2`,
+    [id, usuarioId]
+  );
+  if (actual.rows.length === 0) return null;
+
+  const r = actual.rows[0];
+  const nombre = body.nombre ?? r.nombre;
+  const descripcion = body.descripcion ?? r.descripcion;
+  const dificultad = body.dificultad ?? r.dificultad;
+
   const result = await pool.query(
     `UPDATE rutinas
-     SET nombre = $1, descripcion = $2, dificultad = $3
+     SET nombre = $1, descripcion = $2, dificultad = $3, actualizado_en = NOW()
      WHERE id = $4 AND usuario_id = $5
      RETURNING *`,
     [nombre, descripcion, dificultad, id, usuarioId]
@@ -67,14 +79,20 @@ export const eliminarRutina = async (id, usuarioId) => {
 // ─────────────────────────────────────────
 
 // Agregar ejercicio a una rutina
-export const crearEjercicio = async (body) => {
+export const crearEjercicio = async (usuarioId, body) => {
   const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default } = body;
   const result = await pool.query(
     `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING *`,
-    [rutina_id, nombre, grupo_muscular, series_default || 3, repeticiones_default || 10]
+     SELECT $1, $2, $3, $4, $5
+     FROM rutinas WHERE id = $1 AND usuario_id = $6
+     RETURNING ejercicios.*`,
+    [rutina_id, nombre, grupo_muscular, series_default || 3, repeticiones_default || 10, usuarioId]
   );
+  if (result.rows.length === 0) {
+    const err = new Error('Rutina no encontrada o no pertenece al usuario');
+    err.status = 404;
+    throw err;
+  }
   return result.rows[0];
 };
 
@@ -90,12 +108,32 @@ export const listarEjercicios = async (rutinaId) => {
 };
 
 // Eliminar un ejercicio
-export const eliminarEjercicio = async (id) => {
+export const eliminarEjercicio = async (id, usuarioId) => {
   const result = await pool.query(
-    `DELETE FROM ejercicios WHERE id = $1 RETURNING id`,
-    [id]
+    `DELETE FROM ejercicios e
+     USING rutinas r
+     WHERE e.id = $1 AND e.rutina_id = r.id AND r.usuario_id = $2
+     RETURNING e.id`,
+    [id, usuarioId]
   );
   return result.rowCount > 0;
+};
+
+// Actualizar un ejercicio
+export const actualizarEjercicio = async (id, usuarioId, body) => {
+  const { nombre, grupo_muscular, series_default, repeticiones_default } = body;
+  const result = await pool.query(
+    `UPDATE ejercicios e
+     SET nombre = COALESCE($1, e.nombre),
+         grupo_muscular = COALESCE($2, e.grupo_muscular),
+         series_default = COALESCE($3, e.series_default),
+         repeticiones_default = COALESCE($4, e.repeticiones_default)
+     FROM rutinas r
+     WHERE e.id = $5 AND e.rutina_id = r.id AND r.usuario_id = $6
+     RETURNING e.*`,
+    [nombre, grupo_muscular, series_default, repeticiones_default, id, usuarioId]
+  );
+  return result.rows[0] || null;
 };
 
 // ─────────────────────────────────────────
@@ -133,6 +171,8 @@ export const registrarEntrenamiento = async (usuarioId, body) => {
     [registroId]
   );
 
+  eventBus.emit(EVENTS.WORKOUT_LOGGED, { usuarioId, ejercicioId, rutinaId: rutina_id, series: series.length });
+
   return { ...registro.rows[0], series: seriesGuardadas.rows };
 };
 
@@ -147,13 +187,16 @@ export const listarHistorial = async (usuarioId) => {
        e.nombre        AS ejercicio,
        e.grupo_muscular,
        r.nombre        AS rutina,
-       JSON_AGG(
-         JSON_BUILD_OBJECT(
-           'serie',   se.numero_serie,
-           'reps',    se.repeticiones,
-           'peso_kg', se.peso_kg
-         ) ORDER BY se.numero_serie
-       ) AS series
+        COALESCE(
+          JSON_AGG(
+            JSON_BUILD_OBJECT(
+              'serie',   se.numero_serie,
+              'reps',    se.repeticiones,
+              'peso_kg', se.peso_kg
+            ) ORDER BY se.numero_serie
+          ) FILTER (WHERE se.id IS NOT NULL),
+          '[]'::json
+        ) AS series
      FROM registros_entrenamiento re
      JOIN ejercicios e               ON e.id  = re.ejercicio_id
      LEFT JOIN rutinas r             ON r.id  = re.rutina_id
@@ -231,7 +274,11 @@ export const sugerirPeso = async (usuarioId, ejercicioId) => {
     return { sugerencia: null, mensaje: 'No hay historial para este ejercicio' };
   }
 
-  const pesoMaximo = Math.max(...rows.map(r => r.peso_kg));
+  const pesos = rows.filter(r => r.peso_kg !== null).map(r => r.peso_kg);
+  if (pesos.length === 0) {
+    return { sugerencia: null, mensaje: 'No hay datos de peso para este ejercicio' };
+  }
+  const pesoMaximo = Math.max(...pesos);
   const promedioReps = rows.reduce((a, b) => a + b.repeticiones, 0) / rows.length;
 
   // Si el promedio de reps es mayor a 12, sugiere aumentar el peso 5%

@@ -8,6 +8,7 @@ import {
   eliminarRutina,
   crearEjercicio,
   listarEjercicios,
+  actualizarEjercicio,
   eliminarEjercicio,
   registrarEntrenamiento,
   listarHistorial,
@@ -30,6 +31,7 @@ gymRouter.delete('/rutinas/:id', eliminarRutina);
 // ── Ejercicios ───────────────────────────────
 gymRouter.post('/ejercicios',          crearEjercicio);
 gymRouter.get('/ejercicios/:rutinaId', listarEjercicios);
+gymRouter.put('/ejercicios/:id',       actualizarEjercicio);
 gymRouter.delete('/ejercicios/:id',    eliminarEjercicio);
 
 // ── Entrenamientos ───────────────────────────

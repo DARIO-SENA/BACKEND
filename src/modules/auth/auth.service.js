@@ -2,9 +2,20 @@ import pool from '../../config/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const registrarUsuario = async ({ nombre, email, password }) => {
   if (!nombre || !email || !password) {
-    throw new Error('Faltan campos obligatorios');
+    throw Object.assign(new Error('Faltan campos obligatorios'), { status: 400 });
+  }
+  if (nombre.length > 100) {
+    throw Object.assign(new Error('El nombre es demasiado largo'), { status: 400 });
+  }
+  if (!EMAIL_REGEX.test(email)) {
+    throw Object.assign(new Error('Formato de email inválido'), { status: 400 });
+  }
+  if (password.length < 6) {
+    throw Object.assign(new Error('La contraseña debe tener al menos 6 caracteres'), { status: 400 });
   }
 
   const existe = await pool.query(
@@ -13,7 +24,7 @@ export const registrarUsuario = async ({ nombre, email, password }) => {
   );
 
   if (existe.rows.length > 0) {
-    throw new Error('El usuario ya existe');
+    throw Object.assign(new Error('Error al registrar usuario'), { status: 409 });
   }
 
   const hasheada = await bcrypt.hash(password, 10);
@@ -30,7 +41,7 @@ export const registrarUsuario = async ({ nombre, email, password }) => {
 
 export const iniciarSesionUsuario = async ({ email, password }) => {
   if (!email || !password) {
-    throw new Error('Faltan credenciales');
+    throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
   }
 
   const { rows } = await pool.query(
@@ -39,13 +50,13 @@ export const iniciarSesionUsuario = async ({ email, password }) => {
   );
 
   const usuario = rows[0];
-  if (!usuario) throw new Error('Usuario no encontrado');
+  if (!usuario) throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
 
   const valida = await bcrypt.compare(password, usuario.password);
-  if (!valida) throw new Error('Contraseña incorrecta');
+  if (!valida) throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
 
   const token = jwt.sign(
-    { id: usuario.id, email: usuario.email },
+    { id: usuario.id, email: usuario.email, nombre: usuario.nombre },
     process.env.JWT_SECRET,
     { expiresIn: '1d' }
   );

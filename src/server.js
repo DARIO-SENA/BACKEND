@@ -1,13 +1,51 @@
 import 'dotenv/config';
 
 import { app } from "./app.js";
-import './modules/recordatorios/jobs/reminder.processor.js';
+import './eventBus/setup.js';
+import worker from './modules/recordatorios/jobs/reminder.processor.js';
+import { iniciarScheduler } from './modules/recordatorios/jobs/scheduler.js';
+import { colaRecordatorios } from './modules/recordatorios/jobs/queue.js';
+import pool from './config/db.js';
+
+const REQUIRED_ENV = ['DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_NAME', 'JWT_SECRET'];
+const missing = REQUIRED_ENV.filter(key => !process.env[key]);
+if (missing.length > 0) {
+  console.error(`❌ Faltan variables de entorno requeridas: ${missing.join(', ')}`);
+  process.exit(1);
+}
+
+process.on('unhandledRejection', (reason) => {
+  console.error('❌ Unhandled Rejection:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  process.exit(1);
+});
+
+const gracefulShutdown = async (signal) => {
+  console.log(`\n⚠️  Señal ${signal} recibida. Cerrando conexiones...`);
+  try {
+    await worker.close();
+    await colaRecordatorios.close();
+    await pool.end();
+    console.log('✅ Conexiones cerradas correctamente');
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Error durante shutdown:', err);
+    process.exit(1);
+  }
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 const PORT = process.env.PORT || 3000;
 
 import { imprimirRutas } from './utils/routes.logger.js';
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
-  imprimirRutas();
+  await iniciarScheduler();
+  imprimirRutas(app);
 });

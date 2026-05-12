@@ -5,11 +5,9 @@ export const registrar = async (req, res) => {
     const datos = await registrarUsuario(req.body);
     res.status(201).json(datos);
   } catch (error) {
-    console.error("ERROR REGISTER:", error);
-    if (error.message.includes("existe")) {
-      return res.status(400).json({ error: error.message });
-    }
-    res.status(500).json({ error: "Error interno del servidor" });
+    console.error("ERROR REGISTER:", error.message);
+    const status = error.status || 500;
+    res.status(status).json({ error: error.message });
   }
 };
 
@@ -18,6 +16,8 @@ export const iniciarSesion = async (req, res) => {
     const datos = await iniciarSesionUsuario(req.body);
     res.json(datos);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("ERROR LOGIN:", err.message);
+    const status = err.status || 500;
+    res.status(status).json({ error: err.message });
   }
 };

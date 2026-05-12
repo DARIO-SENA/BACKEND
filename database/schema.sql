@@ -300,3 +300,16 @@ CREATE INDEX IF NOT EXISTS idx_tareas_usuario_id ON tareas(usuario_id);
 CREATE INDEX IF NOT EXISTS idx_habitos_usuario_id ON habitos(usuario_id);
 CREATE INDEX IF NOT EXISTS idx_recordatorios_fecha_hora ON recordatorios(fecha_hora);
 CREATE INDEX IF NOT EXISTS idx_eventos_gamificacion ON eventos_gamificacion(usuario_id, tipo);
+
+-- =============================================
+-- MIGRACIONES PARA COLUMNAS FALTANTES
+-- =============================================
+
+-- Agregar columna completado a habitos (si no existe)
+ALTER TABLE habitos ADD COLUMN IF NOT EXISTS completado BOOLEAN DEFAULT false;
+
+-- Agregar columna activo a habitos (si no existe)
+ALTER TABLE habitos ADD COLUMN IF NOT EXISTS activo BOOLEAN DEFAULT true;
+
+-- Agregar unique constraint a progreso para upsert
+CREATE UNIQUE INDEX IF NOT EXISTS idx_progreso_unique ON progreso(usuario_id, tipo, fecha);
