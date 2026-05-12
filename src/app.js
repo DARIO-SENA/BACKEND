@@ -16,6 +16,7 @@ import { analyticsRouter } from './modules/analytics/analytics.routes.js';
 import { gymRouter } from './modules/GYM/gym.routes.js';
 import { socialRouter } from './modules/social/social.routes.js';
 import { gamificacionRouter } from './modules/gamificacion/gamificacion.routes.js';
+import { integracionesRouter } from './modules/integraciones/integraciones.routes.js';
 
 const app = express();
 
@@ -54,6 +55,8 @@ app.use('/api/social',        socialRouter);
 socialRouter.prefix = '/api/social';
 app.use('/api/gamificacion', gamificacionRouter);
 gamificacionRouter.prefix = '/api/gamificacion';
+app.use('/api/integraciones', integracionesRouter);
+integracionesRouter.prefix = '/api/integraciones';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
