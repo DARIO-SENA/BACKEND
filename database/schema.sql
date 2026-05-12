@@ -224,6 +224,59 @@ CREATE TABLE IF NOT EXISTS notificaciones (
 );
 
 -- =============================================
+-- SOCIAL MODULE
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS amistades (
+    id SERIAL PRIMARY KEY,
+    solicitante_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    receptor_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    estado VARCHAR(20) DEFAULT 'pendiente',
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (solicitante_id, receptor_id)
+);
+
+CREATE TABLE IF NOT EXISTS proyectos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    creador_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS proyecto_miembros (
+    id SERIAL PRIMARY KEY,
+    proyecto_id INT NOT NULL REFERENCES proyectos(id) ON DELETE CASCADE,
+    usuario_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    rol VARCHAR(20) DEFAULT 'miembro',
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (proyecto_id, usuario_id)
+);
+
+CREATE TABLE IF NOT EXISTS tareas_compartidas (
+    id SERIAL PRIMARY KEY,
+    proyecto_id INT NOT NULL REFERENCES proyectos(id) ON DELETE CASCADE,
+    creado_por INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    asignado_a INT REFERENCES usuarios(id) ON DELETE SET NULL,
+    titulo VARCHAR(200) NOT NULL,
+    descripcion TEXT,
+    estado estado_tarea DEFAULT 'pendiente',
+    prioridad prioridad_tarea DEFAULT 'media',
+    fecha_limite TIMESTAMP,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS comentarios (
+    id SERIAL PRIMARY KEY,
+    tarea_id INT NOT NULL REFERENCES tareas_compartidas(id) ON DELETE CASCADE,
+    usuario_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    contenido TEXT NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =============================================
 -- GYM MODULE
 -- =============================================
 
