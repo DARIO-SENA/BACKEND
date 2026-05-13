@@ -19,6 +19,7 @@ import { socialRouter } from './modules/social/social.routes.js';
 import { gamificacionRouter } from './modules/gamificacion/gamificacion.routes.js';
 import { integracionesRouter } from './modules/integraciones/integraciones.routes.js';
 import { iaRouter } from './modules/ia/ia.routes.js';
+import { pomodoroRouter } from './modules/pomodoro/pomodoro.routes.js';
 
 const app = express();
 
@@ -69,6 +70,8 @@ const iaLimiter = rateLimit({
 
 app.use('/api/ia', iaLimiter, iaRouter);
 iaRouter.prefix = '/api/ia';
+app.use('/api/pomodoro', pomodoroRouter);
+pomodoroRouter.prefix = '/api/pomodoro';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

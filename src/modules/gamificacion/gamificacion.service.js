@@ -43,6 +43,7 @@ const PUNTOS = {
   tarea_media:       10,
   tarea_alta:        20,
   habito_completado: 15,
+  foco_completado:   10,
   racha_bonus:       5,    // bonus extra por cada día de racha
 };
 
@@ -246,6 +247,20 @@ export const procesarHabitoCompletado = async (usuarioId, habitoId) => {
   return {
     puntos_ganados: totalPuntos,
     bonus_racha: bonusRacha,
+    racha_actual: perfil.racha_actual,
+  };
+};
+
+// ─── AL COMPLETAR SESIÓN DE FOCO ──────────────────────────
+
+export const procesarFocoCompletado = async (usuarioId) => {
+  const perfil = await actualizarRacha(usuarioId);
+  const totalPuntos = PUNTOS.foco_completado;
+
+  await otorgarPuntos(usuarioId, totalPuntos, 'Sesión de foco completada', 'foco', null);
+
+  return {
+    puntos_ganados: totalPuntos,
     racha_actual: perfil.racha_actual,
   };
 };
