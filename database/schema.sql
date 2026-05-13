@@ -324,6 +324,42 @@ CREATE TABLE IF NOT EXISTS series_entrenamiento (
 );
 
 -- =============================================
+-- IA MODULE
+-- =============================================
+
+CREATE TABLE IF NOT EXISTS analisis_ia (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    tipo VARCHAR(50) NOT NULL,
+    entrada JSONB,
+    resultado JSONB NOT NULL,
+    modelo VARCHAR(50) DEFAULT 'gpt-4o-mini',
+    tokens_usados INT DEFAULT 0,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sugerencias_ia (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    tipo VARCHAR(50) NOT NULL,
+    titulo VARCHAR(200) NOT NULL,
+    descripcion TEXT,
+    metadata JSONB,
+    aplicada BOOLEAN DEFAULT FALSE,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS conversaciones_ia (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    mensaje TEXT NOT NULL,
+    respuesta TEXT NOT NULL,
+    herramientas_usadas JSONB,
+    tokens_usados INT DEFAULT 0,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =============================================
 -- TRIGGERS
 -- =============================================
 
