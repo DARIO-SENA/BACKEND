@@ -20,6 +20,7 @@ import { gamificacionRouter } from './modules/gamificacion/gamificacion.routes.j
 import { integracionesRouter } from './modules/integraciones/integraciones.routes.js';
 import { iaRouter } from './modules/ia/ia.routes.js';
 import { pomodoroRouter } from './modules/pomodoro/pomodoro.routes.js';
+import { finanzasRouter } from './modules/finanzas/finanzas.routes.js';
 
 const app = express();
 
@@ -72,6 +73,8 @@ app.use('/api/ia', iaLimiter, iaRouter);
 iaRouter.prefix = '/api/ia';
 app.use('/api/pomodoro', pomodoroRouter);
 pomodoroRouter.prefix = '/api/pomodoro';
+app.use('/api/finanzas', finanzasRouter);
+finanzasRouter.prefix = '/api/finanzas';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
