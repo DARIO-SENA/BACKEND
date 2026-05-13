@@ -2,8 +2,6 @@ import pool from '../../config/db.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';
 
-const PUNTOS_POMODORO = 10;
-
 export const obtenerSettings = async (usuarioId) => {
   const { rows } = await pool.query(
     'SELECT * FROM pomodoro_settings WHERE usuario_id = $1',

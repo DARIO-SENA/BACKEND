@@ -4,7 +4,7 @@ import { tool } from 'langchain/tools';
 import * as tareasService from '../tareas/tareas.service.js';
 import * as analyticsService from '../analytics/analytics.service.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
-import * as gymService from '../GYM/gym.service.js';
+import * as gymService from '../gym/gym.service.js';
 import pool from '../../config/db.js';
 
 const crearTools = (usuarioId) => [

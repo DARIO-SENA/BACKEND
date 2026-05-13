@@ -1,4 +1,4 @@
-// src/models/preferencia.model.js
+// src/modules/recordatorios/preferencia.model.js
 import pool from '../../config/db.js';
 
 export const encontrarPorUsuario = async (usuarioId) => {

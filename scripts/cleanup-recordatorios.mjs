@@ -4,6 +4,7 @@ import pool from '../src/config/db.js';
 
 const limpiar = async () => {
   try {
+    console.log('⚠️  Eliminando TODOS los recordatorios pendientes...');
     const { rowCount } = await pool.query(
       "DELETE FROM recordatorios WHERE estado = 'pendiente'"
     );

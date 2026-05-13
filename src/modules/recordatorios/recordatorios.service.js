@@ -1,4 +1,4 @@
-// src/services/recordatorios.service.js
+// src/modules/recordatorios/recordatorios.service.js
 
 import * as recordatorioModel from './recordatorio.model.js';
 import { agregarJob, cancelarJob } from './jobs/queue.js';

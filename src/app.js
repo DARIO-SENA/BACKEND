@@ -14,7 +14,7 @@ import { tareasRouter }        from './modules/tareas/tareas.routes.js';
 import { agendaRouter }        from './modules/agenda/agenda.routes.js';
 import { recordatoriosRouter } from './modules/recordatorios/recordatorios.routes.js';
 import { analyticsRouter } from './modules/analytics/analytics.routes.js';
-import { gymRouter } from './modules/GYM/gym.routes.js';
+import { gymRouter } from './modules/gym/gym.routes.js';
 import { socialRouter } from './modules/social/social.routes.js';
 import { gamificacionRouter } from './modules/gamificacion/gamificacion.routes.js';
 import { integracionesRouter } from './modules/integraciones/integraciones.routes.js';

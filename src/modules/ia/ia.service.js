@@ -5,7 +5,7 @@ import * as tareasService from '../tareas/tareas.service.js';
 import * as habitosService from '../habitos/habitos.service.js';
 import * as analyticsService from '../analytics/analytics.service.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
-import * as gymService from '../GYM/gym.service.js';
+import * as gymService from '../gym/gym.service.js';
 import * as agendaService from '../agenda/agenda.service.js';
 import pool from '../../config/db.js';
 

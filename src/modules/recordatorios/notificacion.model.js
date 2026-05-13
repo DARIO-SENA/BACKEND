@@ -1,4 +1,4 @@
-// src/models/notificacion.model.js
+// src/modules/recordatorios/notificacion.model.js
 import pool from '../../config/db.js';
 
 export const encontrarPorUsuario = async (usuarioId, soloNoLeidas = false) => {

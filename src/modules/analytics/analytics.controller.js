@@ -1,61 +1,41 @@
+import { manejarError } from '../../utils/error.handler.js';
 import * as analyticsService from './analytics.service.js';
 
-// 📊 Dashboard principal
 export const obtenerDashboard = async (req, res) => {
   try {
     const data = await analyticsService.obtenerDashboard(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('obtenerDashboard:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al obtener dashboard' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
-// 📈 Productividad semanal
 export const obtenerProductividadSemanal = async (req, res) => {
   try {
     const data = await analyticsService.obtenerProductividadSemanal(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('obtenerProductividadSemanal:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al obtener productividad semanal' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
-// 📅 Productividad por día
 export const obtenerProductividadPorDia = async (req, res) => {
   try {
     const data = await analyticsService.obtenerProductividadPorDia(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('obtenerProductividadPorDia:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al obtener productividad por día' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
-// 🏷️ Tareas por categoría
 export const obtenerTareasPorCategoria = async (req, res) => {
   try {
     const data = await analyticsService.obtenerTareasPorCategoria(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('obtenerTareasPorCategoria:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al obtener tareas por categoría' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
-// 🔥 Racha actual
 export const obtenerRacha = async (req, res) => {
   try {
     const data = await analyticsService.obtenerRacha(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('obtenerRacha:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al obtener racha' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
-// 💾 Guardar progreso
 export const guardarProgreso = async (req, res) => {
   try {
     const { tipo, valor } = req.body;
@@ -64,19 +44,12 @@ export const guardarProgreso = async (req, res) => {
     }
     const data = await analyticsService.guardarProgreso(req.usuario.id, tipo, valor);
     res.status(201).json({ ok: true, data });
-  } catch (err) {
-    console.error('guardarProgreso:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al guardar progreso' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
-// 📄 Reporte exportable
 export const generarReporte = async (req, res) => {
   try {
     const reporte = await analyticsService.generarReporte(req.usuario.id);
     res.json({ ok: true, data: reporte });
-  } catch (err) {
-    console.error('generarReporte:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al generar reporte' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
