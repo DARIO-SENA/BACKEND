@@ -17,3 +17,11 @@ eventBus.on(EVENTS.TASK_DONE, async ({ usuarioId, tarea }) => {
     console.error(`[EventBus] Error en TASK_DONE:`, err.message);
   }
 });
+
+eventBus.on(EVENTS.FOCUS_SESSION_COMPLETED, async ({ usuarioId }) => {
+  try {
+    await gamificacionService.procesarFocoCompletado(usuarioId);
+  } catch (err) {
+    console.error(`[EventBus] Error en FOCUS_SESSION_COMPLETED:`, err.message);
+  }
+});

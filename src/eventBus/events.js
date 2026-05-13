@@ -7,4 +7,5 @@ export const EVENTS = {
   LEVEL_UP:         'level.up',
   STREAK_UPDATED:   'streak.updated',
   ACHIEVEMENT_UNLOCKED: 'achievement.unlocked',
+  FOCUS_SESSION_COMPLETED: 'focus.session.completed',
 }
