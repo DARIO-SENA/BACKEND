@@ -53,7 +53,18 @@ export const crearEventoNLP = async (req, res) => {
 
 // ─── FASE 1: CHAT & PRIORITIES ────────────────────────
 
-const getRedis = () => new Redis(redisConfig);
+let redisClient = null;
+const getRedis = () => {
+  if (!redisClient) {
+    try {
+      redisClient = new Redis(redisConfig);
+      redisClient.on('error', () => { redisClient = null; });
+    } catch {
+      return null;
+    }
+  }
+  return redisClient;
+};
 
 export const chat = async (req, res) => {
   try {
@@ -62,27 +73,36 @@ export const chat = async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Mensaje requerido' });
     }
 
-  const redis = getRedis();
-  const sessionKey = `ia:chat:${req.usuario.id}:${session_id || 'default'}`;
+    const redis = getRedis();
+    const sessionKey = `ia:chat:${req.usuario.id}:${session_id || 'default'}`;
+    let historial = [];
 
-  const historialRaw = await redis.lrange(sessionKey, -10, -1);
-  const historial = historialRaw.map(m => JSON.parse(m));
+    if (redis) {
+      try {
+        const historialRaw = await redis.lrange(sessionKey, -10, -1);
+        historial = historialRaw.map(m => JSON.parse(m));
+      } catch {
+      }
+    }
 
-  const result = await crearAgente(req.usuario.id, mensaje, historial);
+    const result = await crearAgente(req.usuario.id, mensaje, historial);
 
-  await redis.rpush(sessionKey, JSON.stringify({ role: 'human', content: mensaje }));
-  await redis.rpush(sessionKey, JSON.stringify({ role: 'assistant', content: result.respuesta }));
-  await redis.expire(sessionKey, 3600);
+    if (redis) {
+      try {
+        await redis.rpush(sessionKey, JSON.stringify({ role: 'human', content: mensaje }));
+        await redis.rpush(sessionKey, JSON.stringify({ role: 'assistant', content: result.respuesta }));
+        await redis.expire(sessionKey, 3600);
+      } catch {
+      }
+    }
 
-  const tokens = result.respuesta.length;
+    const tokens = result.respuesta.length;
 
-  await pool.query(
-    `INSERT INTO conversaciones_ia (usuario_id, mensaje, respuesta, herramientas_usadas, tokens_usados)
-     VALUES ($1, $2, $3, $4, $5)`,
-    [req.usuario.id, mensaje, result.respuesta, JSON.stringify(result.herramientas_usadas), tokens]
-  );
-
-  await redis.quit();
+    await pool.query(
+      `INSERT INTO conversaciones_ia (usuario_id, mensaje, respuesta, herramientas_usadas, tokens_usados)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [req.usuario.id, mensaje, result.respuesta, JSON.stringify(result.herramientas_usadas), tokens]
+    );
 
     res.json({
       ok: true,
