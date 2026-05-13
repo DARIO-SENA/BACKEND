@@ -10,17 +10,11 @@ import { agregarJob, cancelarJob } from './queue.js';
  * Esto evita perder recordatorios si el servidor se reinicia.
  */
 export const iniciarScheduler = async () => {
-  console.log('⏰ Iniciando scheduler de recordatorios...');
-
   try {
     const pendientes = await recordatorioModel.encontrarPendientes();
-    console.log(`${pendientes.length} recordatorio(s) pendiente(s) encontrado(s)`);
 
     for (const rec of pendientes) {
-      // Cancelar job anterior si existe (evita duplicados)
       await cancelarJob(rec.id);
-
-      // Reprogramar
       await agregarJob(
         {
           recordatorioId: rec.id,
@@ -32,7 +26,9 @@ export const iniciarScheduler = async () => {
       );
     }
 
-    console.log('✅ Scheduler iniciado correctamente');
+    if (pendientes.length > 0) {
+      console.log(`✅ ${pendientes.length} recordatorio(s) reprogramado(s)`);
+    }
   } catch (err) {
     console.error('❌ Error al iniciar scheduler:', err.message);
   }

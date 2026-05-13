@@ -4,9 +4,6 @@ import { Worker } from 'bullmq';
 import { redisConfig } from '../../../config/redis.js';
 import pool from '../../../config/db.js'
 
-console.log("🔥 ARCHIVO WORKER CARGADO");
-console.log("🟢 INICIALIZANDO WORKER...");
-
 // ─── PROCESADOR ─────────────────────────────
 const procesarRecordatorio = async (job) => {
   console.log("📩 JOB RECIBIDO EN WORKER:", job.name);
@@ -94,7 +91,5 @@ worker.on('failed', (job, err) => {
 worker.on('error', (err) => {
   console.error("💥 ERROR WORKER:", err);
 });
-
-console.log("🟢 WORKER INICIADO");
 
 export default worker;

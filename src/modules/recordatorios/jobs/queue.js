@@ -32,23 +32,10 @@ export const agregarJob = async (datos, fechaHora) => {
     const now = Date.now();
     const target = new Date(fechaHora).getTime();
 
-    // 🧠 lógica profesional: dev = inmediato, prod = programado
     const delay =
       process.env.NODE_ENV === 'development'
         ? 0
         : Math.max(0, target - now);
-
-    console.log("📤 ENVIANDO A REDIS:", {
-      datos,
-      fechaHora,
-      delayMs: delay,
-    });
-
-    if (delay > 0) {
-      console.log(`⏳ Job programado para dentro de ${delay}ms`);
-    } else {
-      console.log("⚡ Job inmediato (sin delay)");
-    }
 
     const job = await colaRecordatorios.add(
       'enviar-recordatorio',
@@ -58,13 +45,6 @@ export const agregarJob = async (datos, fechaHora) => {
         jobId: `rec-${datos.recordatorioId}`,
       }
     );
-
-    console.log("✅ JOB AGREGADO:", {
-      id: job.id,
-      name: job.name,
-      delay,
-      estado: delay === 0 ? "inmediato" : "programado",
-    });
 
     return job;
 
@@ -79,6 +59,5 @@ export const cancelarJob = async (recordatorioId) => {
   const job = await colaRecordatorios.getJob(`rec-${recordatorioId}`);
   if (job) {
     await job.remove();
-    console.log(`🗑️ JOB CANCELADO: ${recordatorioId}`);
   }
 };
