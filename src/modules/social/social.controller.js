@@ -1,24 +1,18 @@
+import { manejarError } from '../../utils/error.handler.js';
+import * as socialService from './social.service.js';
+
 const validarId = (id) => {
   const n = parseInt(id, 10);
   if (isNaN(n) || n < 1) throw new Error('ID inválido');
   return n;
 };
 
-import * as socialService from './social.service.js';
-
-// ─────────────────────────────────────────
-// AMISTADES
-// ─────────────────────────────────────────
-
 export const enviarSolicitud = async (req, res) => {
   try {
     validarId(req.body.receptor_id);
     const data = await socialService.enviarSolicitud(req.usuario.id, req.body.receptor_id);
     res.status(201).json({ ok: true, data });
-  } catch (err) {
-    console.error('enviarSolicitud:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const responderSolicitud = async (req, res) => {
@@ -28,65 +22,43 @@ export const responderSolicitud = async (req, res) => {
     );
     if (!data) return res.status(404).json({ ok: false, error: 'Solicitud no encontrada' });
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('responderSolicitud:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const listarAmigos = async (req, res) => {
   try {
     const data = await socialService.listarAmigos(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('listarAmigos:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al listar amigos' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const listarSolicitudesPendientes = async (req, res) => {
   try {
     const data = await socialService.listarSolicitudesPendientes(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('listarSolicitudesPendientes:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al listar solicitudes' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const eliminarAmigo = async (req, res) => {
   try {
     const ok = await socialService.eliminarAmigo(req.usuario.id, validarId(req.params.amigoId));
     if (!ok) return res.status(404).json({ ok: false, error: 'Amistad no encontrada' });
-    res.json({ ok: true, message: 'Amigo eliminado correctamente' });
-  } catch (err) {
-    console.error('eliminarAmigo:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al eliminar amigo' });
-  }
+    res.json({ ok: true, mensaje: 'Amigo eliminado correctamente' });
+  } catch (err) { manejarError(res, err); }
 };
-
-// ─────────────────────────────────────────
-// PROYECTOS
-// ─────────────────────────────────────────
 
 export const crearProyecto = async (req, res) => {
   try {
     const data = await socialService.crearProyecto(req.usuario.id, req.body);
     res.status(201).json({ ok: true, data });
-  } catch (err) {
-    console.error('crearProyecto:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const listarProyectos = async (req, res) => {
   try {
     const data = await socialService.listarProyectos(req.usuario.id);
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('listarProyectos:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al listar proyectos' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const obtenerProyecto = async (req, res) => {
@@ -94,10 +66,7 @@ export const obtenerProyecto = async (req, res) => {
     const data = await socialService.obtenerProyecto(validarId(req.params.id), req.usuario.id);
     if (!data) return res.status(404).json({ ok: false, error: 'Proyecto no encontrado' });
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('obtenerProyecto:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al obtener proyecto' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const agregarMiembro = async (req, res) => {
@@ -107,10 +76,7 @@ export const agregarMiembro = async (req, res) => {
       validarId(req.params.id), req.usuario.id, req.body.usuario_id, req.body.rol
     );
     res.status(201).json({ ok: true, data });
-  } catch (err) {
-    console.error('agregarMiembro:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const eliminarMiembro = async (req, res) => {
@@ -119,16 +85,9 @@ export const eliminarMiembro = async (req, res) => {
       validarId(req.params.id), req.usuario.id, validarId(req.params.usuarioId)
     );
     if (!ok) return res.status(404).json({ ok: false, error: 'Miembro no encontrado' });
-    res.json({ ok: true, message: 'Miembro eliminado correctamente' });
-  } catch (err) {
-    console.error('eliminarMiembro:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+    res.json({ ok: true, mensaje: 'Miembro eliminado correctamente' });
+  } catch (err) { manejarError(res, err); }
 };
-
-// ─────────────────────────────────────────
-// TAREAS COMPARTIDAS
-// ─────────────────────────────────────────
 
 export const crearTareaCompartida = async (req, res) => {
   try {
@@ -136,10 +95,7 @@ export const crearTareaCompartida = async (req, res) => {
       req.usuario.id, validarId(req.params.proyectoId), req.body
     );
     res.status(201).json({ ok: true, data });
-  } catch (err) {
-    console.error('crearTareaCompartida:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const listarTareasCompartidas = async (req, res) => {
@@ -148,10 +104,7 @@ export const listarTareasCompartidas = async (req, res) => {
       validarId(req.params.proyectoId), req.usuario.id
     );
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('listarTareasCompartidas:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const actualizarTareaCompartida = async (req, res) => {
@@ -161,15 +114,8 @@ export const actualizarTareaCompartida = async (req, res) => {
     );
     if (!data) return res.status(404).json({ ok: false, error: 'Tarea no encontrada' });
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('actualizarTareaCompartida:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
-
-// ─────────────────────────────────────────
-// COMENTARIOS
-// ─────────────────────────────────────────
 
 export const agregarComentario = async (req, res) => {
   try {
@@ -177,20 +123,14 @@ export const agregarComentario = async (req, res) => {
       validarId(req.params.tareaId), req.usuario.id, req.body.contenido
     );
     res.status(201).json({ ok: true, data });
-  } catch (err) {
-    console.error('agregarComentario:', err.message);
-    res.status(400).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const listarComentarios = async (req, res) => {
   try {
     const data = await socialService.listarComentarios(validarId(req.params.tareaId));
     res.json({ ok: true, data });
-  } catch (err) {
-    console.error('listarComentarios:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al listar comentarios' });
-  }
+  } catch (err) { manejarError(res, err); }
 };
 
 export const eliminarComentario = async (req, res) => {
@@ -199,9 +139,6 @@ export const eliminarComentario = async (req, res) => {
       validarId(req.params.comentarioId), req.usuario.id
     );
     if (!ok) return res.status(404).json({ ok: false, error: 'Comentario no encontrado' });
-    res.json({ ok: true, message: 'Comentario eliminado correctamente' });
-  } catch (err) {
-    console.error('eliminarComentario:', err.message);
-    res.status(500).json({ ok: false, error: 'Error al eliminar comentario' });
-  }
+    res.json({ ok: true, mensaje: 'Comentario eliminado correctamente' });
+  } catch (err) { manejarError(res, err); }
 };

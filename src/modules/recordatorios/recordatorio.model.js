@@ -1,4 +1,4 @@
-// src/models/recordatorio.model.js
+// src/modules/recordatorios/recordatorio.model.js
 
 import pool from '../../config/db.js';
 

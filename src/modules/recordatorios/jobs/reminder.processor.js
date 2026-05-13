@@ -1,4 +1,4 @@
-// src/workers/reminder.processor.js
+// src/modules/recordatorios/jobs/reminder.processor.js
 
 import { Worker } from 'bullmq';
 import { redisConfig } from '../../../config/redis.js';

@@ -1,4 +1,4 @@
-// modulos/GYM/service/gym.service.js
+// src/modules/gym/gym.service.js
 import pool from '../../config/db.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';

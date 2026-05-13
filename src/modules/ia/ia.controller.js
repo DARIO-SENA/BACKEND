@@ -90,7 +90,7 @@ export const chat = async (req, res) => {
       }
     }
 
-    const tokens = result.respuesta.length;
+    const tokens = result.tokens_usados || 0;
 
     await pool.query(
       `INSERT INTO conversaciones_ia (usuario_id, mensaje, respuesta, herramientas_usadas, tokens_usados)

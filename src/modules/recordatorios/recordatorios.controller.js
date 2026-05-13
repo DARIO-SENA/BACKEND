@@ -1,4 +1,4 @@
-// src/controllers/recordatorios.controller.js
+// src/modules/recordatorios/recordatorios.controller.js
 
 import * as recordatoriosService  from './recordatorios.service.js';
 import * as notificacionesService from './notificaciones.service.js';

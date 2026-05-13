@@ -1,4 +1,4 @@
-// src/services/jobs/scheduler.js
+// src/modules/recordatorios/jobs/scheduler.js
 // Se llama una vez al iniciar el servidor para reprogramar recordatorios pendientes
 
 import * as recordatorioModel from '../recordatorio.model.js';
