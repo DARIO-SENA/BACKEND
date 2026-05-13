@@ -13,7 +13,7 @@ import { programarCoachDiario } from './modules/ia/jobs/coach_diario.js';
 import { programarRevisionSemanal } from './modules/ia/jobs/revision_semanal.js';
 import pool from './config/db.js';
 
-const REQUIRED_ENV = ['DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_NAME', 'JWT_SECRET'];
+const REQUIRED_ENV = ['DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_NAME', 'JWT_SECRET', 'REDIS_HOST'];
 const missing = REQUIRED_ENV.filter(key => !process.env[key]);
 if (missing.length > 0) {
   console.error(`❌ Faltan variables de entorno requeridas: ${missing.join(', ')}`);

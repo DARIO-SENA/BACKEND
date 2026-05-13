@@ -1,10 +1,5 @@
+import { manejarError } from '../../utils/error.handler.js';
 import * as pomodoroService from './pomodoro.service.js';
-
-const manejarError = (res, err) => {
-  console.error(err.message);
-  if (err.status) return res.status(err.status).json({ ok: false, error: err.message });
-  res.status(500).json({ ok: false, error: 'Error interno del servidor' });
-};
 
 export const obtenerSettings = async (req, res) => {
   try {

@@ -21,6 +21,7 @@ import { integracionesRouter } from './modules/integraciones/integraciones.route
 import { iaRouter } from './modules/ia/ia.routes.js';
 import { pomodoroRouter } from './modules/pomodoro/pomodoro.routes.js';
 import { finanzasRouter } from './modules/finanzas/finanzas.routes.js';
+import { bienestarRouter } from './modules/bienestar/routes.js';
 
 const app = express();
 
@@ -75,11 +76,17 @@ app.use('/api/pomodoro', pomodoroRouter);
 pomodoroRouter.prefix = '/api/pomodoro';
 app.use('/api/finanzas', finanzasRouter);
 finanzasRouter.prefix = '/api/finanzas';
+app.use('/api/bienestar', bienestarRouter);
+bienestarRouter.prefix = '/api/bienestar';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get('/', (_req, res) => {
   res.json({ ok: true, mensaje: 'API DARIO funcionando' });
+});
+
+app.get('/api/health', (_req, res) => {
+  res.json({ ok: true, mensaje: 'API DARIO funcionando', timestamp: new Date().toISOString() });
 });
 
 app.use(errorHandler);
