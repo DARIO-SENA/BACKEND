@@ -58,7 +58,15 @@ app.use('/api/gamificacion', gamificacionRouter);
 gamificacionRouter.prefix = '/api/gamificacion';
 app.use('/api/integraciones', integracionesRouter);
 integracionesRouter.prefix = '/api/integraciones';
-app.use('/api/ia', iaRouter);
+const iaLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 30,
+  message: { error: 'Demasiadas solicitudes a IA. Intenta de nuevo en 1 minuto' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/ia', iaLimiter, iaRouter);
 iaRouter.prefix = '/api/ia';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
