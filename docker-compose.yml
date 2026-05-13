@@ -60,5 +60,19 @@ services:
       redis:
         condition: service_healthy
 
+  migrator:
+    build: .
+    command: sh -c "node scripts/migrate.cjs up"
+    environment:
+      NODE_ENV: production
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: DARIO
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   pgdata:

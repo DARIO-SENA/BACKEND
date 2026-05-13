@@ -238,17 +238,15 @@ export const procesarTareaCompletada = async (usuarioId, tarea) => {
 
 export const procesarHabitoCompletado = async (usuarioId, habitoId) => {
   const perfil = await actualizarRacha(usuarioId);
-  const bonusRacha = perfil.racha_actual > 1 ? PUNTOS.racha_bonus : 0;
+  const bonusRacha = perfil.racha_actual > 1 ? PUNTOS.racha_bonus * perfil.racha_actual : 0;
   const totalPuntos = PUNTOS.habito_completado + bonusRacha;
 
   await otorgarPuntos(usuarioId, totalPuntos, 'Hábito completado', 'habito', habitoId);
-  const logrosNuevos = await verificarLogros(usuarioId);
 
   return {
     puntos_ganados: totalPuntos,
     bonus_racha: bonusRacha,
     racha_actual: perfil.racha_actual,
-    logros_nuevos: logrosNuevos,
   };
 };
 

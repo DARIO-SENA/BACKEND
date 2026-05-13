@@ -111,10 +111,16 @@ export const crearAgente = async (usuarioId, mensaje, historial = []) => {
   });
 
   const ultimoMensaje = result.messages[result.messages.length - 1];
+  const herramientas = new Set();
+  for (const m of result.messages) {
+    if (m.tool_calls) {
+      for (const tc of m.tool_calls) {
+        herramientas.add(tc.name);
+      }
+    }
+  }
   return {
     respuesta: ultimoMensaje.content,
-    herramientas_usadas: result.messages
-      .filter(m => m._rollupTool)
-      .map(m => m.name),
+    herramientas_usadas: [...herramientas],
   };
 };

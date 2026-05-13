@@ -25,7 +25,7 @@ function printStack(stack, prefix, seen) {
 export const imprimirRutas = (app) => {
   console.log('\n🚀 ENDPOINTS ACTIVOS:\n');
   const seen = new Set();
-  const router = app.router;
+  const router = app._router;
   if (router && router.stack) {
     printStack(router.stack, '', seen);
   } else {

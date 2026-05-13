@@ -1,8 +1,7 @@
 import * as iaService from './ia.service.js';
 import { crearAgente } from './ia.agent.js';
-import Redis from 'ioredis';
+import { getRedisClient } from '../../config/redis.js';
 import pool from '../../config/db.js';
-import { redisConfig } from '../../config/redis.js';
 import * as tareasService from '../tareas/tareas.service.js';
 import * as analyticsService from '../analytics/analytics.service.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
@@ -53,17 +52,12 @@ export const crearEventoNLP = async (req, res) => {
 
 // ─── FASE 1: CHAT & PRIORITIES ────────────────────────
 
-let redisClient = null;
 const getRedis = () => {
-  if (!redisClient) {
-    try {
-      redisClient = new Redis(redisConfig);
-      redisClient.on('error', () => { redisClient = null; });
-    } catch {
-      return null;
-    }
+  try {
+    return getRedisClient();
+  } catch {
+    return null;
   }
-  return redisClient;
 };
 
 export const chat = async (req, res) => {

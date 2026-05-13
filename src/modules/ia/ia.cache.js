@@ -1,21 +1,8 @@
-import Redis from 'ioredis';
-import { redisConfig } from '../../config/redis.js';
-
-let client = null;
-
-const conectar = () => {
-  if (!client) {
-    client = new Redis(redisConfig);
-    client.on('error', () => {
-      client = null;
-    });
-  }
-  return client;
-};
+import { getRedisClient } from '../../config/redis.js';
 
 export const obtenerCache = async (llave) => {
   try {
-    const c = conectar();
+    const c = getRedisClient();
     const data = await c.get(`ia:cache:${llave}`);
     return data ? JSON.parse(data) : null;
   } catch {
@@ -25,7 +12,7 @@ export const obtenerCache = async (llave) => {
 
 export const guardarCache = async (llave, valor, ttl = 3600) => {
   try {
-    const c = conectar();
+    const c = getRedisClient();
     await c.setex(`ia:cache:${llave}`, ttl, JSON.stringify(valor));
   } catch {
   }

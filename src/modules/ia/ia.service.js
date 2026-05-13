@@ -337,11 +337,13 @@ export const recomendarAmigos = async (usuarioId) => {
     [usuarioId]
   );
 
-  const idsAmigos = new Set([usuarioId]);
-  amigosActuales.forEach(a => { idsAmigos.add(a.solicitante_id); idsAmigos.add(a.receptor_id); });
+  const idsExcluir = [usuarioId];
+  amigosActuales.forEach(a => { idsExcluir.push(a.solicitante_id, a.receptor_id); });
+  const placeholders = idsExcluir.map((_, i) => `$${i + 1}`).join(',');
 
   const { rows: potenciales } = await pool.query(
-    `SELECT id, nombre FROM usuarios WHERE id NOT IN (${[...idsAmigos].join(',')}) LIMIT 20`
+    `SELECT id, nombre FROM usuarios WHERE id NOT IN (${placeholders}) LIMIT 20`,
+    idsExcluir
   );
 
   if (potenciales.length === 0) return [];

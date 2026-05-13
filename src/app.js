@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
 
+import { errorHandler } from './middlewares/error.middleware.js';
 import { swaggerSpec } from './config/swagger.js';
 import { authRouter }          from './modules/auth/auth.routes.js';
 import { habitosRouter }       from './modules/habitos/habitos.routes.js';
@@ -74,5 +75,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get('/', (_req, res) => {
   res.json({ ok: true, mensaje: 'API DARIO funcionando' });
 });
+
+app.use(errorHandler);
 
 export { app };
