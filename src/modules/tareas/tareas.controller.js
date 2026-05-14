@@ -23,14 +23,6 @@ export const crearTarea = async (req, res) => {
   } catch (error) { manejarError(res, error); }
 };
 
-export const crearYProgramar = async (req, res) => {
-  try {
-    const tarea = await tareasService.crearTarea(req.usuario.id, req.body);
-    const tareaFinal = await tareasService.programarYObtener(req.usuario.id, tarea);
-    res.status(201).json({ ok: true, data: tareaFinal });
-  } catch (error) { manejarError(res, error); }
-};
-
 export const actualizarTarea = async (req, res) => {
   try {
     const tarea = await tareasService.actualizarTarea(req.params.id, req.usuario.id, req.body);

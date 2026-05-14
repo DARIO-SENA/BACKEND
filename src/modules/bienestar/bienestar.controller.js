@@ -1,5 +1,5 @@
 import { manejarError } from "../../utils/error.handler.js";
-import * as bienestarService from "./service.js";
+import * as bienestarService from "./bienestar.service.js";
 
 export const createCheckin = async (req, res) => {
   try {

@@ -17,7 +17,7 @@ import {
   listEjercicios,
   completarPausa,
   healthCheck,
-} from "./controller.js";
+} from "./bienestar.controller.js";
 
 const router = Router();
 

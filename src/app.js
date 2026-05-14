@@ -21,7 +21,7 @@ import { integracionesRouter } from './modules/integraciones/integraciones.route
 import { iaRouter } from './modules/ia/ia.routes.js';
 import { pomodoroRouter } from './modules/pomodoro/pomodoro.routes.js';
 import { finanzasRouter } from './modules/finanzas/finanzas.routes.js';
-import { bienestarRouter } from './modules/bienestar/routes.js';
+import { bienestarRouter } from './modules/bienestar/bienestar.routes.js';
 import { metasRouter } from './modules/metas/metas.routes.js';
 
 const app = express();

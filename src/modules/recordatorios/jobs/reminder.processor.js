@@ -2,7 +2,7 @@
 
 import { Worker } from 'bullmq';
 import { redisConfig } from '../../../config/redis.js';
-import pool from '../../../config/db.js'
+import pool from '../../../config/db.js';
 
 // ─── PROCESADOR ─────────────────────────────
 const procesarRecordatorio = async (job) => {
