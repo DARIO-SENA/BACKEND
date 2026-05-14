@@ -1,15 +1,9 @@
 // src/modules/recordatorios/recordatorios.controller.js
 
+import { manejarError } from '../../utils/error.handler.js';
 import * as recordatoriosService  from './recordatorios.service.js';
 import * as notificacionesService from './notificaciones.service.js';
 import * as preferenciasService   from './preferencias.service.js';
-// ─── HELPER ERRORES ────────────────────────────────────────
-
-const manejarError = (res, err) => {
-  if (err.status) return res.status(err.status).json({ ok: false, error: err.message });
-  console.error(err.message);
-  res.status(500).json({ ok: false, error: 'Error interno del servidor' });
-};
 
 // ─── RECORDATORIOS ─────────────────────────────────────────
 

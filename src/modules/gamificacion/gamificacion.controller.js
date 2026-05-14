@@ -1,12 +1,7 @@
 // src/modules/gamificacion/gamificacion.controller.js
 
+import { manejarError } from '../../utils/error.handler.js';
 import * as gamificacionService from './gamificacion.service.js';
-
-const manejarError = (res, err) => {
-  console.error(err.message);
-  if (err.status) return res.status(err.status).json({ ok: false, error: err.message });
-  res.status(500).json({ ok: false, error: 'Error interno del servidor' });
-};
 
 // GET /api/gamificacion/perfil
 export const obtenerPerfil = async (req, res) => {

@@ -90,7 +90,7 @@ export const programarTareasAutomaticamente = async (usuarioId, tareas) => {
 
       await pool.query(
         `UPDATE tareas
-         SET fecha_inicio = $1, fecha_fin = $2, auto_programada = true
+         SET fecha_inicio = $1, fecha_fin = $2, auto_programado = true
          WHERE id = $3 AND usuario_id = $4`,
         [slot.fecha_inicio, slot.fecha_fin, tarea.id, usuarioId]
       );

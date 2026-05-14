@@ -1,10 +1,5 @@
+import { manejarError } from '../../utils/error.handler.js';
 import * as service from './finanzas.service.js';
-
-const manejarError = (res, err) => {
-  console.error(err.message);
-  if (err.status) return res.status(err.status).json({ ok: false, error: err.message });
-  res.status(500).json({ ok: false, error: 'Error interno del servidor' });
-};
 
 // ─── CATEGORIAS ─────────────────────────────────────────────────
 

@@ -59,3 +59,11 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/backend
           REDIS_URL: redis://localhost:6379
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: backend
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          JWT_SECRET: test-secret
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379

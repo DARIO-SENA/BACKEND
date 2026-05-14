@@ -472,7 +472,7 @@ export const resumenMensual = async (usuarioId, mes, anio) => {
   const m = mes || new Date().getMonth() + 1;
   const a = anio || new Date().getFullYear();
 
-  const [{ rows: totals }] = await pool.query(
+  const { rows: totals } = await pool.query(
     `SELECT
        COALESCE(SUM(CASE WHEN tipo = 'ingreso' THEN monto ELSE 0 END), 0) AS total_ingresos,
        COALESCE(SUM(CASE WHEN tipo = 'gasto' THEN monto ELSE 0 END), 0) AS total_gastos
