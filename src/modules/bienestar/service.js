@@ -56,8 +56,7 @@ export const obtenerEstadisticas = async (usuarioId) => {
        ROUND(AVG(sueno_horas), 1) as promedio_sueno,
        MODE() WITHIN GROUP (ORDER BY estado_animo) as estado_frecuente,
        COUNT(*) as total_checkins
-     FROM checkins_emocionales
-     WHERE usuario_id = $1`,
+     FROM checkins_emocionales WHERE usuario_id = $1`,
     [usuarioId]
   );
   const tendencia = await pool.query(
@@ -67,7 +66,7 @@ export const obtenerEstadisticas = async (usuarioId) => {
   return { ...rows[0], tendencia: tendencia.rows };
 };
 
-export const crearEntradaDiario = async (usuarioId, datos) => {
+export const crearDiario = async (usuarioId, datos) => {
   const { titulo, contenido, etiquetas, es_publico } = datos;
   const { rows } = await pool.query(
     `INSERT INTO diario_personal (usuario_id, titulo, contenido, etiquetas, es_publico)
@@ -95,7 +94,7 @@ export const listarDiario = async (usuarioId, pagina = 1, limite = 10) => {
   };
 };
 
-export const obtenerEntradaDiario = async (id, usuarioId) => {
+export const obtenerDiario = async (id, usuarioId) => {
   const { rows } = await pool.query(
     `SELECT * FROM diario_personal WHERE id = $1 AND usuario_id = $2`,
     [id, usuarioId]
@@ -103,7 +102,7 @@ export const obtenerEntradaDiario = async (id, usuarioId) => {
   return rows[0] || null;
 };
 
-export const actualizarEntradaDiario = async (id, usuarioId, datos) => {
+export const actualizarDiario = async (id, usuarioId, datos) => {
   const { titulo, contenido, etiquetas, es_publico } = datos;
   const { rows } = await pool.query(
     `UPDATE diario_personal
@@ -118,7 +117,7 @@ export const actualizarEntradaDiario = async (id, usuarioId, datos) => {
   return rows[0] || null;
 };
 
-export const eliminarEntradaDiario = async (id, usuarioId) => {
+export const eliminarDiario = async (id, usuarioId) => {
   const { rowCount } = await pool.query(
     `DELETE FROM diario_personal WHERE id = $1 AND usuario_id = $2`,
     [id, usuarioId]
@@ -126,24 +125,13 @@ export const eliminarEntradaDiario = async (id, usuarioId) => {
   return rowCount > 0;
 };
 
-export const obtenerEntradaDiarioAleatoria = async (usuarioId) => {
+export const obtenerDiarioAleatorio = async (usuarioId) => {
   const { rows } = await pool.query(
     `SELECT * FROM diario_personal WHERE usuario_id = $1 ORDER BY RANDOM() LIMIT 1`,
     [usuarioId]
   );
   return rows[0] || null;
 };
-
-function generarObservaciones(checkins, promedios) {
-  const observaciones = [];
-  const energia = parseFloat(promedios.avg_energia) || 0;
-  const sueno = parseFloat(promedios.avg_sueno) || 0;
-  if (sueno < 6) observaciones.push("Tu promedio de sueño es bajo (<6h). Intenta descansar más.");
-  if (energia < 5) observaciones.push("Tu nivel de energía promedio es bajo. Considera hacer pausas activas.");
-  if (sueno >= 7 && energia >= 7) observaciones.push("¡Buen equilibrio! Duermes bien y tienes buena energía.");
-  if (checkins.length > 0) observaciones.push("Sigue registrando tus emociones diariamente para obtener mejores recomendaciones.");
-  return observaciones;
-}
 
 export const obtenerInsights = async (usuarioId) => {
   const desdeCache = await pool.query(
@@ -178,10 +166,22 @@ export const obtenerInsights = async (usuarioId) => {
     `INSERT INTO analisis_ia (usuario_id, tipo, resultado, cache_hasta) VALUES ($1, 'insights', $2, NOW() + INTERVAL '1 hour')`,
     [usuarioId, JSON.stringify(resultado)]
   );
+
   return resultado;
 };
 
-export const programarPausaActiva = async (usuarioId, datos) => {
+function generarObservaciones(checkins, promedios) {
+  const observaciones = [];
+  const energia = parseFloat(promedios.avg_energia) || 0;
+  const sueno = parseFloat(promedios.avg_sueno) || 0;
+  if (sueno < 6) observaciones.push("Tu promedio de sueño es bajo (<6h). Intenta descansar más.");
+  if (energia < 5) observaciones.push("Tu nivel de energía promedio es bajo. Considera hacer pausas activas.");
+  if (sueno >= 7 && energia >= 7) observaciones.push("¡Buen equilibrio! Duermes bien y tienes buena energía.");
+  if (checkins.length > 0) observaciones.push("Sigue registrando tus emociones diariamente para obtener mejores recomendaciones.");
+  return observaciones;
+}
+
+export const programarPausa = async (usuarioId, datos) => {
   const { ejercicio, duracion_minutos, programada_para } = datos;
   const { rows } = await pool.query(
     `INSERT INTO pausas_activas (usuario_id, ejercicio, duracion_minutos, programada_para) VALUES ($1, $2, $3, $4) RETURNING *`,
@@ -190,23 +190,10 @@ export const programarPausaActiva = async (usuarioId, datos) => {
   return rows[0];
 };
 
-export const completarPausaActiva = async (id, usuarioId) => {
+export const completarPausa = async (id, usuarioId) => {
   const { rows } = await pool.query(
     `UPDATE pausas_activas SET completada = true WHERE id = $1 AND usuario_id = $2 RETURNING *`,
     [id, usuarioId]
   );
   return rows[0] || null;
-};
-
-export const listarEjercicios = () => [
-  { id: 1, nombre: "Estiramiento de cuello", duracion: 2 },
-  { id: 2, nombre: "Respiración profunda", duracion: 3 },
-  { id: 3, nombre: "Caminata corta", duracion: 5 },
-  { id: 4, nombre: "Estiramiento de brazos", duracion: 2 },
-  { id: 5, nombre: "Ejercicio de ojos (20-20-20)", duracion: 1 },
-  { id: 6, nombre: "Flexión de piernas", duracion: 3 },
-];
-
-export const verificarConexionDB = async () => {
-  await pool.query("SELECT 1");
 };
