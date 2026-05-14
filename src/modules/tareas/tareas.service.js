@@ -200,3 +200,18 @@ export const eliminarCategoria = async (id, usuarioId) => {
   );
   return rowCount > 0;
 };
+
+export const actualizarCategoria = async (id, usuarioId, datos) => {
+  const campos = [];
+  const valores = [];
+  let i = 1;
+  if (datos.nombre) { campos.push(`nombre = $${i++}`); valores.push(datos.nombre); }
+  if (datos.color)  { campos.push(`color = $${i++}`); valores.push(datos.color); }
+  if (campos.length === 0) return null;
+  valores.push(id, usuarioId);
+  const { rows } = await pool.query(
+    `UPDATE categorias SET ${campos.join(', ')} WHERE id = $${i++} AND usuario_id = $${i} RETURNING *`,
+    valores
+  );
+  return rows[0] || null;
+};

@@ -93,3 +93,21 @@ export const eliminarCategoria = async (req, res) => {
     res.json({ ok: true, mensaje: 'Categoría eliminada correctamente' });
   } catch (error) { manejarError(res, error); }
 };
+
+export const actualizarCategoria = async (req, res) => {
+  try {
+    const { nombre, color } = req.body;
+    if (!nombre && !color) return res.status(400).json({ ok: false, error: 'Nombre o color requerido' });
+    const categoria = await tareasService.actualizarCategoria(req.params.id, req.usuario.id, { nombre, color });
+    if (!categoria) return res.status(404).json({ ok: false, error: 'Categoría no encontrada' });
+    res.json({ ok: true, data: categoria });
+  } catch (error) { manejarError(res, error); }
+};
+
+export const programarTarea = async (req, res) => {
+  try {
+    const tarea = await tareasService.crearTarea(req.usuario.id, req.body);
+    const tareaFinal = await tareasService.programarYObtener(req.usuario.id, tarea);
+    res.status(201).json({ ok: true, data: tareaFinal });
+  } catch (error) { manejarError(res, error); }
+};

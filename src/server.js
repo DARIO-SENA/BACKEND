@@ -11,6 +11,8 @@ import { colaCoach } from './modules/ia/jobs/coach_diario.js';
 import { colaRevision } from './modules/ia/jobs/revision_semanal.js';
 import { programarCoachDiario } from './modules/ia/jobs/coach_diario.js';
 import { programarRevisionSemanal } from './modules/ia/jobs/revision_semanal.js';
+import './modules/metas/jobs/metas.notifier.js';
+import { iniciarSchedulerMetas } from './modules/metas/jobs/metas.scheduler.js';
 import pool from './config/db.js';
 
 const REQUIRED_ENV = ['DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_NAME', 'JWT_SECRET', 'REDIS_HOST'];
@@ -57,5 +59,6 @@ app.listen(PORT, async () => {
   await iniciarScheduler();
   await programarCoachDiario();
   await programarRevisionSemanal();
+  iniciarSchedulerMetas();
   imprimirRutas(app);
 });

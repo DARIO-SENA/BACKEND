@@ -341,6 +341,41 @@ export const verificarLogros = async (usuarioId) => {
         cumplido = parseInt(rows[0].total) >= 1;
         break;
       }
+      case 'metas_creadas': {
+        const { rows } = await pool.query(
+          'SELECT COUNT(*) AS total FROM metas WHERE usuario_id = $1',
+          [usuarioId]
+        );
+        cumplido = parseInt(rows[0].total) >= condicion.valor;
+        break;
+      }
+      case 'metas_completadas': {
+        const { rows } = await pool.query(
+          "SELECT COUNT(*) AS total FROM metas WHERE usuario_id = $1 AND estado = 'completada'",
+          [usuarioId]
+        );
+        cumplido = parseInt(rows[0].total) >= condicion.valor;
+        break;
+      }
+      case 'krs_completados': {
+        const { rows } = await pool.query(
+          'SELECT COUNT(*) AS total FROM key_results WHERE meta_id IN (SELECT id FROM metas WHERE usuario_id = $1) AND progreso >= 100',
+          [usuarioId]
+        );
+        cumplido = parseInt(rows[0].total) >= condicion.valor;
+        break;
+      }
+      case 'meta_rapida': {
+        const { rows } = await pool.query(
+          `SELECT COUNT(*) AS total FROM metas
+           WHERE usuario_id = $1 AND estado = 'completada'
+           AND fecha_fin IS NOT NULL AND fecha_inicio IS NOT NULL
+           AND (fecha_fin - fecha_inicio) < 7`,
+          [usuarioId]
+        );
+        cumplido = parseInt(rows[0].total) >= condicion.valor;
+        break;
+      }
     }
 
     if (cumplido) {

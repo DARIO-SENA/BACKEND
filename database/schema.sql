@@ -2898,6 +2898,115 @@ ALTER TABLE ONLY public.tareas
 
 
 --
+-- Name: metas; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.metas (
+    id integer NOT NULL,
+    usuario_id integer NOT NULL,
+    titulo character varying(200) NOT NULL,
+    descripcion text,
+    categoria character varying(50) DEFAULT 'personal'::character varying,
+    progreso numeric(5,2) DEFAULT 0,
+    fecha_inicio date,
+    fecha_fin date,
+    estado character varying(20) DEFAULT 'en_progreso'::character varying,
+    es_borrador boolean DEFAULT false,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE SEQUENCE public.metas_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.metas_id_seq OWNED BY public.metas.id;
+
+ALTER TABLE ONLY public.metas ALTER COLUMN id SET DEFAULT nextval('public.metas_id_seq'::regclass);
+
+ALTER TABLE ONLY public.metas
+    ADD CONSTRAINT metas_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.metas
+    ADD CONSTRAINT metas_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id) ON DELETE CASCADE;
+
+CREATE INDEX public.metas_usuario_id_idx ON public.metas USING btree (usuario_id);
+
+--
+-- Name: key_results; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.key_results (
+    id integer NOT NULL,
+    meta_id integer NOT NULL,
+    titulo character varying(200) NOT NULL,
+    descripcion text,
+    progreso numeric(5,2) DEFAULT 0,
+    orden integer DEFAULT 0,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE SEQUENCE public.key_results_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.key_results_id_seq OWNED BY public.key_results.id;
+
+ALTER TABLE ONLY public.key_results ALTER COLUMN id SET DEFAULT nextval('public.key_results_id_seq'::regclass);
+
+ALTER TABLE ONLY public.key_results
+    ADD CONSTRAINT key_results_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.key_results
+    ADD CONSTRAINT key_results_meta_id_fkey FOREIGN KEY (meta_id) REFERENCES public.metas(id) ON DELETE CASCADE;
+
+CREATE INDEX public.key_results_meta_id_idx ON public.key_results USING btree (meta_id);
+
+--
+-- Name: meta_progreso; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.meta_progreso (
+    id integer NOT NULL,
+    meta_id integer NOT NULL,
+    progreso numeric(5,2) NOT NULL,
+    fecha date NOT NULL DEFAULT CURRENT_DATE,
+    creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE SEQUENCE public.meta_progreso_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.meta_progreso_id_seq OWNED BY public.meta_progreso.id;
+
+ALTER TABLE ONLY public.meta_progreso ALTER COLUMN id SET DEFAULT nextval('public.meta_progreso_id_seq'::regclass);
+
+ALTER TABLE ONLY public.meta_progreso
+    ADD CONSTRAINT meta_progreso_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY public.meta_progreso
+    ADD CONSTRAINT meta_progreso_meta_id_fkey FOREIGN KEY (meta_id) REFERENCES public.metas(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY public.meta_progreso
+    ADD CONSTRAINT meta_progreso_unique UNIQUE (meta_id, fecha);
+
+CREATE INDEX public.meta_progreso_meta_id_idx ON public.meta_progreso USING btree (meta_id);
+
+--
 -- PostgreSQL database dump complete
 --
 

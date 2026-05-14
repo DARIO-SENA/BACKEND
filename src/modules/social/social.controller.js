@@ -69,6 +69,26 @@ export const obtenerProyecto = async (req, res) => {
   } catch (err) { manejarError(res, err); }
 };
 
+export const actualizarProyecto = async (req, res) => {
+  try {
+    const data = await socialService.actualizarProyecto(
+      validarId(req.params.id), req.usuario.id, req.body
+    );
+    if (!data) return res.status(404).json({ ok: false, error: 'Proyecto no encontrado' });
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const eliminarProyecto = async (req, res) => {
+  try {
+    const ok = await socialService.eliminarProyecto(
+      validarId(req.params.id), req.usuario.id
+    );
+    if (!ok) return res.status(404).json({ ok: false, error: 'Proyecto no encontrado' });
+    res.json({ ok: true, mensaje: 'Proyecto eliminado correctamente' });
+  } catch (err) { manejarError(res, err); }
+};
+
 export const agregarMiembro = async (req, res) => {
   try {
     validarId(req.body.usuario_id);

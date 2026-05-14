@@ -22,6 +22,7 @@ import { iaRouter } from './modules/ia/ia.routes.js';
 import { pomodoroRouter } from './modules/pomodoro/pomodoro.routes.js';
 import { finanzasRouter } from './modules/finanzas/finanzas.routes.js';
 import { bienestarRouter } from './modules/bienestar/routes.js';
+import { metasRouter } from './modules/metas/metas.routes.js';
 
 const app = express();
 
@@ -78,6 +79,8 @@ app.use('/api/finanzas', finanzasRouter);
 finanzasRouter.prefix = '/api/finanzas';
 app.use('/api/bienestar', bienestarRouter);
 bienestarRouter.prefix = '/api/bienestar';
+app.use('/api/metas', metasRouter);
+metasRouter.prefix = '/api/metas';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

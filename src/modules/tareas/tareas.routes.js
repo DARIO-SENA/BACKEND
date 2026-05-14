@@ -12,5 +12,6 @@ router.post('/',            ctrl.crearTarea);
 router.put('/:id',          ctrl.actualizarTarea);
 router.delete('/:id',       ctrl.eliminarTarea);
 router.patch('/:id/estado', ctrl.cambiarEstado);
+router.post('/programar', ctrl.programarTarea);
 
 export { router as tareasRouter };

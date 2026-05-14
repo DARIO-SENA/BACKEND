@@ -130,6 +130,51 @@ export const obtenerProyecto = async (proyectoId, usuarioId) => {
   return rows[0] || null;
 };
 
+export const actualizarProyecto = async (proyectoId, usuarioId, datos) => {
+  const { rows: miembro } = await pool.query(
+    `SELECT rol FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
+    [proyectoId, usuarioId]
+  );
+  if (!miembro[0] || miembro[0].rol !== 'admin') {
+    throw new Error('Solo los administradores pueden actualizar el proyecto');
+  }
+  const campos = [];
+  const valores = [];
+  let i = 1;
+  if (datos.nombre !== undefined) { campos.push(`nombre = $${i++}`); valores.push(datos.nombre); }
+  if (datos.descripcion !== undefined) { campos.push(`descripcion = $${i++}`); valores.push(datos.descripcion); }
+  if (campos.length === 0) throw new Error('No hay campos para actualizar');
+  valores.push(proyectoId);
+  const { rows } = await pool.query(
+    `UPDATE proyectos SET ${campos.join(', ')} WHERE id = $${i} RETURNING *`,
+    valores
+  );
+  return rows[0] || null;
+};
+
+export const eliminarProyecto = async (proyectoId, usuarioId) => {
+  const { rows: miembro } = await pool.query(
+    `SELECT rol FROM proyecto_miembros WHERE proyecto_id = $1 AND usuario_id = $2`,
+    [proyectoId, usuarioId]
+  );
+  if (!miembro[0] || miembro[0].rol !== 'admin') {
+    throw new Error('Solo los administradores pueden eliminar el proyecto');
+  }
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('DELETE FROM proyecto_miembros WHERE proyecto_id = $1', [proyectoId]);
+    const { rowCount } = await client.query('DELETE FROM proyectos WHERE id = $1', [proyectoId]);
+    await client.query('COMMIT');
+    return rowCount > 0;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+};
+
 export const agregarMiembro = async (proyectoId, usuarioId, nuevoUsuarioId, rol = 'miembro') => {
   const client = await pool.connect();
   try {

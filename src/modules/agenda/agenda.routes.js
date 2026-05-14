@@ -27,6 +27,7 @@ router.delete('/bloques/:id',   agendaCtrl.eliminarBloque);
 // 🏷️ Categorias
 router.get('/categorias',         tareaCtrl.obtenerCategorias);
 router.post('/categorias',        tareaCtrl.crearCategoria);
+router.put('/categorias/:id',     tareaCtrl.actualizarCategoria);
 router.delete('/categorias/:id',  tareaCtrl.eliminarCategoria);
 
 export { router as agendaRouter };

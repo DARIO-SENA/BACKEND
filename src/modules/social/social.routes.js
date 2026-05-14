@@ -17,6 +17,8 @@ router.delete('/amigos/:amigoId',          socialCtrl.eliminarAmigo);
 router.post('/proyectos',                  socialCtrl.crearProyecto);
 router.get('/proyectos',                   socialCtrl.listarProyectos);
 router.get('/proyectos/:id',               socialCtrl.obtenerProyecto);
+router.put('/proyectos/:id',               socialCtrl.actualizarProyecto);
+router.delete('/proyectos/:id',            socialCtrl.eliminarProyecto);
 router.post('/proyectos/:id/miembros',     socialCtrl.agregarMiembro);
 router.delete('/proyectos/:id/miembros/:usuarioId', socialCtrl.eliminarMiembro);
 
