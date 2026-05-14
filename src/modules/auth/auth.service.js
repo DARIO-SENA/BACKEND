@@ -1,21 +1,13 @@
 import pool from '../../config/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { registerSchema, loginSchema } from '../../validation/index.js';
 
 export const registrarUsuario = async ({ nombre, email, password }) => {
-  if (!nombre || !email || !password) {
-    throw Object.assign(new Error('Faltan campos obligatorios'), { status: 400 });
-  }
-  if (nombre.length > 100) {
-    throw Object.assign(new Error('El nombre es demasiado largo'), { status: 400 });
-  }
-  if (!EMAIL_REGEX.test(email)) {
-    throw Object.assign(new Error('Formato de email inválido'), { status: 400 });
-  }
-  if (password.length < 6) {
-    throw Object.assign(new Error('La contraseña debe tener al menos 6 caracteres'), { status: 400 });
+  const parsed = registerSchema.safeParse({ nombre, email, password });
+  if (!parsed.success) {
+    const msg = parsed.error.issues[0].message;
+    throw Object.assign(new Error(msg), { status: 400 });
   }
 
   const existe = await pool.query(
@@ -40,7 +32,8 @@ export const registrarUsuario = async ({ nombre, email, password }) => {
 };
 
 export const iniciarSesionUsuario = async ({ email, password }) => {
-  if (!email || !password) {
+  const parsed = loginSchema.safeParse({ email, password });
+  if (!parsed.success) {
     throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
   }
 
