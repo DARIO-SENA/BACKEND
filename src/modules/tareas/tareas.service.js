@@ -2,6 +2,7 @@ import pool from '../../config/db.js';
 import { programarTareasAutomaticamente } from '../agenda/agenda.service.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';
+import { crearTareaSchema, actualizarTareaSchema } from '../../validation/index.js';
 
 export const obtenerTareas = async (usuarioId, filtros = {}) => {
   const { estado, prioridad, desde, hasta, categoria_id } = filtros;
@@ -40,12 +41,17 @@ export const obtenerTareaPorId = async (id, usuarioId) => {
 };
 
 export const crearTarea = async (usuarioId, datos) => {
+  const parsed = crearTareaSchema.safeParse(datos);
+  if (!parsed.success) {
+    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+  }
   const {
-    titulo, descripcion = '', prioridad = 'media', duracion_minutos = 30,
-    fecha_inicio = null, fecha_fin = null, fecha_limite = null,
-    todo_el_dia = false, categoria_id = null,
-    es_recurrente = false, recurrencia = null, auto_programado = false,
-  } = datos;
+    titulo, descripcion, prioridad, duracion_minutos,
+    fecha_inicio, fecha_fin, fecha_limite,
+    todo_el_dia, categoria_id,
+    es_recurrente, recurrencia,
+  } = parsed.data;
+  const auto_programado = false;
 
   const { rows } = await pool.query(
     `INSERT INTO tareas (
@@ -69,15 +75,16 @@ export const programarYObtener = async (usuarioId, tarea) => {
 };
 
 export const actualizarTarea = async (id, usuarioId, datos) => {
+  const parsed = actualizarTareaSchema.safeParse(datos);
+  if (!parsed.success) {
+    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+  }
+  datos = parsed.data;
   const campos = [];
   const valores = [];
   let i = 1;
 
-  const permitidos = [
-    'titulo', 'descripcion', 'prioridad', 'estado', 'duracion_minutos',
-    'fecha_inicio', 'fecha_fin', 'fecha_limite', 'todo_el_dia',
-    'categoria_id', 'es_recurrente', 'recurrencia', 'auto_programado',
-  ];
+  const permitidos = Object.keys(actualizarTareaSchema.shape);
 
   for (const campo of permitidos) {
     if (datos[campo] !== undefined) {

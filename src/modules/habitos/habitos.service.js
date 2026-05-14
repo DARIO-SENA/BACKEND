@@ -1,8 +1,14 @@
 import pool from '../../config/db.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';
+import { crearHabitoSchema, actualizarHabitoSchema } from '../../validation/index.js';
 
-export const crearHabito = async (usuarioId, { titulo, descripcion, frecuencia }) => {
+export const crearHabito = async (usuarioId, datos) => {
+  const parsed = crearHabitoSchema.safeParse(datos);
+  if (!parsed.success) {
+    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+  }
+  const { titulo, descripcion, frecuencia } = parsed.data;
   const { rows } = await pool.query(
     `INSERT INTO habitos (usuario_id, titulo, descripcion, frecuencia)
      VALUES ($1, $2, $3, $4) RETURNING *`,
@@ -20,6 +26,11 @@ export const listarHabitos = async (usuarioId) => {
 };
 
 export const actualizarHabito = async (id, usuarioId, datos) => {
+  const parsed = actualizarHabitoSchema.safeParse(datos);
+  if (!parsed.success) {
+    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+  }
+  datos = parsed.data;
 
   // 1. Buscar hábito actual
   const actual = await pool.query(
