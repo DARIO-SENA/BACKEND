@@ -1,6 +1,23 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import { verificarToken } from '../../middlewares/auth.middleware.js';
 import * as ctrl from './ia.controller.js';
+
+const chatLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 5,
+  message: { ok: false, error: 'Demasiadas solicitudes al chat. Intenta de nuevo en 1 minuto' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const nlpLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 3,
+  message: { ok: false, error: 'Demasiadas solicitudes de creación. Intenta de nuevo en 1 minuto' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 const router = Router();
 router.use(verificarToken);
@@ -41,7 +58,7 @@ router.use(verificarToken);
  *       500:
  *         description: Error del servidor
  */
-router.post('/crear-tarea',  ctrl.crearTareaNLP);
+router.post('/crear-tarea',  nlpLimiter, ctrl.crearTareaNLP);
 
 /**
  * @openapi
@@ -69,7 +86,7 @@ router.post('/crear-tarea',  ctrl.crearTareaNLP);
  *       500:
  *         description: Error del servidor
  */
-router.post('/crear-habito', ctrl.crearHabitoNLP);
+router.post('/crear-habito', nlpLimiter, ctrl.crearHabitoNLP);
 
 /**
  * @openapi
@@ -97,7 +114,7 @@ router.post('/crear-habito', ctrl.crearHabitoNLP);
  *       500:
  *         description: Error del servidor
  */
-router.post('/crear-evento', ctrl.crearEventoNLP);
+router.post('/crear-evento', nlpLimiter, ctrl.crearEventoNLP);
 
 // ─── FASE 1: CHAT & PRIORITIES ───────────────────────
 
@@ -130,7 +147,7 @@ router.post('/crear-evento', ctrl.crearEventoNLP);
  *       500:
  *         description: Error del servidor
  */
-router.post('/chat',            ctrl.chat);
+router.post('/chat',            chatLimiter, ctrl.chat);
 
 /**
  * @openapi
@@ -209,7 +226,7 @@ router.get('/predecir-duracion', ctrl.predecirDuracion);
  *       500:
  *         description: Error del servidor
  */
-router.post('/optimizar-agenda', ctrl.optimizarAgenda);
+router.post('/optimizar-agenda', nlpLimiter, ctrl.optimizarAgenda);
 
 // ─── FASE 3: RECOMMENDATIONS ─────────────────────────
 
@@ -255,7 +272,7 @@ router.get('/recomendar-habitos',  ctrl.recomendarHabitos);
  *       500:
  *         description: Error del servidor
  */
-router.post('/sugerir-rutina',     ctrl.sugerirRutina);
+router.post('/sugerir-rutina',     nlpLimiter, ctrl.sugerirRutina);
 
 /**
  * @openapi

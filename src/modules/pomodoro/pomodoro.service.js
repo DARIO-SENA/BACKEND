@@ -114,6 +114,7 @@ export const listarSessions = async (usuarioId, filtros = {}) => {
   if (hasta)     { condiciones.push(`inicio_en <= $${i++}`);        valores.push(hasta); }
   if (tarea_id)  { condiciones.push(`tarea_id = $${i++}`);          valores.push(tarea_id); }
 
+  const countValores = [...valores];
   valores.push(limite);
   const { rows } = await pool.query(
     `SELECT ps.*, t.titulo AS tarea_titulo
@@ -124,7 +125,13 @@ export const listarSessions = async (usuarioId, filtros = {}) => {
      LIMIT $${i}`,
     valores
   );
-  return rows;
+
+  const { rows: countRows } = await pool.query(
+    `SELECT COUNT(*) AS total FROM pomodoro_sessions WHERE ${condiciones.join(' AND ')}`,
+    countValores
+  );
+
+  return { data: rows, total: parseInt(countRows[0].total) };
 };
 
 export const obtenerEstadisticas = async (usuarioId) => {
@@ -161,9 +168,14 @@ export const obtenerEstadisticas = async (usuarioId) => {
 
   let rachaActual = 0;
   if (racha.length > 0) {
-    const hoyDate = new Date().toISOString().split('T')[0];
-    if (racha[0].fecha.toISOString().split('T')[0] === hoyDate ||
-        racha[0].fecha.toISOString().split('T')[0] === new Date(Date.now() - 86400000).toISOString().split('T')[0]) {
+    const TZ = 'America/Bogota';
+    const hoyDate = new Date().toLocaleDateString('en-CA', { timeZone: TZ });
+    const ayerDate = new Date(Date.now() - 86400000).toLocaleDateString('en-CA', { timeZone: TZ });
+    const primera = racha[0].fecha;
+    const primeraLocal = primera instanceof Date
+      ? primera.toLocaleDateString('en-CA', { timeZone: TZ })
+      : String(primera).split('T')[0];
+    if (primeraLocal === hoyDate || primeraLocal === ayerDate) {
       rachaActual = 1;
       for (let i = 1; i < racha.length; i++) {
         const diff = (new Date(racha[i - 1].fecha) - new Date(racha[i].fecha)) / 86400000;

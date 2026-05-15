@@ -17,7 +17,11 @@ export const encontrarTodos = async (usuarioId, filtros = {}) => {
      ORDER BY fecha_hora ASC`,
     valores
   );
-  return rows;
+  const { rows: [{ count }] } = await pool.query(
+    `SELECT COUNT(*) FROM recordatorios WHERE ${condiciones.join(' AND ')}`,
+    valores
+  );
+  return { data: rows, total: parseInt(count) };
 };
 
 export const encontrarPorId = async (id, usuarioId) => {

@@ -43,6 +43,9 @@ Responde SOLO con JSON:
 
 export const crearMeta = async (usuarioId, datos) => {
   const { titulo, descripcion, categoria, fecha_inicio, fecha_fin, es_borrador } = datos;
+  if (!titulo || typeof titulo !== 'string' || titulo.trim().length === 0 || titulo.length > 200) {
+    throw Object.assign(new Error('Título requerido (máx 200 caracteres)'), { status: 400 });
+  }
   const { rows } = await pool.query(
     `INSERT INTO metas (usuario_id, titulo, descripcion, categoria, fecha_inicio, fecha_fin, es_borrador)
      VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
@@ -148,6 +151,9 @@ export const crearKeyResult = async (metaId, usuarioId, datos) => {
   if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
 
   const { titulo, descripcion, orden } = datos;
+  if (!titulo || typeof titulo !== 'string' || titulo.trim().length === 0 || titulo.length > 200) {
+    throw Object.assign(new Error('Título del KR requerido (máx 200 caracteres)'), { status: 400 });
+  }
   const { rows } = await pool.query(
     `INSERT INTO key_results (meta_id, titulo, descripcion, orden)
      VALUES ($1,$2,$3,$4) RETURNING *`,

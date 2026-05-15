@@ -56,8 +56,9 @@ export const crearProyecto = async (req, res) => {
 
 export const listarProyectos = async (req, res) => {
   try {
-    const data = await socialService.listarProyectos(req.usuario.id);
-    res.json({ ok: true, data });
+    const { limite, pagina } = req.query;
+    const result = await socialService.listarProyectos(req.usuario.id, limite, pagina);
+    res.json({ ok: true, data: result.data, total: result.total });
   } catch (err) { manejarError(res, err); }
 };
 

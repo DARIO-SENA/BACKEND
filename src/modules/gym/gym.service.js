@@ -7,9 +7,22 @@ import { EVENTS } from '../../eventBus/events.js';
 // RUTINAS
 // ─────────────────────────────────────────
 
+const MAX_NOMBRE = 200;
+const MAX_DESCRIPCION = 1000;
+const DIFICULTADES = ['principiante', 'intermedio', 'avanzado'];
+
 // Crear una rutina nueva
 export const crearRutina = async (usuarioId, body) => {
   const { nombre, descripcion, dificultad } = body;
+  if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0 || nombre.length > MAX_NOMBRE) {
+    throw Object.assign(new Error(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`), { status: 400 });
+  }
+  if (descripcion && descripcion.length > MAX_DESCRIPCION) {
+    throw Object.assign(new Error(`Descripción no puede exceder ${MAX_DESCRIPCION} caracteres`), { status: 400 });
+  }
+  if (dificultad && !DIFICULTADES.includes(dificultad)) {
+    throw Object.assign(new Error(`Dificultad debe ser: ${DIFICULTADES.join(', ')}`), { status: 400 });
+  }
   const result = await pool.query(
     `INSERT INTO rutinas (usuario_id, nombre, descripcion, dificultad)
      VALUES ($1, $2, $3, $4)
@@ -20,14 +33,20 @@ export const crearRutina = async (usuarioId, body) => {
 };
 
 // Ver todas las rutinas del usuario
-export const listarRutinas = async (usuarioId) => {
+export const listarRutinas = async (usuarioId, limite = 50, pagina = 1) => {
+  const offset = (pagina - 1) * limite;
   const result = await pool.query(
     `SELECT * FROM rutinas
      WHERE usuario_id = $1
-     ORDER BY creado_en DESC`,
+     ORDER BY creado_en DESC
+     LIMIT $2 OFFSET $3`,
+    [usuarioId, limite, offset]
+  );
+  const { rows: [{ count }] } = await pool.query(
+    'SELECT COUNT(*) FROM rutinas WHERE usuario_id = $1',
     [usuarioId]
   );
-  return result.rows;
+  return { data: result.rows, total: parseInt(count) };
 };
 
 // Ver una rutina específica
@@ -97,12 +116,13 @@ export const crearEjercicio = async (usuarioId, body) => {
 };
 
 // Ver ejercicios de una rutina
-export const listarEjercicios = async (rutinaId) => {
+export const listarEjercicios = async (rutinaId, usuarioId) => {
   const result = await pool.query(
-    `SELECT * FROM ejercicios
-     WHERE rutina_id = $1
-     ORDER BY creado_en ASC`,
-    [rutinaId]
+    `SELECT e.* FROM ejercicios e
+     JOIN rutinas r ON e.rutina_id = r.id
+     WHERE e.rutina_id = $1 AND r.usuario_id = $2
+     ORDER BY e.creado_en ASC`,
+    [rutinaId, usuarioId]
   );
   return result.rows;
 };
@@ -282,8 +302,9 @@ export const sugerirPeso = async (usuarioId, ejercicioId) => {
   const promedioReps = rows.reduce((a, b) => a + b.repeticiones, 0) / rows.length;
 
   // Si el promedio de reps es mayor a 12, sugiere aumentar el peso 5%
+  // Redondeo a 0.5 kg (incremento típico en pesas)
   const sugerencia = promedioReps > 12
-    ? Math.round(pesoMaximo * 1.05 * 2) / 2  // redondear a 0.5
+    ? Math.round(pesoMaximo * 1.05 * 2) / 2
     : pesoMaximo;
 
   return {

@@ -24,7 +24,7 @@ const procesarRecordatorio = async (job) => {
     }
 
     // ─────────────────────────────────────────
-    // 2. 🔥 IDPOTENCIA: evitar duplicados
+    // 2. 🔥 IDEMPOTENCIA: evitar duplicados
     // ─────────────────────────────────────────
     const check = await pool.query(
       `SELECT 1 FROM notificaciones 
@@ -62,14 +62,19 @@ const procesarRecordatorio = async (job) => {
 };
 
 // ─── WORKER ────────────────────────────────
-const worker = new Worker(
-  'recordatorios',
-  procesarRecordatorio,
-  {
-    connection: redisConfig,
-    concurrency: 5,
-  }
-);
+let worker;
+try {
+  worker = new Worker(
+    'recordatorios',
+    procesarRecordatorio,
+    {
+      connection: redisConfig,
+      concurrency: 5,
+    }
+  );
+} catch (err) {
+  console.error('💥 Error creando worker recordatorios:', err.message);
+}
 
 // ─── EVENTOS IMPORTANTES ───────────────────
 worker.on('ready', () => {

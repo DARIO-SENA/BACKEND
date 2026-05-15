@@ -1,6 +1,7 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { createReactAgent } from '@langchain/langgraph/prebuilt';
 import { tool } from 'langchain/tools';
+import { LLM_MODEL } from '../../config/openai.js';
 import * as tareasService from '../tareas/tareas.service.js';
 import * as analyticsService from '../analytics/analytics.service.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
@@ -94,7 +95,7 @@ const crearTools = (usuarioId) => [
 
 export const crearAgente = async (usuarioId, mensaje, historial = []) => {
   const model = new ChatOpenAI({
-    model: 'gpt-4o-mini',
+    model: LLM_MODEL,
     temperature: 0.3,
     openAIApiKey: process.env.OPENAI_API_KEY,
   });

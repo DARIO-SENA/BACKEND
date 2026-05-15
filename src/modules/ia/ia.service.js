@@ -7,14 +7,17 @@ import * as analyticsService from '../analytics/analytics.service.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 import * as gymService from '../gym/gym.service.js';
 import * as agendaService from '../agenda/agenda.service.js';
+import { LLM_MODEL } from '../../config/openai.js';
 import pool from '../../config/db.js';
-
-const LLM_MODEL = 'gpt-4o-mini';
 
 let _openai = null;
 const getOpenAI = () => {
   if (!_openai) {
-    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw Object.assign(new Error('OPENAI_API_KEY no configurada'), { status: 503 });
+    }
+    _openai = new OpenAI({ apiKey });
   }
   return _openai;
 };
@@ -433,7 +436,7 @@ export const analizarPatrones = async (usuarioId) => {
   await pool.query(
     `INSERT INTO analisis_ia (usuario_id, tipo, entrada, resultado, modelo)
      VALUES ($1, 'patrones', $2, $3, $4)`,
-    [usuarioId, JSON.stringify(datos), JSON.stringify(resultado), 'gpt-4o-mini']
+    [usuarioId, JSON.stringify(datos), JSON.stringify(resultado), LLM_MODEL]
   );
 
   await guardarCache(cacheKey, resultado, 86400);

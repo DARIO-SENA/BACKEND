@@ -17,12 +17,17 @@ export const crearHabito = async (usuarioId, datos) => {
   return rows[0];
 };
 
-export const listarHabitos = async (usuarioId) => {
+export const listarHabitos = async (usuarioId, limite = 50, pagina = 1) => {
+  const offset = (pagina - 1) * limite;
   const { rows } = await pool.query(
-    `SELECT * FROM habitos WHERE usuario_id = $1 ORDER BY creado_en DESC`,
+    `SELECT * FROM habitos WHERE usuario_id = $1 ORDER BY creado_en DESC LIMIT $2 OFFSET $3`,
+    [usuarioId, limite, offset]
+  );
+  const { rows: [{ count }] } = await pool.query(
+    'SELECT COUNT(*) FROM habitos WHERE usuario_id = $1',
     [usuarioId]
   );
-  return rows;
+  return { data: rows, total: parseInt(count) };
 };
 
 export const actualizarHabito = async (id, usuarioId, datos) => {

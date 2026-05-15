@@ -20,30 +20,38 @@ export const programarRevisionSemanal = async () => {
 
   if (target <= ahora) target.setDate(target.getDate() + 7);
 
+  const baseDelay = target.getTime() - ahora.getTime();
+  const ventanaMinutos = 60;
+
   for (const usuario of usuarios) {
+    const stagger = Math.floor(Math.random() * ventanaMinutos * 60 * 1000);
     await colaRevision.add(
       'revision-semanal',
       { usuarioId: usuario.id },
-      { delay: target.getTime() - ahora.getTime(), jobId: `rev-${usuario.id}-${target.toISOString().split('T')[0]}` }
+      { delay: baseDelay + stagger, jobId: `rev-${usuario.id}-${target.toISOString().split('T')[0]}` }
     );
   }
 };
 
-const worker = new Worker('revision-semanal', async (job) => {
-  const { usuarioId } = job.data;
-  try {
-    const resumen = await generarResumen(usuarioId, 'semanal');
+try {
+  const worker = new Worker('revision-semanal', async (job) => {
+    const { usuarioId } = job.data;
+    try {
+      const resumen = await generarResumen(usuarioId, 'semanal');
 
-    await pool.query(
-      `INSERT INTO notificaciones (usuario_id, titulo, mensaje, tipo)
-       VALUES ($1, $2, $3, 'ia')`,
-      [usuarioId, 'Tu resumen semanal DARIO esta listo', resumen.resumen]
-    );
-    console.log(`Revision semanal enviada a usuario ${usuarioId}`);
-  } catch (err) {
-    console.error(`Error revision semanal usuario ${usuarioId}:`, err.message);
-  }
-}, { connection: redisConfig });
+      await pool.query(
+        `INSERT INTO notificaciones (usuario_id, titulo, mensaje, tipo)
+         VALUES ($1, $2, $3, 'ia')`,
+        [usuarioId, 'Tu resumen semanal DARIO esta listo', resumen.resumen]
+      );
+      console.log(`Revision semanal enviada a usuario ${usuarioId}`);
+    } catch (err) {
+      console.error(`Error revision semanal usuario ${usuarioId}:`, err.message);
+    }
+  }, { connection: redisConfig });
 
-worker.on('completed', job => console.log(`Revision semanal completada: ${job.id}`));
-worker.on('failed', (job, err) => console.error(`Revision semanal fallo: ${err.message}`));
+  worker.on('completed', job => console.log(`Revision semanal completada: ${job.id}`));
+  worker.on('failed', (job, err) => console.error(`Revision semanal fallo: ${err.message}`));
+} catch (err) {
+  console.error('💥 Error creando worker revision semanal:', err.message);
+}

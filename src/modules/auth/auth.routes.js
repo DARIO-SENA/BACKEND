@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { registrar, iniciarSesion } from './auth.controller.js';
+import * as ctrl from './auth.controller.js';
 
 const router = Router();
 
-router.post('/register', registrar);
-router.post('/login',    iniciarSesion);
+router.post('/register', ctrl.registrar);
+router.post('/login',    ctrl.iniciarSesion);
 
 export { router as authRouter };

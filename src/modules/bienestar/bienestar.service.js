@@ -1,6 +1,30 @@
 import pool from "../../config/db.js";
 
+const MAX_NOTAS = 500;
+const MAX_TITULO = 200;
+const MAX_CONTENIDO = 10000;
+const ESTADOS_ANIMO = ['muy_bien', 'bien', 'neutral', 'mal', 'muy_mal'];
+const RANGO_ENERGIA = [1, 10];
+const RANGO_SUENO = [0, 24];
+
+const validarCheckin = (datos) => {
+  const { estado_animo, energia, sueno_horas, notas } = datos;
+  if (estado_animo && !ESTADOS_ANIMO.includes(estado_animo)) {
+    throw Object.assign(new Error(`Estado de ánimo inválido. Debe ser: ${ESTADOS_ANIMO.join(', ')}`), { status: 400 });
+  }
+  if (energia !== undefined && (energia < RANGO_ENERGIA[0] || energia > RANGO_ENERGIA[1])) {
+    throw Object.assign(new Error(`Energía debe estar entre ${RANGO_ENERGIA[0]} y ${RANGO_ENERGIA[1]}`), { status: 400 });
+  }
+  if (sueno_horas !== undefined && (sueno_horas < RANGO_SUENO[0] || sueno_horas > RANGO_SUENO[1])) {
+    throw Object.assign(new Error(`Horas de sueño deben estar entre ${RANGO_SUENO[0]} y ${RANGO_SUENO[1]}`), { status: 400 });
+  }
+  if (notas && notas.length > MAX_NOTAS) {
+    throw Object.assign(new Error(`Notas no pueden exceder ${MAX_NOTAS} caracteres`), { status: 400 });
+  }
+};
+
 export const crearCheckin = async (usuarioId, datos) => {
+  validarCheckin(datos);
   const { estado_animo, energia, sueno_horas, notas } = datos;
   const { rows } = await pool.query(
     `INSERT INTO checkins_emocionales (usuario_id, estado_animo, energia, sueno_horas, notas)
@@ -30,10 +54,15 @@ export const obtenerHistorial = async (usuarioId, limite = 30, offset = 0) => {
     `SELECT * FROM checkins_emocionales WHERE usuario_id = $1 ORDER BY fecha DESC LIMIT $2 OFFSET $3`,
     [usuarioId, limite, offset]
   );
-  return rows;
+  const { rows: [{ count }] } = await pool.query(
+    'SELECT COUNT(*) FROM checkins_emocionales WHERE usuario_id = $1',
+    [usuarioId]
+  );
+  return { data: rows, total: parseInt(count) };
 };
 
 export const actualizarCheckinHoy = async (usuarioId, datos) => {
+  validarCheckin(datos);
   const { estado_animo, energia, sueno_horas, notas } = datos;
   const { rows } = await pool.query(
     `UPDATE checkins_emocionales
@@ -68,6 +97,12 @@ export const obtenerEstadisticas = async (usuarioId) => {
 
 export const crearDiario = async (usuarioId, datos) => {
   const { titulo, contenido, etiquetas, es_publico } = datos;
+  if (titulo && titulo.length > MAX_TITULO) {
+    throw Object.assign(new Error(`Título no puede exceder ${MAX_TITULO} caracteres`), { status: 400 });
+  }
+  if (contenido && contenido.length > MAX_CONTENIDO) {
+    throw Object.assign(new Error(`Contenido no puede exceder ${MAX_CONTENIDO} caracteres`), { status: 400 });
+  }
   const { rows } = await pool.query(
     `INSERT INTO diario_personal (usuario_id, titulo, contenido, etiquetas, es_publico)
      VALUES ($1, $2, $3, $4, $5) RETURNING *`,
@@ -104,6 +139,12 @@ export const obtenerDiario = async (id, usuarioId) => {
 
 export const actualizarDiario = async (id, usuarioId, datos) => {
   const { titulo, contenido, etiquetas, es_publico } = datos;
+  if (titulo && titulo.length > MAX_TITULO) {
+    throw Object.assign(new Error(`Título no puede exceder ${MAX_TITULO} caracteres`), { status: 400 });
+  }
+  if (contenido && contenido.length > MAX_CONTENIDO) {
+    throw Object.assign(new Error(`Contenido no puede exceder ${MAX_CONTENIDO} caracteres`), { status: 400 });
+  }
   const { rows } = await pool.query(
     `UPDATE diario_personal
      SET titulo = COALESCE($2, titulo),

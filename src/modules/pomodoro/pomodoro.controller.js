@@ -40,8 +40,8 @@ export const interrumpirSession = async (req, res) => {
 
 export const listarSessions = async (req, res) => {
   try {
-    const data = await pomodoroService.listarSessions(req.usuario.id, req.query);
-    res.json({ ok: true, data, total: data.length });
+    const result = await pomodoroService.listarSessions(req.usuario.id, req.query);
+    res.json({ ok: true, data: result.data, total: result.total });
   } catch (err) { manejarError(res, err); }
 };
 

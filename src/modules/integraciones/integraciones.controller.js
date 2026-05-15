@@ -1,9 +1,23 @@
+import crypto from 'crypto';
 import { manejarError } from '../../utils/error.handler.js';
 import * as integracionesService from './integraciones.service.js';
 import { google } from 'googleapis';
 import twilio from 'twilio';
+import PDFDocument from 'pdfkit';
+
+const oauthStateStore = new Map();
+const STATE_TTL = 5 * 60 * 1000;
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, ts] of oauthStateStore) {
+    if (now - ts > STATE_TTL) oauthStateStore.delete(key);
+  }
+}, 60 * 1000).unref();
 
 export const iniciarGoogleAuth = (req, res) => {
+  const state = crypto.randomBytes(32).toString('hex');
+  oauthStateStore.set(state, Date.now());
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
@@ -12,6 +26,7 @@ export const iniciarGoogleAuth = (req, res) => {
   const url = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar'],
+    state,
     prompt: 'consent',
   });
   res.redirect(url);
@@ -19,7 +34,11 @@ export const iniciarGoogleAuth = (req, res) => {
 
 export const callbackGoogle = async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, state } = req.query;
+    if (!state || !oauthStateStore.has(state)) {
+      return res.status(401).json({ ok: false, error: 'State inválido. Posible ataque CSRF.' });
+    }
+    oauthStateStore.delete(state);
     const oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -115,7 +134,6 @@ export const enviarWhatsApp = async (req, res) => {
 
 export const exportarPDF = async (req, res) => {
   try {
-    const PDFDocument = (await import('pdfkit')).default;
     const doc = new PDFDocument();
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=reporte-dario.pdf');

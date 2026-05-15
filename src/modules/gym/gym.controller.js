@@ -10,8 +10,9 @@ export const crearRutina = async (req, res) => {
 
 export const listarRutinas = async (req, res) => {
   try {
-    const data = await gymService.listarRutinas(req.usuario.id);
-    res.json({ ok: true, data });
+    const { limite, pagina } = req.query;
+    const result = await gymService.listarRutinas(req.usuario.id, limite, pagina);
+    res.json({ ok: true, data: result.data, total: result.total });
   } catch (err) { manejarError(res, err); }
 };
 
@@ -48,7 +49,7 @@ export const crearEjercicio = async (req, res) => {
 
 export const listarEjercicios = async (req, res) => {
   try {
-    const data = await gymService.listarEjercicios(req.params.rutinaId);
+    const data = await gymService.listarEjercicios(req.params.rutinaId, req.usuario.id);
     res.json({ ok: true, data });
   } catch (err) { manejarError(res, err); }
 };

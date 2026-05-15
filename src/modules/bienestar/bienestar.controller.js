@@ -20,8 +20,8 @@ export const getHistorial = async (req, res) => {
   try {
     const limite = parseInt(req.query.limite) || 30;
     const offset = parseInt(req.query.offset) || 0;
-    const data = await bienestarService.obtenerHistorial(req.usuario.id, limite, offset);
-    res.json({ ok: true, data, total: data.length });
+    const result = await bienestarService.obtenerHistorial(req.usuario.id, limite, offset);
+    res.json({ ok: true, data: result.data, total: result.total, limite, offset });
   } catch (err) { manejarError(res, err); }
 };
 
@@ -52,7 +52,7 @@ export const listDiario = async (req, res) => {
     const pagina = parseInt(req.query.pagina) || 1;
     const limite = parseInt(req.query.limite) || 10;
     const result = await bienestarService.listarDiario(req.usuario.id, pagina, limite);
-    res.json({ ok: true, ...result });
+    res.json({ ok: true, data: result.data, total: result.total, pagina, totalPaginas: result.totalPaginas });
   } catch (err) { manejarError(res, err); }
 };
 
@@ -111,7 +111,7 @@ export const listEjercicios = async (req, res) => {
     { id: 5, nombre: "Ejercicio de ojos (20-20-20)", duracion: 1 },
     { id: 6, nombre: "Flexión de piernas", duracion: 3 },
   ];
-  res.json({ ok: true, data: ejercicios, total: ejercicios.length });
+  res.json({ ok: true, data: ejercicios });
 };
 
 export const completarPausa = async (req, res) => {

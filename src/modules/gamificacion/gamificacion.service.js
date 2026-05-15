@@ -13,25 +13,19 @@ const registrarEventoSiNoExiste = async (
   referenciaId,
   puntos
 ) => {
-  const existe = await cliente.query(
-    `SELECT 1 FROM eventos_gamificacion
-     WHERE usuario_id = $1
-       AND tipo = $2
-       AND referencia_tipo = $3
-       AND referencia_id = $4`,
-    [usuarioId, tipo, referenciaTipo, referenciaId]
-  );
-
-  if (existe.rows.length > 0) {
-    return false; // ya fue procesado
-  }
-
-  await cliente.query(
+  const result = await cliente.query(
     `INSERT INTO eventos_gamificacion
      (usuario_id, tipo, referencia_tipo, referencia_id, puntos)
-     VALUES ($1,$2,$3,$4,$5)`,
+     VALUES ($1,$2,$3,$4,$5)
+     ON CONFLICT (usuario_id, tipo, referencia_tipo, referencia_id)
+     DO NOTHING
+     RETURNING id`,
     [usuarioId, tipo, referenciaTipo, referenciaId, puntos]
   );
+
+  if (result.rows.length === 0) {
+    return false; // ya fue procesado (duplicado ignorado)
+  }
 
   return true;
 };

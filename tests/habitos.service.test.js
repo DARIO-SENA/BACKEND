@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 
 vi.mock('../src/config/db.js', () => ({
   default: { query: vi.fn() },
@@ -8,9 +8,17 @@ vi.mock('../src/eventBus/index.js', () => ({
   default: { emit: vi.fn() },
 }));
 
-const mockQuery = (await import('../src/config/db.js')).default.query;
+let mockQuery;
+let crearHabito, listarHabitos, eliminarHabito;
 
-const { crearHabito, listarHabitos, eliminarHabito } = await import('../src/modules/habitos/habitos.service.js');
+beforeAll(async () => {
+  const db = await import('../src/config/db.js');
+  mockQuery = db.default.query;
+  const mod = await import('../src/modules/habitos/habitos.service.js');
+  crearHabito = mod.crearHabito;
+  listarHabitos = mod.listarHabitos;
+  eliminarHabito = mod.eliminarHabito;
+});
 
 describe('habitos.service', () => {
   beforeEach(() => {
@@ -39,10 +47,14 @@ describe('habitos.service', () => {
       mockQuery.mockResolvedValueOnce({
         rows: [{ id: 1, titulo: 'Leer' }, { id: 2, titulo: 'Correr' }],
       });
+      mockQuery.mockResolvedValueOnce({
+        rows: [{ count: '2' }],
+      });
 
       const result = await listarHabitos(1);
-      expect(result).toHaveLength(2);
-      expect(result[0].titulo).toBe('Leer');
+      expect(result.data).toHaveLength(2);
+      expect(result.data[0].titulo).toBe('Leer');
+      expect(result.total).toBe(2);
     });
   });
 

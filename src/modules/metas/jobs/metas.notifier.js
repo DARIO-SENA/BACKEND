@@ -31,17 +31,22 @@ const procesarNotificacionMeta = async (job) => {
   }
 };
 
-const worker = new Worker(
-  'metas-notificaciones',
-  procesarNotificacionMeta,
-  {
-    connection: redisConfig,
-    concurrency: 5,
-  }
-);
+let worker;
+try {
+  worker = new Worker(
+    'metas-notificaciones',
+    procesarNotificacionMeta,
+    {
+      connection: redisConfig,
+      concurrency: 5,
+    }
+  );
 
-worker.on('ready', () => console.log('🚀 Worker metas-notificaciones listo'));
-worker.on('completed', (job) => console.log('🎯 Meta job completado:', job.id));
-worker.on('failed', (job, err) => console.error('❌ Meta job falló:', job?.id, err.message));
+  worker.on('ready', () => console.log('🚀 Worker metas-notificaciones listo'));
+  worker.on('completed', (job) => console.log('🎯 Meta job completado:', job.id));
+  worker.on('failed', (job, err) => console.error('❌ Meta job falló:', job?.id, err.message));
+} catch (err) {
+  console.error('💥 Error creando worker metas-notificaciones:', err.message);
+}
 
 export default worker;

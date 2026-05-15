@@ -66,7 +66,7 @@ integracionesRouter.prefix = '/api/integraciones';
 const iaLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 30,
-  message: { error: 'Demasiadas solicitudes a IA. Intenta de nuevo en 1 minuto' },
+  message: { ok: false, error: 'Demasiadas solicitudes a IA. Intenta de nuevo en 1 minuto' },
   standardHeaders: true,
   legacyHeaders: false,
 });

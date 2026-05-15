@@ -2331,6 +2331,15 @@ CREATE INDEX idx_perfil_usuario ON public.perfil_gamificacion USING btree (usuar
 
 
 --
+-- Name: idx_perfil_puntos; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX idx_perfil_puntos ON public.perfil_gamificacion USING btree (puntos_totales DESC);
+
+
+--
+-- Name: idx_recordatorios_estado; Type: INDEX; Schema: public; Owner: --
+--
 -- Name: idx_recordatorios_estado; Type: INDEX; Schema: public; Owner: -
 --
 

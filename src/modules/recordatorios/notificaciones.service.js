@@ -1,11 +1,11 @@
-// src/services/notificaciones.service.js
+// src/modules/recordatorios/notificaciones.service.js
 
 import * as notificacionModel from './notificacion.model.js';
 
 export const listar = async (usuarioId, soloNoLeidas = false) => {
-  const notificaciones = await notificacionModel.encontrarPorUsuario(usuarioId, soloNoLeidas);
+  const result = await notificacionModel.encontrarPorUsuario(usuarioId, soloNoLeidas);
   const noLeidas = await notificacionModel.contarNoLeidas(usuarioId);
-  return { notificaciones, noLeidas };
+  return { notificaciones: result.data, total: result.total, noLeidas };
 };
 
 export const marcarLeida = async (id, usuarioId) => {

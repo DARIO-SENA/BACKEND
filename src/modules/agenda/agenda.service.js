@@ -61,7 +61,8 @@ export const encontrarSlotLibre = (bloquesOcupados, duracionMin, fechaBase) => {
 
 export const programarTareasAutomaticamente = async (usuarioId, tareas) => {
   const hoy    = new Date();
-  const en7dias = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const en7dias = new Date(hoy);
+  en7dias.setDate(en7dias.getDate() + 7);
 
   const bloquesOcupados = await obtenerBloquesOcupados(usuarioId, hoy, en7dias);
   const resultado = [];
@@ -166,7 +167,8 @@ export const eliminarBloque = async (id, usuarioId) => {
 // ─── VISTA SEMANAL MEJORADA ───────────────────────────────
 export const obtenerVistaSemanal = async (usuarioId, fechaInicio) => {
   const inicio = new Date(fechaInicio);
-  const fin = new Date(inicio.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const fin = new Date(inicio);
+  fin.setDate(fin.getDate() + 7);
 
   const { rows } = await pool.query(
     `SELECT 

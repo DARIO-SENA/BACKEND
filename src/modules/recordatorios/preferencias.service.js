@@ -1,4 +1,4 @@
-// src/services/preferencias.service.js
+// src/modules/recordatorios/preferencias.service.js
 
 import * as preferenciaModel from './preferencia.model.js';
 

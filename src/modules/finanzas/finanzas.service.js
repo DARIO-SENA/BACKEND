@@ -11,8 +11,17 @@ export const listarCategorias = async (usuarioId, tipo) => {
   return rows;
 };
 
+const MAX_NOMBRE = 100;
+const MAX_DESCRIPCION = 500;
+
 export const crearCategoria = async (usuarioId, data) => {
   const { nombre, tipo, icono, color } = data;
+  if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0 || nombre.length > MAX_NOMBRE) {
+    throw Object.assign(new Error(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`), { status: 400 });
+  }
+  if (!tipo || !['ingreso', 'gasto'].includes(tipo)) {
+    throw Object.assign(new Error('Tipo debe ser ingreso o gasto'), { status: 400 });
+  }
   const { rows } = await pool.query(
     `INSERT INTO finanzas_categorias (usuario_id, nombre, tipo, icono, color)
      VALUES ($1, $2, $3, $4, $5) RETURNING *`,
@@ -82,6 +91,9 @@ export const obtenerCuenta = async (id, usuarioId) => {
 
 export const crearCuenta = async (usuarioId, data) => {
   const { nombre, tipo, saldo_inicial, moneda } = data;
+  if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0 || nombre.length > MAX_NOMBRE) {
+    throw Object.assign(new Error(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`), { status: 400 });
+  }
   const { rows } = await pool.query(
     `INSERT INTO finanzas_cuentas (usuario_id, nombre, tipo, saldo_inicial, moneda)
      VALUES ($1, $2, $3, $4, $5) RETURNING *`,
@@ -163,6 +175,9 @@ export const crearTransaccion = async (usuarioId, data) => {
   if (!monto || monto <= 0) {
     const err = new Error('El monto debe ser mayor a 0');
     err.status = 400; throw err;
+  }
+  if (descripcion && descripcion.length > MAX_DESCRIPCION) {
+    throw Object.assign(new Error(`Descripción no puede exceder ${MAX_DESCRIPCION} caracteres`), { status: 400 });
   }
 
   const { rows } = await pool.query(

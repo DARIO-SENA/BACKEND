@@ -16,33 +16,41 @@ export const programarCoachDiario = async () => {
 
   if (target <= ahora) target.setDate(target.getDate() + 1);
 
+  const baseDelay = target.getTime() - ahora.getTime();
+  const ventanaMinutos = 30;
+
   for (const usuario of usuarios) {
+    const stagger = Math.floor(Math.random() * ventanaMinutos * 60 * 1000);
     await colaCoach.add(
       'coach-matutino',
       { usuarioId: usuario.id },
-      { delay: target.getTime() - ahora.getTime(), jobId: `coach-${usuario.id}-${target.toISOString().split('T')[0]}` }
+      { delay: baseDelay + stagger, jobId: `coach-${usuario.id}-${target.toISOString().split('T')[0]}` }
     );
   }
 };
 
-const worker = new Worker('coach-diario', async (job) => {
-  const { usuarioId } = job.data;
-  try {
-    const prioridades = await priorizarTareasDelDia(usuarioId);
-    const total = prioridades.length;
-    const primera = prioridades[0]?.titulo || 'ninguna';
+try {
+  const worker = new Worker('coach-diario', async (job) => {
+    const { usuarioId } = job.data;
+    try {
+      const prioridades = await priorizarTareasDelDia(usuarioId);
+      const total = prioridades.length;
+      const primera = prioridades[0]?.titulo || 'ninguna';
 
-    await pool.query(
-      `INSERT INTO notificaciones (usuario_id, titulo, mensaje, tipo)
-       VALUES ($1, $2, $3, 'ia')`,
-      [usuarioId, 'Buenos dias, aqui estan tus prioridades',
-       `Tienes ${total} tareas para hoy. Empieza con: "${primera}"`]
-    );
-    console.log(`Coach diario enviado a usuario ${usuarioId}`);
-  } catch (err) {
-    console.error(`Error coach diario usuario ${usuarioId}:`, err.message);
-  }
-}, { connection: redisConfig });
+      await pool.query(
+        `INSERT INTO notificaciones (usuario_id, titulo, mensaje, tipo)
+         VALUES ($1, $2, $3, 'ia')`,
+        [usuarioId, 'Buenos dias, aqui estan tus prioridades',
+         `Tienes ${total} tareas para hoy. Empieza con: "${primera}"`]
+      );
+      console.log(`Coach diario enviado a usuario ${usuarioId}`);
+    } catch (err) {
+      console.error(`Error coach diario usuario ${usuarioId}:`, err.message);
+    }
+  }, { connection: redisConfig });
 
-worker.on('completed', job => console.log(`Coach diario completado: ${job.id}`));
-worker.on('failed', (job, err) => console.error(`Coach diario fallo: ${err.message}`));
+  worker.on('completed', job => console.log(`Coach diario completado: ${job.id}`));
+  worker.on('failed', (job, err) => console.error(`Coach diario fallo: ${err.message}`));
+} catch (err) {
+  console.error('💥 Error creando worker coach diario:', err.message);
+}

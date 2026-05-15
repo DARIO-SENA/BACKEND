@@ -1,6 +1,5 @@
 import { Queue, QueueEvents } from 'bullmq';
 import { redisConfig } from '../../../config/redis.js';
-console.log("REDIS CONFIG QUEUE:", redisConfig);
 
 // ─── COLA PRINCIPAL ─────────────────────────────
 export const colaRecordatorios = new Queue('recordatorios', {
@@ -32,10 +31,7 @@ export const agregarJob = async (datos, fechaHora) => {
     const now = Date.now();
     const target = new Date(fechaHora).getTime();
 
-    const delay =
-      process.env.NODE_ENV === 'development'
-        ? 0
-        : Math.max(0, target - now);
+    const delay = Math.max(0, target - now);
 
     const job = await colaRecordatorios.add(
       'enviar-recordatorio',

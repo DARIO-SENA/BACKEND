@@ -44,8 +44,18 @@ export const revisarMetasProximasAVencer = async () => {
   }
 };
 
+const programarProximaRevision = () => {
+  setTimeout(async () => {
+    await revisarMetasProximasAVencer();
+    programarProximaRevision();
+  }, 60 * 60 * 1000);
+};
+
 export const iniciarSchedulerMetas = () => {
-  revisarMetasProximasAVencer();
-  setInterval(revisarMetasProximasAVencer, 60 * 60 * 1000);
+  revisarMetasProximasAVencer().then(() => {
+    programarProximaRevision();
+  }).catch(() => {
+    programarProximaRevision();
+  });
   console.log('⏰ Scheduler de metas iniciado (revisión cada hora)');
 };

@@ -77,8 +77,8 @@ export const eliminarCuenta = async (req, res) => {
 
 export const listarTransacciones = async (req, res) => {
   try {
-    const data = await service.listarTransacciones(req.usuario.id, req.query);
-    res.json({ ok: true, ...data });
+    const result = await service.listarTransacciones(req.usuario.id, req.query);
+    res.json({ ok: true, data: result.data, total: result.total, pagina: result.pagina, limite: result.limite });
   } catch (err) { manejarError(res, err); }
 };
 

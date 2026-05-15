@@ -15,7 +15,7 @@ const tablasPorOrden = [
   "habitos", "registros_habitos",
   "preferencias_notificacion", "recordatorios",
   "pomodoro_sessions", "pomodoro_settings",
-  "perfil_gamificacion", "usuario_gamificacion",
+  "perfil_gamificacion",
   "progreso",
   "usuarios",
 ];

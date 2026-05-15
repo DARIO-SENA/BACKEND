@@ -1,4 +1,4 @@
-// src/routes/recordatorios.routes.js
+// src/modules/recordatorios/recordatorios.routes.js
 
 import { Router } from 'express';
 import { verificarToken } from '../../middlewares/auth.middleware.js';

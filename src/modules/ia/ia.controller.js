@@ -55,7 +55,8 @@ export const crearEventoNLP = async (req, res) => {
 const getRedis = () => {
   try {
     return getRedisClient();
-  } catch {
+  } catch (err) {
+    console.error('[ia.controller] Error obteniendo Redis:', err.message);
     return null;
   }
 };
@@ -75,7 +76,8 @@ export const chat = async (req, res) => {
       try {
         const historialRaw = await redis.lrange(sessionKey, -10, -1);
         historial = historialRaw.map(m => JSON.parse(m));
-      } catch {
+      } catch (err) {
+        console.error('[ia.controller] Error leyendo historial Redis:', err.message);
       }
     }
 
@@ -86,7 +88,8 @@ export const chat = async (req, res) => {
         await redis.rpush(sessionKey, JSON.stringify({ role: 'human', content: mensaje }));
         await redis.rpush(sessionKey, JSON.stringify({ role: 'assistant', content: result.respuesta }));
         await redis.expire(sessionKey, 3600);
-      } catch {
+      } catch (err) {
+        console.error('[ia.controller] Error guardando historial Redis:', err.message);
       }
     }
 

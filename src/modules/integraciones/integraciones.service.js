@@ -1,6 +1,11 @@
 // src/modules/integraciones/integraciones.service.js
+import crypto from 'crypto';
 import pool from '../../config/db.js';
 import jwt from 'jsonwebtoken';
+
+const generarPasswordAleatorio = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
 
 // ─── GOOGLE OAUTH ─────────────────────────────────────────
 
@@ -18,12 +23,13 @@ export const buscarOCrearUsuarioGoogle = async (perfil) => {
     return existente.rows[0];
   }
 
-  // 2. Si no existe, crearlo
+  // 2. Si no existe, crearlo con password aleatorio (solo Google OAuth)
+  const passwordAleatorio = generarPasswordAleatorio();
   const nuevo = await pool.query(
     `INSERT INTO usuarios (nombre, email, password, google_id)
      VALUES ($1, $2, $3, $4)
      RETURNING *`,
-    [displayName, email, 'GOOGLE_AUTH', googleId]
+    [displayName, email, passwordAleatorio, googleId]
   );
 
   return nuevo.rows[0];

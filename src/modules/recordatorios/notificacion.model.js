@@ -9,7 +9,11 @@ export const encontrarPorUsuario = async (usuarioId, soloNoLeidas = false) => {
      ORDER BY creado_en DESC LIMIT 100`,
     [usuarioId]
   );
-  return rows;
+  const { rows: [{ count }] } = await pool.query(
+    `SELECT COUNT(*) FROM notificaciones WHERE usuario_id = $1 ${filtro}`,
+    [usuarioId]
+  );
+  return { data: rows, total: parseInt(count) };
 };
 
 export const contarNoLeidas = async (usuarioId) => {

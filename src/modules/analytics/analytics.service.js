@@ -118,10 +118,13 @@ export const obtenerRacha = async (usuarioId) => {
     }
   }
 
-  // Verificar si la racha llega hasta hoy
-  const hoy = new Date().toISOString().split('T')[0];
-  const ultimaFecha = rows[0].fecha.toISOString().split('T')[0];
-  rachaActual = ultimaFecha === hoy ? racha : 0;
+  const TZ = 'America/Bogota';
+  const hoy = new Date().toLocaleDateString('en-CA', { timeZone: TZ });
+  const fecha = rows[0].fecha;
+  const ultimaLocal = fecha instanceof Date
+    ? fecha.toLocaleDateString('en-CA', { timeZone: TZ })
+    : String(fecha).split('T')[0];
+  rachaActual = ultimaLocal === hoy ? racha : 0;
 
   return { racha_actual: rachaActual, mejor_racha: mejorRacha };
 };
@@ -131,15 +134,10 @@ export const guardarProgreso = async (usuarioId, tipo, valor) => {
   const hoy = new Date().toISOString().split('T')[0];
 
   const { rows } = await pool.query(
-    `WITH upsert AS (
-       UPDATE progreso
-       SET valor = COALESCE(progreso.valor, 0) + $3
-       WHERE usuario_id = $1 AND tipo = $2 AND fecha = $4
-       RETURNING *
-     )
-     INSERT INTO progreso (usuario_id, tipo, valor, fecha)
-     SELECT $1, $2, $3, $4
-     WHERE NOT EXISTS (SELECT 1 FROM upsert)
+    `INSERT INTO progreso (usuario_id, tipo, valor, fecha)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (usuario_id, tipo, fecha)
+     DO UPDATE SET valor = COALESCE(progreso.valor, 0) + EXCLUDED.valor
      RETURNING *`,
     [usuarioId, tipo, valor, hoy]
   );

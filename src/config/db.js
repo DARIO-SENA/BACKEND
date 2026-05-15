@@ -12,12 +12,8 @@ const pool = new Pool({
   connectionTimeoutMillis: 5000,
 
   ssl: process.env.DB_SSL === "true"
-    ? { rejectUnauthorized: false }
+    ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false" }
     : false,
 });
 
 export default pool;
-
-pool.query("SELECT NOW()")
-  .then(res => console.log("🟢 DB conectada: ", res.rows[0]))
-  .catch(err => console.error("🔴 Error DB:", err));

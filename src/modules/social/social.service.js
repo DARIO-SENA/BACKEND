@@ -105,7 +105,8 @@ export const crearProyecto = async (usuarioId, data) => {
   }
 };
 
-export const listarProyectos = async (usuarioId) => {
+export const listarProyectos = async (usuarioId, limite = 50, pagina = 1) => {
+  const offset = (pagina - 1) * limite;
   const { rows } = await pool.query(
     `SELECT p.*, pm.rol,
        COUNT(pm2.usuario_id) AS total_miembros
@@ -113,10 +114,17 @@ export const listarProyectos = async (usuarioId) => {
      JOIN proyecto_miembros pm ON pm.proyecto_id = p.id AND pm.usuario_id = $1
      JOIN proyecto_miembros pm2 ON pm2.proyecto_id = p.id
      GROUP BY p.id, pm.rol
-     ORDER BY p.creado_en DESC`,
+     ORDER BY p.creado_en DESC
+     LIMIT $2 OFFSET $3`,
+    [usuarioId, limite, offset]
+  );
+  const { rows: [{ count }] } = await pool.query(
+    `SELECT COUNT(DISTINCT p.id) FROM proyectos p
+     JOIN proyecto_miembros pm ON pm.proyecto_id = p.id
+     WHERE pm.usuario_id = $1`,
     [usuarioId]
   );
-  return rows;
+  return { data: rows, total: parseInt(count) };
 };
 
 export const obtenerProyecto = async (proyectoId, usuarioId) => {

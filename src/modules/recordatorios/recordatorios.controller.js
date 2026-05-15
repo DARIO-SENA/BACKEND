@@ -10,8 +10,8 @@ import * as preferenciasService   from './preferencias.service.js';
 export const listarRecordatorios = async (req, res) => {
   try {
     const { tipo, estado } = req.query;
-    const data = await recordatoriosService.listar(req.usuario.id, { tipo, estado });
-    res.json({ ok: true, data, total: data.length });
+    const result = await recordatoriosService.listar(req.usuario.id, { tipo, estado });
+    res.json({ ok: true, data: result.data, total: result.total });
   } catch (err) { manejarError(res, err); }
 };
 
@@ -48,8 +48,8 @@ export const eliminarRecordatorio = async (req, res) => {
 export const listarNotificaciones = async (req, res) => {
   try {
     const soloNoLeidas = req.query.no_leidas === 'true';
-    const { notificaciones, noLeidas } = await notificacionesService.listar(req.usuario.id, soloNoLeidas);
-    res.json({ ok: true, data: notificaciones, no_leidas: noLeidas, total: notificaciones.length });
+    const result = await notificacionesService.listar(req.usuario.id, soloNoLeidas);
+    res.json({ ok: true, data: result.notificaciones, total: result.total, no_leidas: result.noLeidas });
   } catch (err) { manejarError(res, err); }
 };
 

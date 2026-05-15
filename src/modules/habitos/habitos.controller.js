@@ -10,8 +10,9 @@ export const crearHabito = async (req, res) => {
 
 export const listarHabitos = async (req, res) => {
   try {
-    const data = await habitosService.listarHabitos(req.usuario.id);
-    res.json({ ok: true, data });
+    const { limite, pagina } = req.query;
+    const result = await habitosService.listarHabitos(req.usuario.id, limite, pagina);
+    res.json({ ok: true, data: result.data, total: result.total });
   } catch (err) { manejarError(res, err); }
 };
 
