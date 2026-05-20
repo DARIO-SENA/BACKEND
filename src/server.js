@@ -9,6 +9,8 @@ import { colaCoach, programarCoachDiario } from './modules/ia/jobs/coach_diario.
 import { colaRevision, programarRevisionSemanal } from './modules/ia/jobs/revision_semanal.js';
 import './modules/metas/jobs/metas.notifier.js';
 import { iniciarSchedulerMetas } from './modules/metas/jobs/metas.scheduler.js';
+import { enviarResumenesPendientes } from './services/email.service.js';
+import cron from 'node-cron';
 import pool from './config/db.js';
 
 const REQUIRED_ENV = ['DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_NAME', 'JWT_SECRET', 'REDIS_HOST'];
@@ -75,5 +77,11 @@ app.listen(PORT, async () => {
     console.error('⚠️ Error programando revisión semanal:', err.message);
   }
   iniciarSchedulerMetas();
+
+  cron.schedule('0 8 * * 1', async () => {
+    console.log('Ejecutando envio de resumenes semanales...');
+    await enviarResumenesPendientes();
+  });
+
   imprimirRutas(app);
 });
