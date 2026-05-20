@@ -4,6 +4,8 @@ import { verificarToken } from '../../middlewares/auth.middleware.js';
 import {
   iniciarGoogleAuth,
   callbackGoogle,
+  verificarGoogleStatus,
+  desconectarGoogle,
   obtenerEventosCalendar,
   crearEventoCalendar,
   enviarWhatsApp,
@@ -18,6 +20,8 @@ integracionesRouter.get('/google', iniciarGoogleAuth);
 integracionesRouter.get('/google/callback', callbackGoogle);
 
 // ── Google Calendar ───────────────────────────
+integracionesRouter.get('/google/status',    verificarToken, verificarGoogleStatus);
+integracionesRouter.delete('/google',        verificarToken, desconectarGoogle);
 integracionesRouter.get('/calendar/eventos',  verificarToken, obtenerEventosCalendar);
 integracionesRouter.post('/calendar/eventos', verificarToken, crearEventoCalendar);
 

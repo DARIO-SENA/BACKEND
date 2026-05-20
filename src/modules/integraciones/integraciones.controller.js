@@ -59,21 +59,51 @@ export const callbackGoogle = async (req, res) => {
   } catch (err) { manejarError(res, err); }
 };
 
+const getCalendarClient = async (usuarioId) => {
+  const tokens = await integracionesService.obtenerTokensGoogle(usuarioId);
+  if (!tokens?.google_access_token) return null;
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_CALLBACK_URL
+  );
+  oauth2Client.setCredentials({
+    access_token: tokens.google_access_token,
+    refresh_token: tokens.google_refresh_token,
+    expiry_date: tokens.google_token_expiry,
+  });
+  oauth2Client.on('tokens', async (nuevos) => {
+    const actualizados = {};
+    if (nuevos.access_token) actualizados.access_token = nuevos.access_token;
+    if (nuevos.refresh_token) actualizados.refresh_token = nuevos.refresh_token;
+    if (nuevos.expiry_date) actualizados.expiry_date = nuevos.expiry_date;
+    if (Object.keys(actualizados).length > 0) {
+      await integracionesService.guardarTokensGoogle(usuarioId, actualizados);
+    }
+  });
+  return oauth2Client;
+};
+
+export const verificarGoogleStatus = async (req, res) => {
+  try {
+    const tokens = await integracionesService.obtenerTokensGoogle(req.usuario.id);
+    res.json({ ok: true, data: { conectado: !!tokens?.google_access_token } });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const desconectarGoogle = async (req, res) => {
+  try {
+    await integracionesService.eliminarTokensGoogle(req.usuario.id);
+    res.json({ ok: true, data: { mensaje: 'Google Calendar desconectado' } });
+  } catch (err) { manejarError(res, err); }
+};
+
 export const obtenerEventosCalendar = async (req, res) => {
   try {
-    const tokensGuardados = await integracionesService.obtenerTokensGoogle(req.usuario.id);
-    if (!tokensGuardados?.google_access_token) {
+    const oauth2Client = await getCalendarClient(req.usuario.id);
+    if (!oauth2Client) {
       return res.status(401).json({ ok: false, error: 'No has conectado tu Google Calendar' });
     }
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_CALLBACK_URL
-    );
-    oauth2Client.setCredentials({
-      access_token: tokensGuardados.google_access_token,
-      refresh_token: tokensGuardados.google_refresh_token,
-    });
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
     const { data } = await calendar.events.list({
       calendarId: 'primary',
@@ -89,19 +119,10 @@ export const obtenerEventosCalendar = async (req, res) => {
 export const crearEventoCalendar = async (req, res) => {
   try {
     const { titulo, descripcion, inicio, fin } = req.body;
-    const tokensGuardados = await integracionesService.obtenerTokensGoogle(req.usuario.id);
-    if (!tokensGuardados?.google_access_token) {
+    const oauth2Client = await getCalendarClient(req.usuario.id);
+    if (!oauth2Client) {
       return res.status(401).json({ ok: false, error: 'No has conectado tu Google Calendar' });
     }
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_CALLBACK_URL
-    );
-    oauth2Client.setCredentials({
-      access_token: tokensGuardados.google_access_token,
-      refresh_token: tokensGuardados.google_refresh_token,
-    });
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
     const { data } = await calendar.events.insert({
       calendarId: 'primary',

@@ -67,3 +67,12 @@ export const obtenerTokensGoogle = async (usuarioId) => {
   );
   return result.rows[0] || null;
 };
+
+export const eliminarTokensGoogle = async (usuarioId) => {
+  await pool.query(
+    `UPDATE usuarios
+     SET google_access_token = NULL, google_refresh_token = NULL, google_token_expiry = NULL
+     WHERE id = $1`,
+    [usuarioId]
+  );
+};
