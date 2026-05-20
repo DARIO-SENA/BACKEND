@@ -23,6 +23,8 @@ import { pomodoroRouter } from './modules/pomodoro/pomodoro.routes.js';
 import { finanzasRouter } from './modules/finanzas/finanzas.routes.js';
 import { bienestarRouter } from './modules/bienestar/bienestar.routes.js';
 import { metasRouter } from './modules/metas/metas.routes.js';
+import { exportarRouter } from './modules/exportar/exportar.routes.js';
+import { emailRouter } from './modules/email/email.routes.js';
 
 const app = express();
 
@@ -81,6 +83,10 @@ app.use('/api/bienestar', bienestarRouter);
 bienestarRouter.prefix = '/api/bienestar';
 app.use('/api/metas', metasRouter);
 metasRouter.prefix = '/api/metas';
+app.use('/api/exportar', exportarRouter);
+exportarRouter.prefix = '/api/exportar';
+app.use('/api/email', emailRouter);
+emailRouter.prefix = '/api/email';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
