@@ -23,6 +23,12 @@ const getOpenAI = () => {
 };
 
 export const llamarOpenAI = async (prompt, systemPrompt = null, formatoJson = true) => {
+  try {
+    getOpenAI();
+  } catch {
+    return '¡Sigue así! Cada pequeño paso cuenta.';
+  }
+
   const messages = [];
   if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
   messages.push({ role: 'user', content: prompt });

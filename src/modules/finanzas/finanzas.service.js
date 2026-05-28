@@ -261,26 +261,25 @@ export const crearTransferencia = async (usuarioId, data) => {
 // ─── PRESUPUESTOS ─────────────────────────────────────────────
 
 export const listarPresupuestos = async (usuarioId, mes, anio) => {
-  const valores = [usuarioId];
-  let sql = `SELECT p.*, c.nombre AS categoria_nombre, c.icono AS categoria_icono, c.color AS categoria_color,
-                    COALESCE(g.gastado, 0) AS gastado
-             FROM finanzas_presupuestos p
-             JOIN finanzas_categorias c ON p.categoria_id = c.id
-             LEFT JOIN (
-               SELECT categoria_id, SUM(monto) AS gastado
-               FROM finanzas_transacciones
-               WHERE usuario_id = $1 AND tipo = 'gasto'
-                 AND EXTRACT(MONTH FROM fecha) = $2 AND EXTRACT(YEAR FROM fecha) = $3
-               GROUP BY categoria_id
-             ) g ON p.categoria_id = g.categoria_id
-             WHERE p.usuario_id = $1`;
+  const now = new Date();
+  const m = parseInt(mes) || (now.getMonth() + 1);
+  const a = parseInt(anio) || now.getFullYear();
 
-  const params = [usuarioId];
-  if (mes)  { params.push(mes);  sql += ` AND p.mes = $${params.length}`; }
-  if (anio) { params.push(anio); sql += ` AND p.anio = $${params.length}`; }
+  const sql = `SELECT p.*, c.nombre AS categoria_nombre, c.icono AS categoria_icono, c.color AS categoria_color,
+                      COALESCE(g.gastado, 0) AS gastado
+               FROM finanzas_presupuestos p
+               JOIN finanzas_categorias c ON p.categoria_id = c.id
+               LEFT JOIN (
+                 SELECT categoria_id, SUM(monto) AS gastado
+                 FROM finanzas_transacciones
+                 WHERE usuario_id = $1 AND tipo = 'gasto'
+                   AND EXTRACT(MONTH FROM fecha) = $2 AND EXTRACT(YEAR FROM fecha) = $3
+                 GROUP BY categoria_id
+               ) g ON p.categoria_id = g.categoria_id
+               WHERE p.usuario_id = $1 AND p.mes = $2 AND p.anio = $3
+               ORDER BY c.nombre`;
 
-  sql += ' ORDER BY c.nombre';
-  const { rows } = await pool.query(sql, params);
+  const { rows } = await pool.query(sql, [usuarioId, m, a]);
   return rows;
 };
 
@@ -529,6 +528,21 @@ export const resumenMensual = async (usuarioId, mes, anio) => {
     total_gastos: parseFloat(totals.total_gastos),
     balance: parseFloat(totals.total_ingresos) - parseFloat(totals.total_gastos),
     por_categoria: porCategoria,
+    presupuestos,
+  };
+};
+
+export const generarReporte = async (usuarioId) => {
+  const [dashboardData, transacciones, presupuestos] = await Promise.all([
+    dashboard(usuarioId),
+    listarTransacciones(usuarioId, { limite: 100 }),
+    listarPresupuestos(usuarioId),
+  ]);
+
+  return {
+    generado_en: new Date().toISOString(),
+    resumen: dashboardData,
+    transacciones_recientes: transacciones.data?.slice(0, 50) || [],
     presupuestos,
   };
 };
