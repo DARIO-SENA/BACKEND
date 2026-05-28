@@ -238,3 +238,7 @@ export const completarPausa = async (id, usuarioId) => {
   );
   return rows[0] || null;
 };
+
+export const verificarConexionDB = async () => {
+  await pool.query('SELECT 1');
+};

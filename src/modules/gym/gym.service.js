@@ -164,7 +164,6 @@ export const actualizarEjercicio = async (id, usuarioId, body) => {
 export const registrarEntrenamiento = async (usuarioId, body) => {
   const { ejercicio_id, rutina_id, fecha, notas, series } = body;
 
-  // 1. Crear el registro principal
   const registro = await pool.query(
     `INSERT INTO registros_entrenamiento (usuario_id, ejercicio_id, rutina_id, fecha, notas)
      VALUES ($1, $2, $3, $4, $5)
@@ -174,7 +173,6 @@ export const registrarEntrenamiento = async (usuarioId, body) => {
 
   const registroId = registro.rows[0].id;
 
-  // 2. Guardar cada serie
   for (const serie of series) {
     await pool.query(
       `INSERT INTO series_entrenamiento (registro_id, numero_serie, repeticiones, peso_kg)
@@ -183,17 +181,87 @@ export const registrarEntrenamiento = async (usuarioId, body) => {
     );
   }
 
-  // 3. Devolver el registro completo con sus series
   const seriesGuardadas = await pool.query(
-    `SELECT * FROM series_entrenamiento
-     WHERE registro_id = $1
-     ORDER BY numero_serie`,
+    `SELECT * FROM series_entrenamiento WHERE registro_id = $1 ORDER BY numero_serie`,
     [registroId]
   );
 
   eventBus.emit(EVENTS.WORKOUT_LOGGED, { usuarioId, ejercicioId, rutinaId: rutina_id, series: series.length });
 
   return { ...registro.rows[0], series: seriesGuardadas.rows };
+};
+
+// Guardar sesión completa (múltiples ejercicios) en una transacción
+export const completarSesion = async (usuarioId, body) => {
+  const { rutina_id, fecha, duracion_minutos, ejercicios } = body;
+  const cliente = await pool.connect();
+
+  try {
+    await cliente.query('BEGIN');
+
+    const registros = [];
+    let volumenTotal = 0;
+    const prsDetectados = [];
+
+    for (const ej of ejercicios) {
+      const registro = await cliente.query(
+        `INSERT INTO registros_entrenamiento (usuario_id, ejercicio_id, rutina_id, fecha)
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [usuarioId, ej.ejercicio_id, rutina_id || null, fecha || new Date()]
+      );
+
+      const registroId = registro.rows[0].id;
+      let seriesCount = 0;
+
+      for (const serie of (ej.series || [])) {
+        await cliente.query(
+          `INSERT INTO series_entrenamiento (registro_id, numero_serie, repeticiones, peso_kg)
+           VALUES ($1, $2, $3, $4)`,
+          [registroId, serie.numero_serie || seriesCount + 1, serie.repeticiones || 0, serie.peso_kg || 0]
+        );
+        volumenTotal += (serie.repeticiones || 0) * (serie.peso_kg || 0);
+        seriesCount++;
+      }
+
+      const seriesGuardadas = await cliente.query(
+        `SELECT * FROM series_entrenamiento WHERE registro_id = $1 ORDER BY numero_serie`,
+        [registroId]
+      );
+
+      registros.push({ ...registro.rows[0], series: seriesGuardadas.rows });
+
+      // Detectar PR: comparar con peso máximo histórico
+      const maxAnterior = await cliente.query(
+        `SELECT COALESCE(MAX(se.peso_kg), 0) AS max_peso
+         FROM registros_entrenamiento re
+         JOIN series_entrenamiento se ON se.registro_id = re.id
+         WHERE re.usuario_id = $1 AND re.ejercicio_id = $2 AND re.id != $3`,
+        [usuarioId, ej.ejercicio_id, registroId]
+      );
+      const pesoMaxSeries = Math.max(...(ej.series || []).map(s => s.peso_kg || 0), 0);
+      if (pesoMaxSeries > Number(maxAnterior.rows[0].max_peso) && pesoMaxSeries > 0) {
+        const ejNombre = await cliente.query('SELECT nombre FROM ejercicios WHERE id = $1', [ej.ejercicio_id]);
+        prsDetectados.push({ ejercicio_id: ej.ejercicio_id, nombre: ejNombre.rows[0]?.nombre || 'Ejercicio', peso: pesoMaxSeries });
+      }
+
+      eventBus.emit(EVENTS.WORKOUT_LOGGED, { usuarioId, ejercicioId: ej.ejercicio_id, rutinaId: rutina_id, series: seriesCount });
+    }
+
+    await cliente.query('COMMIT');
+
+    return {
+      registros,
+      volumen_total: volumenTotal,
+      total_series: registros.reduce((acc, r) => acc + (r.series?.length || 0), 0),
+      duracion_minutos: duracion_minutos || null,
+      prs_detectados: prsDetectados,
+    };
+  } catch (err) {
+    await cliente.query('ROLLBACK');
+    throw err;
+  } finally {
+    cliente.release();
+  }
 };
 
 // Ver historial completo de entrenamientos
@@ -270,6 +338,27 @@ export const obtenerEstadisticas = async (usuarioId) => {
     [usuarioId]
   );
   return rows[0];
+};
+
+// ─────────────────────────────────────────
+// ÚLTIMA SESIÓN POR EJERCICIO (progressive overload)
+// ─────────────────────────────────────────
+
+export const obtenerUltimaSesion = async (usuarioId, ejercicioId) => {
+  const result = await pool.query(
+    `SELECT se.numero_serie, se.repeticiones, se.peso_kg, re.fecha
+     FROM registros_entrenamiento re
+     JOIN series_entrenamiento se ON se.registro_id = re.id
+     WHERE re.usuario_id = $1 AND re.ejercicio_id = $2
+     ORDER BY re.fecha DESC, se.numero_serie ASC
+     LIMIT 20`,
+    [usuarioId, ejercicioId]
+  );
+  if (result.rows.length === 0) return null;
+  return {
+    fecha: result.rows[0].fecha,
+    series: result.rows.map(r => ({ numero_serie: r.numero_serie, repeticiones: r.repeticiones, peso_kg: r.peso_kg })),
+  };
 };
 
 // ─────────────────────────────────────────

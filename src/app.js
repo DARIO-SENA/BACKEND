@@ -25,6 +25,7 @@ import { bienestarRouter } from './modules/bienestar/bienestar.routes.js';
 import { metasRouter } from './modules/metas/metas.routes.js';
 import { exportarRouter } from './modules/exportar/exportar.routes.js';
 import { emailRouter } from './modules/email/email.routes.js';
+import { rutinaRouter } from './modules/rutina/rutina.routes.js';
 
 const app = express();
 
@@ -87,6 +88,8 @@ app.use('/api/exportar', exportarRouter);
 exportarRouter.prefix = '/api/exportar';
 app.use('/api/email', emailRouter);
 emailRouter.prefix = '/api/email';
+app.use('/api/rutina', rutinaRouter);
+rutinaRouter.prefix = '/api/rutina';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

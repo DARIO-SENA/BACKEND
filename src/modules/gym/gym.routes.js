@@ -15,6 +15,8 @@ import {
   verProgresion,
   obtenerEstadisticas,
   sugerirPeso,
+  completarSesion,
+  ultimaSesionEjercicio,
 } from './gym.controller.js';
 
 export const gymRouter = Router();
@@ -44,3 +46,7 @@ gymRouter.get('/progresion/:ejercicioId', verProgresion);
 gymRouter.get('/estadisticas', obtenerEstadisticas);
 // ── Sugerencia de peso ───────────────────────────────
 gymRouter.get('/sugerencias/ejercicio/:ejercicioId', sugerirPeso);
+// ── Última sesión ───────────────────────────────
+gymRouter.get('/ultima-sesion/:ejercicioId', ultimaSesionEjercicio);
+// ── Sesión completa ───────────────────────────────
+gymRouter.post('/sesion/completar', completarSesion);

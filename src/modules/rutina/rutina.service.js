@@ -21,6 +21,7 @@ const initTables = async () => {
       tipo VARCHAR(20) DEFAULT 'tarea',
       prioridad VARCHAR(10) DEFAULT 'media',
       orden INTEGER DEFAULT 0,
+      gimnasio_rutina_id INTEGER REFERENCES rutinas(id) ON DELETE SET NULL,
       creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);

@@ -104,3 +104,17 @@ export const sugerirPeso = async (req, res) => {
     res.json({ ok: true, data });
   } catch (err) { manejarError(res, err); }
 };
+
+export const completarSesion = async (req, res) => {
+  try {
+    const data = await gymService.completarSesion(req.usuario.id, req.body);
+    res.status(201).json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const ultimaSesionEjercicio = async (req, res) => {
+  try {
+    const data = await gymService.obtenerUltimaSesion(req.usuario.id, req.params.ejercicioId);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
