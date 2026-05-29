@@ -1,5 +1,7 @@
 // src/utils/time.utils.js
 
+import { AppError } from './AppError.js';
+
 /**
  * Calcula la fecha real del recordatorio aplicando la anticipación
  * @param {string|Date} fechaHora - Fecha/hora del evento
@@ -55,7 +57,7 @@ export const calcularSiguienteRecurrencia = (fechaActual, regla) => {
     case 'diario':   siguiente.setDate(siguiente.getDate() + 1);      break;
     case 'semanal':  siguiente.setDate(siguiente.getDate() + 7);      break;
     case 'mensual':  siguiente.setMonth(siguiente.getMonth() + 1);    break;
-    default: throw { status: 400, message: `Regla de recurrencia inválida: ${regla}` };
+    default: throw new AppError(`Regla de recurrencia inválida: ${regla}`, 400);
   }
   return siguiente;
 };

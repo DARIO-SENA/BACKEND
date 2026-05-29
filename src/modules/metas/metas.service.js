@@ -1,9 +1,7 @@
 import pool from '../../config/db.js';
-import eventBus from '../../eventBus/index.js';
-import { EVENTS } from '../../eventBus/events.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 import * as tareasService from '../tareas/tareas.service.js';
-import { llamarOpenAI } from '../ia/ia.service.js';
+import { llamarOpenAI, safeJsonParse } from '../ia/ia.service.js';
 
 const PROMPT_DESCOMPONER = `Eres un experto en OKRs. Descompón la siguiente meta en 3-5 Key Results (resultados clave) medibles y sugiera 2-3 tareas concretas para cada KR.
 
@@ -143,6 +141,14 @@ export const eliminarMeta = async (id, usuarioId) => {
   return rowCount > 0;
 };
 
+export const eliminarTodasMetas = async (usuarioId) => {
+  const { rowCount } = await pool.query(
+    'DELETE FROM metas WHERE usuario_id = $1',
+    [usuarioId]
+  );
+  return rowCount;
+};
+
 export const crearKeyResult = async (metaId, usuarioId, datos) => {
   const { rows: meta } = await pool.query(
     'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
@@ -174,6 +180,23 @@ export const obtenerKeyResults = async (metaId, usuarioId) => {
     [metaId]
   );
   return rows;
+};
+
+export const eliminarKeyResult = async (metaId, krId, usuarioId) => {
+  const { rows: meta } = await pool.query(
+    'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
+    [metaId, usuarioId]
+  );
+  if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+
+  const { rowCount } = await pool.query(
+    'DELETE FROM key_results WHERE id = $1 AND meta_id = $2',
+    [krId, metaId]
+  );
+  if (!rowCount) throw Object.assign(new Error('Key Result no encontrado'), { status: 404 });
+
+  await recalcularProgresoMeta(metaId);
+  return true;
 };
 
 export const actualizarKeyResult = async (metaId, krId, usuarioId, datos) => {
@@ -273,20 +296,29 @@ export const descomponerConIA = async (usuarioId, metaId) => {
     .replace('{descripcion}', meta.descripcion || '');
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const datos = JSON.parse(respuesta);
+  const datos = safeJsonParse(respuesta, { key_results: [] });
 
-  for (const kr of datos.key_results) {
-    await pool.query(
-      `INSERT INTO key_results (meta_id, titulo, descripcion, orden)
-       VALUES ($1, $2, $3, $4)`,
-      [metaId, kr.titulo, kr.descripcion || '', datos.key_results.indexOf(kr)]
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (const kr of datos.key_results) {
+      await client.query(
+        `INSERT INTO key_results (meta_id, titulo, descripcion, orden)
+         VALUES ($1, $2, $3, $4)`,
+        [metaId, kr.titulo, kr.descripcion || '', datos.key_results.indexOf(kr)]
+      );
+    }
+    await client.query(
+      `UPDATE metas SET es_borrador = false WHERE id = $1`,
+      [metaId]
     );
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
-
-  await pool.query(
-    `UPDATE metas SET es_borrador = false WHERE id = $1`,
-    [metaId]
-  );
 
   return obtenerMetaPorId(metaId, usuarioId);
 };
@@ -303,7 +335,7 @@ export const planSemanal = async (usuarioId, metaId, fechaFin) => {
     .replace('{fecha_fin}', fechaFin || meta.fecha_fin || 'sin fecha');
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const datos = JSON.parse(respuesta);
+  const datos = safeJsonParse(respuesta, { tareas: [] });
 
   const tareasCreadas = [];
 

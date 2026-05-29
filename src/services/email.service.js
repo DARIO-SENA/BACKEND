@@ -50,7 +50,7 @@ body { font-family: 'Inter', Arial, sans-serif; background: #0a0a0a; color: #e0e
 };
 
 export const generarResumenSemanal = async (usuarioId) => {
-  const [usuario, stats, perfil] = await Promise.all([
+  const [usuario, stats, habStats, perfil] = await Promise.all([
     pool.query('SELECT nombre, email FROM usuarios WHERE id = $1', [usuarioId]),
     pool.query(`SELECT
       COUNT(*) FILTER (WHERE estado = 'completada') AS tareas_completadas,
@@ -66,8 +66,8 @@ export const generarResumenSemanal = async (usuarioId) => {
 
   const u = usuario.rows[0];
   const s = stats.rows[0];
+  const hab = habStats.rows[0] || { habitos_completados: 0, habitos_totales: 0 };
   const h = perfil.rows[0] || { puntos_totales: 0, racha_actual: 0 };
-  const hab = perfil.rows[0] || { puntos_totales: 0, racha_actual: 0 };
 
   const hoy = new Date();
   const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
@@ -81,7 +81,7 @@ export const generarResumenSemanal = async (usuarioId) => {
     habitos_completados: parseInt(hab?.habitos_completados || 0),
     habitos_totales: parseInt(hab?.habitos_totales || 0),
     puntos: parseInt(h?.puntos_totales || 0),
-    racha: parseInt(hab?.racha_actual || 0),
+    racha: parseInt(h?.racha_actual || 0),
     fecha_inicio: lunes.toLocaleDateString('es-BO', { day: 'numeric', month: 'long' }),
     fecha_fin: domingo.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' }),
   };

@@ -39,6 +39,13 @@ export const eliminarMeta = async (req, res) => {
   } catch (error) { manejarError(res, error); }
 };
 
+export const eliminarTodasMetas = async (req, res) => {
+  try {
+    const count = await metasService.eliminarTodasMetas(req.usuario.id);
+    res.json({ ok: true, mensaje: `${count} metas eliminadas` });
+  } catch (error) { manejarError(res, error); }
+};
+
 export const crearKeyResult = async (req, res) => {
   try {
     const kr = await metasService.crearKeyResult(req.params.metaId, req.usuario.id, req.body);
@@ -50,6 +57,13 @@ export const obtenerKeyResults = async (req, res) => {
   try {
     const krs = await metasService.obtenerKeyResults(req.params.metaId, req.usuario.id);
     res.json({ ok: true, data: krs, total: krs.length });
+  } catch (error) { manejarError(res, error); }
+};
+
+export const eliminarKeyResult = async (req, res) => {
+  try {
+    await metasService.eliminarKeyResult(req.params.metaId, req.params.krId, req.usuario.id);
+    res.json({ ok: true, mensaje: 'Key Result eliminado' });
   } catch (error) { manejarError(res, error); }
 };
 

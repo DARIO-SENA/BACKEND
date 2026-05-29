@@ -376,6 +376,14 @@ export const eliminarMeta = async (id, usuarioId) => {
   return rowCount > 0;
 };
 
+export const eliminarTodasMetas = async (usuarioId) => {
+  const { rowCount } = await pool.query(
+    'DELETE FROM finanzas_metas WHERE usuario_id = $1',
+    [usuarioId]
+  );
+  return rowCount;
+};
+
 export const aportarMeta = async (id, usuarioId, monto) => {
   if (!monto || monto <= 0) {
     const err = new Error('El monto debe ser mayor a 0');

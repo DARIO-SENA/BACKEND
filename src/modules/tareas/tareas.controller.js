@@ -39,6 +39,13 @@ export const eliminarTarea = async (req, res) => {
   } catch (error) { manejarError(res, error); }
 };
 
+export const eliminarTodas = async (req, res) => {
+  try {
+    const count = await tareasService.eliminarTodas(req.usuario.id);
+    res.json({ ok: true, mensaje: `${count} tareas eliminadas` });
+  } catch (error) { manejarError(res, error); }
+};
+
 export const cambiarEstado = async (req, res) => {
   try {
     const tarea = await tareasService.cambiarEstado(req.params.id, req.usuario.id, req.body.estado);

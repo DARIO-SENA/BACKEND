@@ -16,4 +16,8 @@ const pool = new Pool({
     : false,
 });
 
+pool.on('error', (err) => {
+  console.error('🔴 Error inesperado en el pool de PostgreSQL:', err.message);
+});
+
 export default pool;

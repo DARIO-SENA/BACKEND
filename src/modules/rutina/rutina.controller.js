@@ -63,3 +63,17 @@ export const limpiarSemana = async (req, res) => {
     res.json({ ok: true, data: result });
   } catch (err) { manejarError(res, err); }
 };
+
+export const eliminarBloquePlantilla = async (req, res) => {
+  try {
+    await rutinaService.eliminarBloquePlantilla(req.usuario.id, req.params.id);
+    res.json({ ok: true, mensaje: 'Bloque eliminado de la plantilla' });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const eliminarTodosBloquesPlantilla = async (req, res) => {
+  try {
+    const count = await rutinaService.eliminarTodosBloquesPlantilla(req.usuario.id);
+    res.json({ ok: true, mensaje: `${count} bloques eliminados de las plantillas` });
+  } catch (err) { manejarError(res, err); }
+};

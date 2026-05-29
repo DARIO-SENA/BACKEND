@@ -178,6 +178,13 @@ export const eliminarMeta = async (req, res) => {
   } catch (err) { manejarError(res, err); }
 };
 
+export const eliminarTodasMetas = async (req, res) => {
+  try {
+    const count = await service.eliminarTodasMetas(req.usuario.id);
+    res.json({ ok: true, mensaje: `${count} metas eliminadas` });
+  } catch (err) { manejarError(res, err); }
+};
+
 export const aportarMeta = async (req, res) => {
   try {
     const data = await service.aportarMeta(req.params.id, req.usuario.id, req.body.monto);

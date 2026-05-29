@@ -94,3 +94,11 @@ export const eliminar = async (id, usuarioId) => {
   );
   return rowCount > 0;
 };
+
+export const eliminarTodos = async (usuarioId) => {
+  const { rowCount } = await pool.query(
+    'DELETE FROM recordatorios WHERE usuario_id = $1',
+    [usuarioId]
+  );
+  return rowCount;
+};

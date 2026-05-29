@@ -16,4 +16,7 @@ router.delete('/plantillas/:diaSemana', ctrl.eliminarPlantilla);
 router.post('/aplicar-semana', ctrl.aplicarSemana);
 router.post('/limpiar-semana', ctrl.limpiarSemana);
 
+router.delete('/plantillas/bloques',       ctrl.eliminarTodosBloquesPlantilla);
+router.delete('/plantillas/bloques/:id',   ctrl.eliminarBloquePlantilla);
+
 export { router as rutinaRouter };

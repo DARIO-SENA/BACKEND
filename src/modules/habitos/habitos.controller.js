@@ -32,6 +32,13 @@ export const eliminarHabito = async (req, res) => {
   } catch (err) { manejarError(res, err); }
 };
 
+export const eliminarTodos = async (req, res) => {
+  try {
+    const count = await habitosService.eliminarTodos(req.usuario.id);
+    res.json({ ok: true, mensaje: `${count} hábitos eliminados` });
+  } catch (err) { manejarError(res, err); }
+};
+
 export const cambiarEstado = async (req, res) => {
   try {
     const habito = await habitosService.cambiarEstadoHabito(

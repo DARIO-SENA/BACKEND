@@ -35,7 +35,7 @@ function collectRoutes(stack, prefix, groups) {
 export const imprimirRutas = (app) => {
   console.log('\n🚀 ENDPOINTS ACTIVOS:\n');
   const groups = {};
-  collectRoutes(app.router?.stack, '', groups);
+  collectRoutes(app._router?.stack, '', groups);
   for (const [mod, endpoints] of Object.entries(groups)) {
     console.log(`  ── ${mod} ──`);
     for (const ep of endpoints) {

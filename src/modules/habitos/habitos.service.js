@@ -8,11 +8,11 @@ export const crearHabito = async (usuarioId, datos) => {
   if (!parsed.success) {
     throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
   }
-  const { titulo, descripcion, frecuencia } = parsed.data;
+  const { titulo, descripcion, frecuencia, dias_semana } = parsed.data;
   const { rows } = await pool.query(
-    `INSERT INTO habitos (usuario_id, titulo, descripcion, frecuencia)
-     VALUES ($1, $2, $3, $4) RETURNING *`,
-    [usuarioId, titulo, descripcion, frecuencia]
+    `INSERT INTO habitos (usuario_id, titulo, descripcion, frecuencia, dias_semana)
+     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+    [usuarioId, titulo, descripcion, frecuencia, JSON.stringify(dias_semana)]
   );
   return rows[0];
 };
@@ -55,6 +55,7 @@ export const actualizarHabito = async (id, usuarioId, datos) => {
   const descripcion = datos.descripcion ?? habitoActual.descripcion;
   const frecuencia = datos.frecuencia ?? habitoActual.frecuencia;
   const completado = datos.completado ?? habitoActual.completado;
+  const dias_semana = datos.dias_semana ?? habitoActual.dias_semana;
 
   // 3. Actualizar
   const { rows } = await pool.query(
@@ -63,10 +64,11 @@ export const actualizarHabito = async (id, usuarioId, datos) => {
          descripcion = $2,
          frecuencia = $3,
          completado = $4,
+         dias_semana = $5,
          actualizado_en = NOW()
-     WHERE id = $5 AND usuario_id = $6
+     WHERE id = $6 AND usuario_id = $7
      RETURNING *`,
-    [titulo, descripcion, frecuencia, completado, id, usuarioId]
+    [titulo, descripcion, frecuencia, completado, JSON.stringify(dias_semana), id, usuarioId]
   );
 
   const habitoActualizado = rows[0];
@@ -112,4 +114,12 @@ export const eliminarHabito = async (id, usuarioId) => {
     [id, usuarioId]
   );
   return rowCount > 0;
+};
+
+export const eliminarTodos = async (usuarioId) => {
+  const { rowCount } = await pool.query(
+    `DELETE FROM habitos WHERE usuario_id = $1`,
+    [usuarioId]
+  );
+  return rowCount;
 };

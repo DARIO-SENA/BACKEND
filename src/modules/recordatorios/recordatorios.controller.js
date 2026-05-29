@@ -43,6 +43,13 @@ export const eliminarRecordatorio = async (req, res) => {
   } catch (err) { manejarError(res, err); }
 };
 
+export const eliminarTodosRecordatorios = async (req, res) => {
+  try {
+    const count = await recordatoriosService.eliminarTodos(req.usuario.id);
+    res.json({ ok: true, mensaje: `${count} recordatorios eliminados` });
+  } catch (err) { manejarError(res, err); }
+};
+
 // ─── NOTIFICACIONES ────────────────────────────────────────
 
 export const listarNotificaciones = async (req, res) => {

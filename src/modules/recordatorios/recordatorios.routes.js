@@ -20,6 +20,8 @@ router.put('/preferencias', ctrl.actualizarPreferencias);
 router.get('/',       ctrl.listarRecordatorios);
 router.post('/',      ctrl.crearRecordatorio);
 
+router.delete('/',    ctrl.eliminarTodosRecordatorios);
+
 // ⚠️ SIEMPRE al final
 router.get('/:id',    ctrl.obtenerRecordatorio);
 router.put('/:id',    ctrl.actualizarRecordatorio);

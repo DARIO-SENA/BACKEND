@@ -1,6 +1,6 @@
 import pool from '../../config/db.js';
 
-const initTables = async () => {
+export const initTables = async () => {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS plantillas_dia (
       id SERIAL PRIMARY KEY,
@@ -26,8 +26,6 @@ const initTables = async () => {
     )
   `);
 };
-
-initTables().catch(e => console.error('Error init plantillas tables:', e.message));
 
 export const obtenerDiaCompleto = async (usuarioId, fecha) => {
   const inicioStr = `${fecha} 00:00:00`;
@@ -221,35 +219,44 @@ export const obtenerPlantillas = async (usuarioId) => {
 };
 
 export const guardarPlantillaDia = async (usuarioId, diaSemana, bloques) => {
-  const { rows: [plantilla] } = await pool.query(
-    `INSERT INTO plantillas_dia (usuario_id, dia_semana)
-     VALUES ($1, $2)
-     ON CONFLICT (usuario_id, dia_semana)
-     DO UPDATE SET activo = true
-     RETURNING id`,
-    [usuarioId, diaSemana]
-  );
-
-  await pool.query('DELETE FROM plantillas_bloques WHERE plantilla_id = $1', [plantilla.id]);
-
-  if (bloques && bloques.length > 0) {
-    const values = [];
-    const params = [];
-    let i = 1;
-    for (const b of bloques) {
-      const gimnId = b.gimnasio_rutina_id ? parseInt(b.gimnasio_rutina_id) : null;
-      values.push(`($${i}, $${i+1}, $${i+2}::time, $${i+3}::time, $${i+4}, $${i+5}, $${i+6}, $${i+7})`);
-      params.push(plantilla.id, b.titulo, b.hora_inicio, b.hora_fin, b.tipo || 'tarea', b.prioridad || 'media', b.orden || 0, gimnId);
-      i += 8;
-    }
-    await pool.query(
-      `INSERT INTO plantillas_bloques (plantilla_id, titulo, hora_inicio, hora_fin, tipo, prioridad, orden, gimnasio_rutina_id)
-       VALUES ${values.join(', ')}`,
-      params
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows: [plantilla] } = await client.query(
+      `INSERT INTO plantillas_dia (usuario_id, dia_semana)
+       VALUES ($1, $2)
+       ON CONFLICT (usuario_id, dia_semana)
+       DO UPDATE SET activo = true
+       RETURNING id`,
+      [usuarioId, diaSemana]
     );
-  }
 
-  return obtenerPlantillas(usuarioId);
+    await client.query('DELETE FROM plantillas_bloques WHERE plantilla_id = $1', [plantilla.id]);
+
+    if (bloques && bloques.length > 0) {
+      const values = [];
+      const params = [];
+      let i = 1;
+      for (const b of bloques) {
+        const gimnId = b.gimnasio_rutina_id ? parseInt(b.gimnasio_rutina_id) : null;
+        values.push(`($${i}, $${i+1}, $${i+2}::time, $${i+3}::time, $${i+4}, $${i+5}, $${i+6}, $${i+7})`);
+        params.push(plantilla.id, b.titulo, b.hora_inicio, b.hora_fin, b.tipo || 'tarea', b.prioridad || 'media', b.orden || 0, gimnId);
+        i += 8;
+      }
+      await client.query(
+        `INSERT INTO plantillas_bloques (plantilla_id, titulo, hora_inicio, hora_fin, tipo, prioridad, orden, gimnasio_rutina_id)
+         VALUES ${values.join(', ')}`,
+        params
+      );
+    }
+    await client.query('COMMIT');
+    return obtenerPlantillas(usuarioId);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
 };
 
 export const eliminarPlantillaDia = async (usuarioId, diaSemana) => {
@@ -258,6 +265,26 @@ export const eliminarPlantillaDia = async (usuarioId, diaSemana) => {
     [usuarioId, diaSemana]
   );
   return true;
+};
+
+export const eliminarBloquePlantilla = async (usuarioId, bloqueId) => {
+  await pool.query(
+    `DELETE FROM plantillas_bloques WHERE id = $1 AND plantilla_id IN (
+      SELECT id FROM plantillas_dia WHERE usuario_id = $2
+    )`,
+    [bloqueId, usuarioId]
+  );
+  return true;
+};
+
+export const eliminarTodosBloquesPlantilla = async (usuarioId) => {
+  const { rowCount } = await pool.query(
+    `DELETE FROM plantillas_bloques WHERE plantilla_id IN (
+      SELECT id FROM plantillas_dia WHERE usuario_id = $1
+    )`,
+    [usuarioId]
+  );
+  return rowCount;
 };
 
 export const limpiarSemana = async (usuarioId) => {

@@ -10,6 +10,15 @@ import * as agendaService from '../agenda/agenda.service.js';
 import { LLM_MODEL } from '../../config/openai.js';
 import pool from '../../config/db.js';
 
+export const safeJsonParse = (str, fallback = {}) => {
+  try {
+    return JSON.parse(str);
+  } catch {
+    console.error('[ia] Error parseando respuesta JSON de OpenAI');
+    return fallback;
+  }
+};
+
 let _openai = null;
 const getOpenAI = () => {
   if (!_openai) {
@@ -63,7 +72,7 @@ const obtenerOCrearCategoria = async (usuarioId, nombre) => {
 export const crearTareaNLP = async (usuarioId, texto) => {
   const prompt = prompts.PROMPT_CREAR_TAREA.replace('{texto}', texto);
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const datos = JSON.parse(respuesta);
+  const datos = safeJsonParse(respuesta);
 
   let categoriaId = null;
   if (datos.categoria) {
@@ -86,7 +95,7 @@ export const crearTareaNLP = async (usuarioId, texto) => {
 export const crearHabitoNLP = async (usuarioId, texto) => {
   const prompt = prompts.PROMPT_CREAR_HABITO.replace('{texto}', texto);
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const datos = JSON.parse(respuesta);
+  const datos = safeJsonParse(respuesta);
 
   const habito = await habitosService.crearHabito(usuarioId, {
     titulo: datos.titulo,
@@ -100,7 +109,7 @@ export const crearHabitoNLP = async (usuarioId, texto) => {
 export const crearEventoNLP = async (usuarioId, texto) => {
   const prompt = prompts.PROMPT_CREAR_EVENTO.replace('{texto}', texto);
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const datos = JSON.parse(respuesta);
+  const datos = safeJsonParse(respuesta);
 
   const fechaInicio = new Date(datos.fecha_inicio);
   const horaInicio = fechaInicio.toTimeString().slice(0, 5);
@@ -136,7 +145,7 @@ export const priorizarTareasDelDia = async (usuarioId) => {
     .replace('{tareas}', JSON.stringify(tareas, null, 2));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const orden = JSON.parse(respuesta);
+  const orden = safeJsonParse(respuesta, []);
 
   if (!Array.isArray(orden)) return tareas;
 
@@ -209,7 +218,7 @@ export const predecirDuracion = async (usuarioId, tareaId) => {
         .replace('{historial}', JSON.stringify(historial, null, 2));
 
       const respuesta = await llamarOpenAI(prompt, null, true);
-      return JSON.parse(respuesta);
+      return safeJsonParse(respuesta, { duracion_estimada_minutos: tarea.duracion_minutos || 30, confianza: 'baja' });
     }
 
     return {
@@ -247,7 +256,7 @@ export const optimizarAgenda = async (usuarioId) => {
     .replace('{bloques}', JSON.stringify(bloques, null, 2));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const orden = JSON.parse(respuesta);
+  const orden = safeJsonParse(respuesta, []);
 
   if (!Array.isArray(orden)) return pendientes;
 
@@ -282,7 +291,7 @@ export const recomendarHabitos = async (usuarioId) => {
     .replace('{promedio_tareas}', '—');
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const sugerencias = JSON.parse(respuesta);
+  const sugerencias = safeJsonParse(respuesta, []);
 
   if (Array.isArray(sugerencias)) {
     for (const s of sugerencias) {
@@ -316,7 +325,7 @@ export const sugerirRutina = async (usuarioId, objetivo = 'fuerza', nivel = 'pri
     .replace('{ejercicios_conocidos}', JSON.stringify(ejerciciosConocidos.rows));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const rutina = JSON.parse(respuesta);
+  const rutina = safeJsonParse(respuesta, { nombre: `Rutina ${objetivo}`, ejercicios: [] });
 
   const rutinaCreada = await gymService.crearRutina(usuarioId, {
     nombre: rutina.nombre || `Rutina ${objetivo}`,
@@ -372,7 +381,7 @@ export const recomendarAmigos = async (usuarioId) => {
     .replace('{potenciales}', JSON.stringify(potenciales));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const recomendaciones = JSON.parse(respuesta);
+  const recomendaciones = safeJsonParse(respuesta, []);
 
   if (!Array.isArray(recomendaciones)) return [];
 
@@ -407,7 +416,7 @@ export const sugerirLogro = async (usuarioId) => {
     .replace('{datos}', JSON.stringify({ perfil, logros_existentes: logros.length }, null, 2));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const logro = JSON.parse(respuesta);
+  const logro = safeJsonParse(respuesta, { titulo: 'Nuevo logro', descripcion: '' });
 
   await pool.query(
     `INSERT INTO sugerencias_ia (usuario_id, tipo, titulo, descripcion, metadata)
@@ -437,7 +446,7 @@ export const analizarPatrones = async (usuarioId) => {
 
   const prompt = prompts.PROMPT_PATRONES.replace('{datos}', JSON.stringify(datos, null, 2));
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const resultado = JSON.parse(respuesta);
+  const resultado = safeJsonParse(respuesta, {});
 
   await pool.query(
     `INSERT INTO analisis_ia (usuario_id, tipo, entrada, resultado, modelo)
@@ -470,7 +479,7 @@ export const detectarAnomalias = async (usuarioId) => {
     .replace('{datos}', JSON.stringify({ ultimos_14_dias: reciente, ultimos_60_dias: historico }, null, 2));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  const resultado = JSON.parse(respuesta);
+  const resultado = safeJsonParse(respuesta, {});
 
   await pool.query(
     `INSERT INTO analisis_ia (usuario_id, tipo, entrada, resultado, modelo)
@@ -510,5 +519,5 @@ export const detectarSobrecarga = async (usuarioId) => {
     .replace('{dias_disponibles}', Math.max(1, diasDisponibles));
 
   const respuesta = await llamarOpenAI(prompt, null, true);
-  return JSON.parse(respuesta);
+  return safeJsonParse(respuesta, { sobrecarga: false, recomendacion: 'No se pudo analizar' });
 };

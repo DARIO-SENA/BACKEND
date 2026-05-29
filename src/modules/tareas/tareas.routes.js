@@ -10,6 +10,7 @@ router.get('/',             ctrl.obtenerTareas);
 router.get('/:id',          ctrl.obtenerTareaPorId);
 router.post('/',            ctrl.crearTarea);
 router.put('/:id',          ctrl.actualizarTarea);
+router.delete('/',          ctrl.eliminarTodas);
 router.delete('/:id',       ctrl.eliminarTarea);
 router.patch('/:id/estado', ctrl.cambiarEstado);
 router.post('/programar', ctrl.programarTarea);

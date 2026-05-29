@@ -3,6 +3,7 @@
 import * as recordatorioModel from './recordatorio.model.js';
 import { agregarJob, cancelarJob } from './jobs/queue.js';
 import { calcularFechaReal } from '../../utils/time.utils.js';
+import { AppError } from '../../utils/AppError.js';
 
 export const listar = async (usuarioId, filtros) => {
   return recordatorioModel.encontrarTodos(usuarioId, filtros);
@@ -10,7 +11,7 @@ export const listar = async (usuarioId, filtros) => {
 
 export const obtenerPorId = async (id, usuarioId) => {
   const rec = await recordatorioModel.encontrarPorId(id, usuarioId);
-  if (!rec) throw { status: 404, message: 'Recordatorio no encontrado' };
+  if (!rec) throw new AppError('Recordatorio no encontrado', 404);
   return rec;
 };
 
@@ -29,17 +30,17 @@ export const crear = async (usuarioId, datos) => {
   const fechaBase = fechaHora || fecha_hora;
 
   if (!titulo) {
-    throw { status: 400, message: 'El título es obligatorio' };
+    throw new AppError('El título es obligatorio', 400);
   }
 
   if (!fechaBase) {
-    throw { status: 400, message: 'La fecha y hora son obligatorias' };
+    throw new AppError('La fecha y hora son obligatorias', 400);
   }
 
   const fechaReal = calcularFechaReal(fechaBase, anticipacion_min);
 
   if (fechaReal <= new Date()) {
-    throw { status: 400, message: 'La fecha debe ser futura' };
+    throw new AppError('La fecha debe ser futura', 400);
   }
 
   const recordatorio = await recordatorioModel.insertar(usuarioId, {
@@ -66,7 +67,7 @@ export const crear = async (usuarioId, datos) => {
 export const actualizar = async (id, usuarioId, datos) => {
   const existe = await recordatorioModel.encontrarPorId(id, usuarioId);
   if (!existe) {
-    throw { status: 404, message: 'Recordatorio no encontrado' };
+    throw new AppError('Recordatorio no encontrado', 404);
   }
 
   const fechaBase = datos.fechaHora || datos.fecha_hora;
@@ -77,7 +78,7 @@ export const actualizar = async (id, usuarioId, datos) => {
   );
 
   if (fechaReal <= new Date()) {
-    throw { status: 400, message: 'La fecha debe ser futura' };
+    throw new AppError('La fecha debe ser futura', 400);
   }
 
   await cancelarJob(id);
@@ -107,8 +108,13 @@ export const actualizar = async (id, usuarioId, datos) => {
 // ─────────────────────────────────────────────
 export const eliminar = async (id, usuarioId) => {
   const existe = await recordatorioModel.encontrarPorId(id, usuarioId);
-  if (!existe) throw { status: 404, message: 'Recordatorio no encontrado' };
+  if (!existe) throw new AppError('Recordatorio no encontrado', 404);
 
   await cancelarJob(id);
   await recordatorioModel.eliminar(id, usuarioId);
+};
+
+export const eliminarTodos = async (usuarioId) => {
+  const count = await recordatorioModel.eliminarTodos(usuarioId);
+  return count;
 };

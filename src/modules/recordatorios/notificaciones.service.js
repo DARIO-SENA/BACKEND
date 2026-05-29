@@ -1,6 +1,7 @@
 // src/modules/recordatorios/notificaciones.service.js
 
 import * as notificacionModel from './notificacion.model.js';
+import { AppError } from '../../utils/AppError.js';
 
 export const listar = async (usuarioId, soloNoLeidas = false) => {
   const result = await notificacionModel.encontrarPorUsuario(usuarioId, soloNoLeidas);
@@ -10,7 +11,7 @@ export const listar = async (usuarioId, soloNoLeidas = false) => {
 
 export const marcarLeida = async (id, usuarioId) => {
   const notif = await notificacionModel.marcarLeida(id, usuarioId);
-  if (!notif) throw { status: 404, message: 'Notificación no encontrada' };
+  if (!notif) throw new AppError('Notificación no encontrada', 404);
   return notif;
 };
 

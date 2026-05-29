@@ -36,6 +36,7 @@ router.delete('/presupuestos/:id', ctrl.eliminarPresupuesto);
 // ─── METAS ──────────────────────────────────────────────────────
 router.get('/metas',             ctrl.listarMetas);
 router.post('/metas',            ctrl.crearMeta);
+router.delete('/metas',           ctrl.eliminarTodasMetas);
 router.put('/metas/:id',         ctrl.actualizarMeta);
 router.delete('/metas/:id',      ctrl.eliminarMeta);
 router.post('/metas/:id/aportar', ctrl.aportarMeta);

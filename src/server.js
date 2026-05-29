@@ -54,6 +54,7 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 const PORT = process.env.PORT || 3000;
 
 import { imprimirRutas } from './utils/routes.logger.js';
+import { initTables as initRutinaTables } from './modules/rutina/rutina.service.js';
 
 app.listen(PORT, async () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
@@ -63,6 +64,13 @@ app.listen(PORT, async () => {
     console.log('🟢 DB conectada:', dbResult.rows[0]);
   } catch (err) {
     console.error('🔴 Error DB:', err.message);
+  }
+
+  try {
+    await initRutinaTables();
+    console.log('🟢 Tablas de rutina inicializadas');
+  } catch (err) {
+    console.error('🔴 Error inicializando tablas de rutina:', err.message);
   }
 
   await iniciarScheduler();

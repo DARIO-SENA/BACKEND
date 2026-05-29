@@ -44,6 +44,7 @@ router.use(verificarToken);
  */
 router.post('/', ctrl.crearMeta);
 router.get('/', ctrl.obtenerMetas);
+router.delete('/', ctrl.eliminarTodasMetas);
 
 /**
  * @openapi
@@ -195,6 +196,7 @@ router.get('/:metaId/krs', ctrl.obtenerKeyResults);
  *       200: { description: KR actualizado }
  */
 router.put('/:metaId/krs/:krId', ctrl.actualizarKeyResult);
+router.delete('/:metaId/krs/:krId', ctrl.eliminarKeyResult);
 
 /**
  * @openapi

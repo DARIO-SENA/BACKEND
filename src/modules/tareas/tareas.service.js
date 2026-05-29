@@ -49,7 +49,7 @@ export const crearTarea = async (usuarioId, datos) => {
     titulo, descripcion, prioridad, duracion_minutos,
     fecha_inicio, fecha_fin, fecha_limite,
     todo_el_dia, categoria_id,
-    es_recurrente, recurrencia,
+    es_recurrente, recurrencia, dias_semana,
   } = parsed.data;
   const auto_programado = false;
 
@@ -57,11 +57,11 @@ export const crearTarea = async (usuarioId, datos) => {
     `INSERT INTO tareas (
        usuario_id, titulo, descripcion, prioridad, duracion_minutos,
        fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id,
-       es_recurrente, recurrencia, auto_programado
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
+       es_recurrente, recurrencia, auto_programado, dias_semana
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
     [usuarioId, titulo, descripcion, prioridad, duracion_minutos,
      fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id,
-     es_recurrente, recurrencia, auto_programado]
+     es_recurrente, recurrencia, auto_programado, JSON.stringify(dias_semana)]
   );
 
   eventBus.emit(EVENTS.TASK_CREATED, { usuarioId, tarea: rows[0] });
@@ -110,6 +110,14 @@ export const eliminarTarea = async (id, usuarioId) => {
     [id, usuarioId]
   );
   return rowCount > 0;
+};
+
+export const eliminarTodas = async (usuarioId) => {
+  const { rowCount } = await pool.query(
+    'DELETE FROM tareas WHERE usuario_id = $1',
+    [usuarioId]
+  );
+  return rowCount;
 };
 
 export const cambiarEstado = async (id, usuarioId, estado) => {
