@@ -7,10 +7,20 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const MIGRATIONS_TABLE = '_migrations';
 
-const migrations = [
-  { file: 'fixes.sql', name: '001_fixes' },
-  { file: 'indexes.sql', name: '002_indexes' },
-];
+const FULL_DB_MIGRATION = '001_full_db';
+
+async function isFreshDatabase() {
+  try {
+    const { rows } = await pool.query(
+      `SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'usuarios'`
+    );
+    return rows.length === 0;
+  } catch {
+    return true;
+  }
+}
+
+const migrations = [];
 
 async function ensureMigrationsTable() {
   await pool.query(`
@@ -43,6 +53,21 @@ async function markFailed(name) {
   );
 }
 
+async function runSingleMigration(m) {
+  if (await isApplied(m.name)) {
+    console.log(`   ⏭️  ${m.name} — ya aplicada`);
+    return;
+  }
+
+  const sqlPath = join(__dirname, m.file);
+  const sql = readFileSync(sqlPath, 'utf-8');
+
+  console.log(`   ▶️  ${m.name} — ejecutando...`);
+  await pool.query(sql);
+  await markApplied(m.name);
+  console.log(`   ✅ ${m.name} — aplicada`);
+}
+
 export async function runMigrations() {
   console.log('\n📦 Ejecutando migraciones de base de datos...');
 
@@ -53,21 +78,16 @@ export async function runMigrations() {
     return;
   }
 
+  if (await isFreshDatabase()) {
+    migrations.push({ file: 'DARIODB.sql', name: FULL_DB_MIGRATION });
+    console.log('   🆕 Base de datos vacía — aplicando esquema completo');
+  } else {
+    console.log('   🟢 Base de datos existente — omitiendo esquema completo');
+  }
+
   for (const m of migrations) {
     try {
-      if (await isApplied(m.name)) {
-        console.log(`   ⏭️  ${m.name} — ya aplicada`);
-        continue;
-      }
-
-      const sqlPath = join(__dirname, m.file);
-      const raw = readFileSync(sqlPath, 'utf-8');
-      const sql = raw.split('\n').filter(l => !l.trim().startsWith('\\')).join('\n');
-
-      console.log(`   ▶️  ${m.name} — ejecutando...`);
-      await pool.query(sql);
-      await markApplied(m.name);
-      console.log(`   ✅ ${m.name} — aplicada`);
+      await runSingleMigration(m);
     } catch (err) {
       console.error(`   ❌ ${m.name} — ERROR: ${err.message}`);
     }
