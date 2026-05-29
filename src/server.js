@@ -55,6 +55,7 @@ const PORT = process.env.PORT || 3000;
 
 import { imprimirRutas } from './utils/routes.logger.js';
 import { initTables as initRutinaTables } from './modules/rutina/rutina.service.js';
+import { runMigrations } from '../database/migrate.js';
 
 app.listen(PORT, async () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
@@ -65,6 +66,8 @@ app.listen(PORT, async () => {
   } catch (err) {
     console.error('🔴 Error DB:', err.message);
   }
+
+  await runMigrations();
 
   try {
     await initRutinaTables();
