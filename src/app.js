@@ -26,6 +26,7 @@ import { metasRouter } from './modules/metas/metas.routes.js';
 import { exportarRouter } from './modules/exportar/exportar.routes.js';
 import { emailRouter } from './modules/email/email.routes.js';
 import { rutinaRouter } from './modules/rutina/rutina.routes.js';
+import { lecturaRouter } from './modules/lectura/lectura.routes.js';
 
 const app = express();
 
@@ -90,6 +91,8 @@ app.use('/api/email', emailRouter);
 emailRouter.prefix = '/api/email';
 app.use('/api/rutina', rutinaRouter);
 rutinaRouter.prefix = '/api/rutina';
+app.use('/api/lectura', lecturaRouter);
+lecturaRouter.prefix = '/api/lectura';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

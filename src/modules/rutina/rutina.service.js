@@ -32,7 +32,7 @@ export const obtenerDiaCompleto = async (usuarioId, fecha) => {
   const finStr = `${fecha} 23:59:59`;
   const diaSemana = (new Date(fecha + 'T12:00:00').getUTCDay() + 6) % 7;
 
-  const [tareasRes, habitosRes, bloquesRes, recordatoriosRes, plantillaDia] = await Promise.all([
+  const [tareasRes, habitosRes, bloquesRes, recordatoriosRes, plantillaDia, rutinasPendientes, lecturaRes] = await Promise.all([
     pool.query(
       `SELECT t.*, c.nombre AS categoria_nombre, c.color AS categoria_color
        FROM tareas t
@@ -41,7 +41,7 @@ export const obtenerDiaCompleto = async (usuarioId, fecha) => {
          AND (
            (t.fecha_inicio >= $2::timestamp AND t.fecha_inicio <= $3::timestamp)
            OR (t.todo_el_dia = true AND t.fecha_limite::date = $4::date)
-           OR (t.fecha_inicio IS NULL AND t.fecha_limite::date = $4::date)
+            OR (t.fecha_inicio IS NULL)
          )
        ORDER BY t.fecha_inicio ASC NULLS LAST`,
       [usuarioId, inicioStr, finStr, fecha]
@@ -79,6 +79,39 @@ export const obtenerDiaCompleto = async (usuarioId, fecha) => {
        WHERE pd.usuario_id = $1 AND pd.dia_semana = $2 AND pd.activo = true`,
       [usuarioId, diaSemana]
     ),
+    pool.query(
+      `SELECT r.id, r.nombre, r.dias_semana,
+              CASE WHEN rr.id IS NOT NULL THEN true ELSE false END AS completado_hoy
+       FROM rutinas r
+       LEFT JOIN registros_rutinas rr ON rr.rutina_id = r.id AND rr.fecha = $4::date
+       WHERE r.usuario_id = $1
+         AND r.dias_semana IS NOT NULL
+         AND r.dias_semana::jsonb @> to_jsonb(($2)::int)
+         AND r.id NOT IN (
+           SELECT pb.gimnasio_rutina_id
+           FROM plantillas_dia pd
+           JOIN plantillas_bloques pb ON pb.plantilla_id = pd.id
+           WHERE pd.usuario_id = $1 AND pd.dia_semana = $3 AND pb.tipo = 'gimnasio' AND pb.gimnasio_rutina_id IS NOT NULL
+         )
+        ORDER BY r.nombre`,
+      [usuarioId, diaSemana + 1, diaSemana, fecha]
+    ),
+    pool.query(
+      `SELECT p.id AS plan_id, p.libro_id, p.paginas_por_dia, p.habito_id,
+              l.titulo AS libro_titulo, l.paginas_totales, l.paginas_leidas,
+              COALESCE(lr.paginas_leidas, 0) AS leidas_hoy,
+              CASE WHEN lr.id IS NOT NULL THEN true ELSE false END AS completado_hoy
+       FROM lectura_planes p
+       JOIN lectura_libros l ON l.id = p.libro_id
+       LEFT JOIN lectura_registros lr ON lr.libro_id = p.libro_id AND lr.usuario_id = p.usuario_id AND lr.fecha = $4::date
+       WHERE p.usuario_id = $1
+         AND p.completado = false
+         AND $4::date >= p.fecha_inicio
+         AND $4::date <= p.fecha_fin
+         AND p.dias_lectura @> to_jsonb($5::int)
+       ORDER BY l.titulo`,
+      [usuarioId, diaSemana, diaSemana, fecha, (diaSemana + 1) % 7]
+    ),
   ]);
 
   const gimnasioBloques = plantillaDia.rows.filter(b => b.tipo === 'gimnasio');
@@ -95,6 +128,8 @@ export const obtenerDiaCompleto = async (usuarioId, fecha) => {
     plantilla_habitos: plantillaHabitos,
     plantilla_bloques_fijos: plantillaBloquesFijos,
     habitos_programados: habitosRes.rows.filter(h => h.hora_programada),
+    rutinas_pendientes: rutinasPendientes.rows,
+    lectura_hoy: lecturaRes.rows,
   };
 };
 
@@ -105,7 +140,7 @@ export const obtenerSemanaCompleta = async (usuarioId, fechaInicio) => {
   const inicioStr = `${fechaInicio} 00:00:00`;
   const finStr = `${finDate.toISOString().split('T')[0]} 00:00:00`;
 
-  const [tareasRes, habitosRes, bloquesRes, recordatoriosRes, plantillasRes] = await Promise.all([
+  const [tareasRes, habitosRes, bloquesRes, recordatoriosRes, plantillasRes, rutinasPendientes] = await Promise.all([
     pool.query(
       `SELECT t.*, c.nombre AS categoria_nombre, c.color AS categoria_color,
               EXTRACT(DOW FROM t.fecha_inicio) AS dia_semana,
@@ -117,7 +152,7 @@ export const obtenerSemanaCompleta = async (usuarioId, fechaInicio) => {
          AND (
            (t.fecha_inicio >= $2::timestamp AND t.fecha_inicio < $3::timestamp)
            OR (t.todo_el_dia = true AND t.fecha_limite::date >= $4::date AND t.fecha_limite::date < $5::date)
-           OR (t.fecha_inicio IS NULL AND t.fecha_limite::date >= $4::date AND t.fecha_limite::date < $5::date)
+            OR (t.fecha_inicio IS NULL)
          )
        ORDER BY t.fecha_inicio ASC`,
       [usuarioId, inicioStr, finStr, fechaInicio, finDate.toISOString().split('T')[0]]
@@ -147,11 +182,26 @@ export const obtenerSemanaCompleta = async (usuarioId, fechaInicio) => {
     ),
     pool.query(
       `SELECT pb.*, r.nombre AS rutina_nombre, pd.dia_semana
-       FROM plantillas_dia pd
-       JOIN plantillas_bloques pb ON pb.plantilla_id = pd.id
-       LEFT JOIN rutinas r ON r.id = pb.gimnasio_rutina_id
-       WHERE pd.usuario_id = $1 AND pd.activo = true
-       ORDER BY pd.dia_semana, pb.hora_inicio`,
+        FROM plantillas_dia pd
+        JOIN plantillas_bloques pb ON pb.plantilla_id = pd.id
+        LEFT JOIN rutinas r ON r.id = pb.gimnasio_rutina_id
+        WHERE pd.usuario_id = $1 AND pd.activo = true
+        ORDER BY pd.dia_semana, pb.hora_inicio`,
+      [usuarioId]
+    ),
+    pool.query(
+      `SELECT r.id, r.nombre, r.dias_semana
+       FROM rutinas r
+       WHERE r.usuario_id = $1
+         AND r.dias_semana IS NOT NULL
+         AND r.dias_semana::jsonb <> '[]'::jsonb
+         AND r.id NOT IN (
+           SELECT pb.gimnasio_rutina_id
+           FROM plantillas_dia pd
+           JOIN plantillas_bloques pb ON pb.plantilla_id = pd.id
+           WHERE pd.usuario_id = $1 AND pb.tipo = 'gimnasio' AND pb.gimnasio_rutina_id IS NOT NULL
+         )
+       ORDER BY r.nombre`,
       [usuarioId]
     ),
   ]);
@@ -166,6 +216,13 @@ export const obtenerSemanaCompleta = async (usuarioId, fechaInicio) => {
   const plantillaHabitos = plantillasRes.rows.filter(b => b.tipo === 'habito');
   const plantillaBloquesFijos = plantillasRes.rows.filter(b => b.tipo === 'bloque');
 
+  const rutinasPendientesPorDia = {};
+  for (let d = 0; d < 7; d++) {
+    rutinasPendientesPorDia[d] = rutinasPendientes.rows.filter(r =>
+      r.dias_semana && r.dias_semana.includes(d + 1)
+    );
+  }
+
   return {
     fecha_inicio: fechaInicio,
     tareas: tareasRes.rows,
@@ -178,6 +235,7 @@ export const obtenerSemanaCompleta = async (usuarioId, fechaInicio) => {
     plantilla_bloques_fijos: plantillaBloquesFijos,
     total_tareas: tareasRes.rows.length,
     total_habitos: habitosRes.rows.length,
+    rutinas_pendientes: rutinasPendientesPorDia,
   };
 };
 

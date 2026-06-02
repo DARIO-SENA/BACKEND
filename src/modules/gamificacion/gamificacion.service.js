@@ -42,7 +42,7 @@ const PUNTOS = {
 };
 
 // XP necesaria por nivel (curva exponencial)
-const calcularXpSiguienteNivel = (nivel) => Math.floor(100 * Math.pow(1.5, nivel - 1));
+const calcularXpSiguienteNivel = (nivel) => 100 + (nivel - 1) * 50;
 
 // ─── PERFIL ────────────────────────────────────────────────
 
@@ -63,12 +63,34 @@ export const obtenerOCrearPerfil = async (usuarioId) => {
 };
 
 export const obtenerPerfil = async (usuarioId) => {
-  const perfil = await obtenerOCrearPerfil(usuarioId);
+  let perfil = await obtenerOCrearPerfil(usuarioId);
+
+  // Recalcular xp_siguiente según fórmula actual si está desactualizado
+  const xpEsperado = calcularXpSiguienteNivel(perfil.nivel);
+  if (Number(perfil.xp_siguiente) !== xpEsperado) {
+    const { rows } = await pool.query(
+      `UPDATE perfil_gamificacion SET xp_siguiente = $1 WHERE usuario_id = $2 RETURNING *`,
+      [xpEsperado, usuarioId]
+    );
+    perfil = rows[0];
+  }
+
   const logros  = await obtenerLogrosUsuario(usuarioId);
   const historial = await obtenerHistorialPuntos(usuarioId, 10);
 
+  const hoy = new Date().toISOString().split('T')[0];
+  const ayer = new Date();
+  ayer.setDate(ayer.getDate() - 1);
+  const ayerStr = ayer.toISOString().split('T')[0];
+  const ultimaActividad = perfil.ultima_actividad
+    ? new Date(perfil.ultima_actividad).toISOString().split('T')[0]
+    : null;
+  const rachaActiva = ultimaActividad === hoy || ultimaActividad === ayerStr;
+
   return {
     ...perfil,
+    racha_actual: rachaActiva ? perfil.racha_actual : 0,
+    mejor_racha: perfil.mejor_racha,
     logros_obtenidos: logros.filter(l => l.obtenido).length,
     total_logros: logros.length,
     logros,
@@ -187,7 +209,7 @@ export const actualizarRacha = async (usuarioId) => {
     nuevaRacha = perfil.racha_actual + 1;
   } else {
     // Se rompió la racha
-    nuevaRacha = 1;
+    nuevaRacha = 0;
   }
 
   const mejorRacha = Math.max(nuevaRacha, perfil.mejor_racha);

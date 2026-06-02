@@ -55,6 +55,8 @@ const PORT = process.env.PORT || 3000;
 
 import { imprimirRutas } from './utils/routes.logger.js';
 import { initTables as initRutinaTables } from './modules/rutina/rutina.service.js';
+import { initGymTables } from './modules/gym/gym.service.js';
+import { initLecturaTables } from './modules/lectura/lectura.service.js';
 import { runMigrations } from '../database/migrate.js';
 
 app.listen(PORT, async () => {
@@ -74,6 +76,31 @@ app.listen(PORT, async () => {
     console.log('🟢 Tablas de rutina inicializadas');
   } catch (err) {
     console.error('🔴 Error inicializando tablas de rutina:', err.message);
+  }
+
+  try {
+    await initGymTables();
+    console.log('🟢 Tablas de gym inicializadas');
+  } catch (err) {
+    console.error('🔴 Error inicializando tablas de gym:', err.message);
+  }
+
+  try {
+    await initLecturaTables();
+    console.log('🟢 Tablas de lectura inicializadas');
+  } catch (err) {
+    console.error('🔴 Error inicializando tablas de lectura:', err.message);
+  }
+
+  // Migration: link habitos with lectura_planes
+  try {
+    await pool.query(`
+      ALTER TABLE habitos
+      ADD COLUMN IF NOT EXISTS lectura_plan_id INTEGER REFERENCES lectura_planes(id) ON DELETE SET NULL
+    `);
+    console.log('🟢 Columna lectura_plan_id agregada a habitos');
+  } catch (err) {
+    console.error('🔴 Error en migración lectura_plan_id:', err.message);
   }
 
   await iniciarScheduler();
