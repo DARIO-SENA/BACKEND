@@ -32,6 +32,13 @@ export const actualizarRutina = async (req, res) => {
   } catch (err) { manejarError(res, err); }
 };
 
+export const listarRutinasConEstado = async (req, res) => {
+  try {
+    const data = await gymService.listarRutinasConEstado(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
 export const eliminarRutina = async (req, res) => {
   try {
     const ok = await gymService.eliminarRutina(req.params.id, req.usuario.id);
@@ -116,5 +123,13 @@ export const ultimaSesionEjercicio = async (req, res) => {
   try {
     const data = await gymService.obtenerUltimaSesion(req.usuario.id, req.params.ejercicioId);
     res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const toggleRutinaGym = async (req, res) => {
+  try {
+    const { rutinaId, fecha } = req.body;
+    const result = await gymService.toggleRutinaGym(req.usuario.id, rutinaId, fecha || new Date().toISOString().split('T')[0]);
+    res.json({ ok: true, data: result });
   } catch (err) { manejarError(res, err); }
 };

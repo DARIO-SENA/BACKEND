@@ -2,6 +2,7 @@ import pool from '../../config/db.js';
 import { programarTareasAutomaticamente } from '../agenda/agenda.service.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';
+import { AppError } from '../../utils/AppError.js';
 import { crearTareaSchema, actualizarTareaSchema } from '../../validation/index.js';
 
 export const obtenerTareas = async (usuarioId, filtros = {}) => {
@@ -43,7 +44,7 @@ export const obtenerTareaPorId = async (id, usuarioId) => {
 export const crearTarea = async (usuarioId, datos) => {
   const parsed = crearTareaSchema.safeParse(datos);
   if (!parsed.success) {
-    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+    throw new AppError(parsed.error.issues[0].message, 400);
   }
   const {
     titulo, descripcion, prioridad, duracion_minutos,
@@ -77,7 +78,7 @@ export const programarYObtener = async (usuarioId, tarea) => {
 export const actualizarTarea = async (id, usuarioId, datos) => {
   const parsed = actualizarTareaSchema.safeParse(datos);
   if (!parsed.success) {
-    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+    throw new AppError(parsed.error.issues[0].message, 400);
   }
   datos = parsed.data;
   const campos = [];

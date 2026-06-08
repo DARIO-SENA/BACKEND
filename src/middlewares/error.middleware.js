@@ -1,5 +1,7 @@
+import logger from '../config/logger.js';
+
 export const errorHandler = (err, req, res, next) => {
-  console.error(`[${new Date().toISOString()}] ${err.message}`);
+  logger.error(err.message, { stack: err.stack, status: err.status });
 
   if (res.headersSent) return next(err);
 

@@ -107,13 +107,14 @@ export const interrumpirSession = async (id, usuarioId) => {
 export const listarSessions = async (usuarioId, filtros = {}) => {
   const { estado, desde, hasta, tarea_id, limite = 50 } = filtros;
   const valores = [usuarioId];
-  const condiciones = ['usuario_id = $1'];
+  const condiciones = ['ps.usuario_id = $1'];
+  const condicionesCount = ['usuario_id = $1'];
   let i = 2;
 
-  if (estado)    { condiciones.push(`estado = $${i++}`);            valores.push(estado); }
-  if (desde)     { condiciones.push(`inicio_en >= $${i++}`);        valores.push(desde); }
-  if (hasta)     { condiciones.push(`inicio_en <= $${i++}`);        valores.push(hasta); }
-  if (tarea_id)  { condiciones.push(`tarea_id = $${i++}`);          valores.push(tarea_id); }
+  if (estado)    { condiciones.push(`ps.estado = $${i}`); condicionesCount.push(`estado = $${i}`); valores.push(estado); i++; }
+  if (desde)     { condiciones.push(`ps.inicio_en >= $${i}`); condicionesCount.push(`inicio_en >= $${i}`); valores.push(desde); i++; }
+  if (hasta)     { condiciones.push(`ps.inicio_en <= $${i}`); condicionesCount.push(`inicio_en <= $${i}`); valores.push(hasta); i++; }
+  if (tarea_id)  { condiciones.push(`ps.tarea_id = $${i}`); condicionesCount.push(`tarea_id = $${i}`); valores.push(tarea_id); i++; }
 
   const countValores = [...valores];
   valores.push(limite);
@@ -123,12 +124,12 @@ export const listarSessions = async (usuarioId, filtros = {}) => {
      LEFT JOIN tareas t ON t.id = ps.tarea_id
      WHERE ${condiciones.join(' AND ')}
      ORDER BY ps.inicio_en DESC
-     LIMIT $${i}`,
+     LIMIT $${i}::int`,
     valores
   );
 
   const { rows: countRows } = await pool.query(
-    `SELECT COUNT(*) AS total FROM pomodoro_sessions WHERE ${condiciones.join(' AND ')}`,
+    `SELECT COUNT(*) AS total FROM pomodoro_sessions WHERE ${condicionesCount.join(' AND ')}`,
     countValores
   );
 

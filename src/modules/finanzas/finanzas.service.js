@@ -1,4 +1,5 @@
 import pool from '../../config/db.js';
+import { AppError } from '../../utils/AppError.js';
 
 // ─── CATEGORIAS ─────────────────────────────────────────────────
 
@@ -17,10 +18,10 @@ const MAX_DESCRIPCION = 500;
 export const crearCategoria = async (usuarioId, data) => {
   const { nombre, tipo, icono, color } = data;
   if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0 || nombre.length > MAX_NOMBRE) {
-    throw Object.assign(new Error(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`), { status: 400 });
+    throw new AppError(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`, 400);
   }
   if (!tipo || !['ingreso', 'gasto'].includes(tipo)) {
-    throw Object.assign(new Error('Tipo debe ser ingreso o gasto'), { status: 400 });
+    throw new AppError('Tipo debe ser ingreso o gasto', 400);
   }
   const { rows } = await pool.query(
     `INSERT INTO finanzas_categorias (usuario_id, nombre, tipo, icono, color)
@@ -92,7 +93,7 @@ export const obtenerCuenta = async (id, usuarioId) => {
 export const crearCuenta = async (usuarioId, data) => {
   const { nombre, tipo, saldo_inicial, moneda } = data;
   if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0 || nombre.length > MAX_NOMBRE) {
-    throw Object.assign(new Error(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`), { status: 400 });
+    throw new AppError(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`, 400);
   }
   const { rows } = await pool.query(
     `INSERT INTO finanzas_cuentas (usuario_id, nombre, tipo, saldo_inicial, moneda)
@@ -169,15 +170,13 @@ export const crearTransaccion = async (usuarioId, data) => {
   const { categoria_id, cuenta_id, tipo, monto, descripcion, fecha, es_recurrente } = data;
 
   if (!tipo || !['ingreso', 'gasto', 'transferencia'].includes(tipo)) {
-    const err = new Error('El tipo debe ser ingreso, gasto o transferencia');
-    err.status = 400; throw err;
+    throw new AppError('El tipo debe ser ingreso, gasto o transferencia', 400);
   }
   if (!monto || monto <= 0) {
-    const err = new Error('El monto debe ser mayor a 0');
-    err.status = 400; throw err;
+    throw new AppError('El monto debe ser mayor a 0', 400);
   }
   if (descripcion && descripcion.length > MAX_DESCRIPCION) {
-    throw Object.assign(new Error(`Descripción no puede exceder ${MAX_DESCRIPCION} caracteres`), { status: 400 });
+    throw new AppError(`Descripción no puede exceder ${MAX_DESCRIPCION} caracteres`, 400);
   }
 
   const { rows } = await pool.query(
@@ -220,16 +219,13 @@ export const crearTransferencia = async (usuarioId, data) => {
   const { cuenta_origen_id, cuenta_destino_id, monto, descripcion, fecha } = data;
 
   if (!cuenta_origen_id || !cuenta_destino_id) {
-    const err = new Error('cuenta_origen_id y cuenta_destino_id son obligatorios');
-    err.status = 400; throw err;
+    throw new AppError('cuenta_origen_id y cuenta_destino_id son obligatorios', 400);
   }
   if (cuenta_origen_id === cuenta_destino_id) {
-    const err = new Error('Las cuentas deben ser diferentes');
-    err.status = 400; throw err;
+    throw new AppError('Las cuentas deben ser diferentes', 400);
   }
   if (!monto || monto <= 0) {
-    const err = new Error('El monto debe ser mayor a 0');
-    err.status = 400; throw err;
+    throw new AppError('El monto debe ser mayor a 0', 400);
   }
 
   const client = await pool.connect();
@@ -291,8 +287,7 @@ export const crearPresupuesto = async (usuarioId, data) => {
     [usuarioId, categoria_id, mes, anio]
   );
   if (existe.rows.length > 0) {
-    const err = new Error('Ya existe un presupuesto para esta categoría en el período indicado');
-    err.status = 409; throw err;
+    throw new AppError('Ya existe un presupuesto para esta categoría en el período indicado', 409);
   }
 
   const { rows } = await pool.query(
@@ -386,8 +381,7 @@ export const eliminarTodasMetas = async (usuarioId) => {
 
 export const aportarMeta = async (id, usuarioId, monto) => {
   if (!monto || monto <= 0) {
-    const err = new Error('El monto debe ser mayor a 0');
-    err.status = 400; throw err;
+    throw new AppError('El monto debe ser mayor a 0', 400);
   }
 
   const meta = await pool.query(
@@ -395,8 +389,7 @@ export const aportarMeta = async (id, usuarioId, monto) => {
     [id, usuarioId]
   );
   if (!meta.rows[0]) {
-    const err = new Error('Meta no encontrada');
-    err.status = 404; throw err;
+    throw new AppError('Meta no encontrada', 404);
   }
 
   const nuevoActual = parseFloat(meta.rows[0].monto_actual) + parseFloat(monto);
@@ -459,8 +452,7 @@ export const eliminarDeuda = async (id, usuarioId) => {
 
 export const pagarDeuda = async (id, usuarioId, monto) => {
   if (!monto || monto <= 0) {
-    const err = new Error('El monto debe ser mayor a 0');
-    err.status = 400; throw err;
+    throw new AppError('El monto debe ser mayor a 0', 400);
   }
 
   const deuda = await pool.query(
@@ -468,8 +460,7 @@ export const pagarDeuda = async (id, usuarioId, monto) => {
     [id, usuarioId]
   );
   if (!deuda.rows[0]) {
-    const err = new Error('Deuda no encontrada');
-    err.status = 404; throw err;
+    throw new AppError('Deuda no encontrada', 404);
   }
 
   const nuevoPagado = parseFloat(deuda.rows[0].monto_pagado) + parseFloat(monto);

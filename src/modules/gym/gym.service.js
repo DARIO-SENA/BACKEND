@@ -2,10 +2,24 @@
 import pool from '../../config/db.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';
+import { AppError } from '../../utils/AppError.js';
 
 // ─────────────────────────────────────────
 // RUTINAS
 // ─────────────────────────────────────────
+
+export const initGymTables = async () => {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS registros_rutinas (
+      id SERIAL PRIMARY KEY,
+      rutina_id INTEGER NOT NULL REFERENCES rutinas(id) ON DELETE CASCADE,
+      usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+      fecha DATE NOT NULL,
+      creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(rutina_id, usuario_id, fecha)
+    )
+  `);
+};
 
 const MAX_NOMBRE = 200;
 const MAX_DESCRIPCION = 1000;
@@ -13,21 +27,22 @@ const DIFICULTADES = ['principiante', 'intermedio', 'avanzado'];
 
 // Crear una rutina nueva
 export const crearRutina = async (usuarioId, body) => {
-  const { nombre, descripcion, dificultad } = body;
+  const { nombre, descripcion, dificultad, dias_semana } = body;
   if (!nombre || typeof nombre !== 'string' || nombre.trim().length === 0 || nombre.length > MAX_NOMBRE) {
-    throw Object.assign(new Error(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`), { status: 400 });
+    throw new AppError(`Nombre requerido (máx ${MAX_NOMBRE} caracteres)`, 400);
   }
   if (descripcion && descripcion.length > MAX_DESCRIPCION) {
-    throw Object.assign(new Error(`Descripción no puede exceder ${MAX_DESCRIPCION} caracteres`), { status: 400 });
+    throw new AppError(`Descripción no puede exceder ${MAX_DESCRIPCION} caracteres`, 400);
   }
   if (dificultad && !DIFICULTADES.includes(dificultad)) {
-    throw Object.assign(new Error(`Dificultad debe ser: ${DIFICULTADES.join(', ')}`), { status: 400 });
+    throw new AppError(`Dificultad debe ser: ${DIFICULTADES.join(', ')}`, 400);
   }
+  const dias = Array.isArray(dias_semana) ? JSON.stringify(dias_semana) : '[]';
   const result = await pool.query(
-    `INSERT INTO rutinas (usuario_id, nombre, descripcion, dificultad)
-     VALUES ($1, $2, $3, $4)
+    `INSERT INTO rutinas (usuario_id, nombre, descripcion, dificultad, dias_semana)
+     VALUES ($1, $2, $3, $4, $5::jsonb)
      RETURNING *`,
-    [usuarioId, nombre, descripcion, dificultad || 'principiante']
+    [usuarioId, nombre, descripcion, dificultad || 'principiante', dias]
   );
   return result.rows[0];
 };
@@ -71,13 +86,14 @@ export const actualizarRutina = async (id, usuarioId, body) => {
   const nombre = body.nombre ?? r.nombre;
   const descripcion = body.descripcion ?? r.descripcion;
   const dificultad = body.dificultad ?? r.dificultad;
+  const dias_semana = body.dias_semana !== undefined ? JSON.stringify(body.dias_semana) : JSON.stringify(r.dias_semana || []);
 
   const result = await pool.query(
     `UPDATE rutinas
-     SET nombre = $1, descripcion = $2, dificultad = $3, actualizado_en = NOW()
-     WHERE id = $4 AND usuario_id = $5
+     SET nombre = $1, descripcion = $2, dificultad = $3, dias_semana = $4::jsonb, actualizado_en = NOW()
+     WHERE id = $5 AND usuario_id = $6
      RETURNING *`,
-    [nombre, descripcion, dificultad, id, usuarioId]
+    [nombre, descripcion, dificultad, dias_semana, id, usuarioId]
   );
   return result.rows[0] || null;
 };
@@ -91,6 +107,33 @@ export const eliminarRutina = async (id, usuarioId) => {
     [id, usuarioId]
   );
   return result.rowCount > 0;
+};
+
+// Obtener rutinas con su estado de programación (si están en plantillas)
+export const listarRutinasConEstado = async (usuarioId) => {
+  const result = await pool.query(
+    `SELECT
+       r.*,
+       COALESCE(
+         JSON_AGG(
+           JSON_BUILD_OBJECT(
+             'dia_semana', pd.dia_semana,
+             'bloque_id', pb.id,
+             'hora_inicio', pb.hora_inicio,
+             'hora_fin', pb.hora_fin
+           )
+         ) FILTER (WHERE pb.id IS NOT NULL),
+         '[]'::json
+       ) AS bloques_plantilla
+     FROM rutinas r
+     LEFT JOIN plantillas_bloques pb ON pb.gimnasio_rutina_id = r.id
+     LEFT JOIN plantillas_dia pd ON pd.id = pb.plantilla_id AND pd.usuario_id = r.usuario_id
+     WHERE r.usuario_id = $1
+     GROUP BY r.id
+     ORDER BY r.creado_en DESC`,
+    [usuarioId]
+  );
+  return result.rows;
 };
 
 // ─────────────────────────────────────────
@@ -108,9 +151,7 @@ export const crearEjercicio = async (usuarioId, body) => {
     [rutina_id, nombre, grupo_muscular, series_default ?? 3, repeticiones_default ?? 10, descanso ?? 90, duracion_segundos ?? 60, usuarioId]
   );
   if (result.rows.length === 0) {
-    const err = new Error('Rutina no encontrada o no pertenece al usuario');
-    err.status = 404;
-    throw err;
+    throw new AppError('Rutina no encontrada o no pertenece al usuario', 404);
   }
   return result.rows[0];
 };
@@ -406,4 +447,28 @@ export const sugerirPeso = async (usuarioId, ejercicioId) => {
       ? `Puedes aumentar el peso a ${sugerencia} kg`
       : `Mantén el peso en ${pesoMaximo} kg`
   };
+};
+
+// ─────────────────────────────────────────
+// COMPLETAR RUTINA (toggle por día)
+// ─────────────────────────────────────────
+
+export const toggleRutinaGym = async (usuarioId, rutinaId, fecha) => {
+  const existing = await pool.query(
+    `SELECT id FROM registros_rutinas
+     WHERE rutina_id = $1 AND usuario_id = $2 AND fecha = $3::date`,
+    [rutinaId, usuarioId, fecha]
+  );
+
+  if (existing.rows.length > 0) {
+    await pool.query('DELETE FROM registros_rutinas WHERE id = $1', [existing.rows[0].id]);
+    return { completado: false };
+  }
+
+  await pool.query(
+    `INSERT INTO registros_rutinas (rutina_id, usuario_id, fecha)
+     VALUES ($1, $2, $3::date)`,
+    [rutinaId, usuarioId, fecha]
+  );
+  return { completado: true };
 };

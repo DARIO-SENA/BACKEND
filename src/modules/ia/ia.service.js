@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import * as prompts from './ia.prompts.js';
 import { obtenerCache, guardarCache } from './ia.cache.js';
+import { AppError } from '../../utils/AppError.js';
 import * as tareasService from '../tareas/tareas.service.js';
 import * as habitosService from '../habitos/habitos.service.js';
 import * as analyticsService from '../analytics/analytics.service.js';
@@ -24,7 +25,7 @@ const getOpenAI = () => {
   if (!_openai) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      throw Object.assign(new Error('OPENAI_API_KEY no configurada'), { status: 503 });
+      throw new AppError('OPENAI_API_KEY no configurada', 503);
     }
     _openai = new OpenAI({ apiKey });
   }

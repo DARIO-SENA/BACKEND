@@ -1,0 +1,363 @@
+2026-06-03 13:26:07 [ERROR] inserción o actualización en la tabla «metas» viola la llave foránea «metas_usuario_id_fkey»
+error: inserción o actualización en la tabla «metas» viola la llave foránea «metas_usuario_id_fkey»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Module.crearMeta (C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.service.js:48:20)
+    at crearMeta (C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.controller.js:6:18)
+2026-06-03 13:26:07 [ERROR] no existe la columna «usuario» en la relación «usuarios»
+error: no existe la columna «usuario» en la relación «usuarios»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Module.registrarUsuario (C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/auth/auth.service.js:34:20)
+    at registrar (C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/auth/auth.controller.js:6:19)
+2026-06-03 13:26:07 [ERROR] no existe la columna «usuario» en la relación «usuarios»
+error: no existe la columna «usuario» en la relación «usuarios»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Module.registrarUsuario (C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/auth/auth.service.js:34:20)
+    at registrar (C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/auth/auth.controller.js:6:19)
+2026-06-03 13:48:39 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 13:48:45 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 13:54:02 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:03:07 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:07:35 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:07:41 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:12:41 [ERROR] 008_lectura_columnas_sync — ERROR: no existe la columna «plan_id» en la relación «lectura_registros»
+2026-06-03 14:13:04 [ERROR] 008_lectura_columnas_sync — ERROR: no existe la columna «plan_id» en la relación «lectura_registros»
+2026-06-03 14:22:22 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:27:01 [ERROR] 008_lectura_columnas_sync — ERROR: no existe la columna «plan_id» en la relación «lectura_registros»
+2026-06-03 14:29:11 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:29:14 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:34:54 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:45:00 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:45:01 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:48:48 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:48:54 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:52:28 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 14:55:31 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 15:00:01 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 15:04:28 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 15:34:33 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 15:56:08 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 16:53:26 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-03 22:41:22 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:42:49 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:43:02 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:43:10 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerSemanaCompleta (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:143:99)
+    at async obtenerSemana (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:15:18)
+2026-06-04 19:43:12 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:43:45 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:44:21 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:31 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:32 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:32 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:32 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:33 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:33 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:42 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:42 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:44:47 [ERROR] no existe la columna «dias_semana» en la relación «tareas»
+error: no existe la columna «dias_semana» en la relación «tareas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.service.js:57:20)
+    at async crearTarea (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/tareas/tareas.controller.js:21:19)
+2026-06-04 19:47:55 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:48:31 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:32 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:33 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:33 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:33 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:33 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:33 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:48:33 [ERROR] no existe la columna «dias_semana» en la relación «rutinas»
+error: no existe la columna «dias_semana» en la relación «rutinas»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:41:18)
+    at async crearRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:6:18)
+2026-06-04 19:49:57 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-04 19:50:27 [ERROR] desbordamiento de campo numeric
+error: desbordamiento de campo numeric
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.service.js:225:20)
+    at async actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.controller.js:72:16)
+2026-06-04 19:50:27 [ERROR] desbordamiento de campo numeric
+error: desbordamiento de campo numeric
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.service.js:225:20)
+    at async actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.controller.js:72:16)
+2026-06-04 19:50:27 [ERROR] desbordamiento de campo numeric
+error: desbordamiento de campo numeric
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.service.js:225:20)
+    at async actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.controller.js:72:16)
+2026-06-04 19:50:28 [ERROR] desbordamiento de campo numeric
+error: desbordamiento de campo numeric
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.service.js:225:20)
+    at async actualizarKeyResult (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/metas/metas.controller.js:72:16)
+2026-06-04 19:50:54 [ERROR] no existe la columna r.dias_semana
+error: no existe la columna r.dias_semana
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 5)
+    at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
+    at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
