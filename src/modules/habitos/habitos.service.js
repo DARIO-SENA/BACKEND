@@ -1,12 +1,13 @@
 import pool from '../../config/db.js';
 import eventBus from '../../eventBus/index.js';
 import { EVENTS } from '../../eventBus/events.js';
+import { AppError } from '../../utils/AppError.js';
 import { crearHabitoSchema, actualizarHabitoSchema } from '../../validation/index.js';
 
 export const crearHabito = async (usuarioId, datos) => {
   const parsed = crearHabitoSchema.safeParse(datos);
   if (!parsed.success) {
-    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+    throw new AppError(parsed.error.issues[0].message, 400);
   }
   const { titulo, descripcion, frecuencia, dias_semana } = parsed.data;
   const { rows } = await pool.query(
@@ -33,7 +34,7 @@ export const listarHabitos = async (usuarioId, limite = 50, pagina = 1) => {
 export const actualizarHabito = async (id, usuarioId, datos) => {
   const parsed = actualizarHabitoSchema.safeParse(datos);
   if (!parsed.success) {
-    throw Object.assign(new Error(parsed.error.issues[0].message), { status: 400 });
+    throw new AppError(parsed.error.issues[0].message, 400);
   }
   datos = parsed.data;
 

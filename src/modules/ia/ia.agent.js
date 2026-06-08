@@ -6,6 +6,7 @@ import * as tareasService from '../tareas/tareas.service.js';
 import * as analyticsService from '../analytics/analytics.service.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 import * as gymService from '../gym/gym.service.js';
+import * as habitosService from '../habitos/habitos.service.js';
 import pool from '../../config/db.js';
 
 const crearTools = (usuarioId) => [
@@ -65,10 +66,7 @@ const crearTools = (usuarioId) => [
     }
   ),
   tool(
-    async () => {
-      const { default: habitosService } = await import('../habitos/habitos.service.js');
-      return JSON.stringify(await habitosService.listarHabitos(usuarioId));
-    },
+    async () => JSON.stringify(await habitosService.listarHabitos(usuarioId)),
     {
       name: 'get_habits',
       description: 'Lista todos los habitos del usuario',

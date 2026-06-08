@@ -1,4 +1,5 @@
 import Redis from 'ioredis';
+import logger from './logger.js';
 
 export const redisConfig = {
   host: process.env.REDIS_HOST || 'localhost',
@@ -6,11 +7,11 @@ export const redisConfig = {
   maxRetriesPerRequest: null,
   retryStrategy: (times) => {
     if (times > 10) {
-      console.error('[Redis] Máximo de reintentos alcanzado. No se reconectará.');
+      logger.error('[Redis] Máximo de reintentos alcanzado. No se reconectará.');
       return null;
     }
     const delay = Math.min(times * 200, 5000);
-    console.warn(`[Redis] Reintentando conexión en ${delay}ms (intento ${times}/10)`);
+    logger.warn(`[Redis] Reintentando conexión en ${delay}ms (intento ${times}/10)`);
     return delay;
   },
 };
@@ -20,13 +21,13 @@ let client = null;
 const createClient = () => {
   const c = new Redis(redisConfig);
   c.on('error', (err) => {
-    console.error('[Redis] Error:', err.message);
+    logger.error('[Redis] Error:', err.message);
   });
   c.on('connect', () => {
-    console.log('[Redis] Conectado');
+    logger.info('[Redis] Conectado');
   });
   c.on('reconnecting', () => {
-    console.warn('[Redis] Reconectando...');
+    logger.warn('[Redis] Reconectando...');
   });
   return c;
 };

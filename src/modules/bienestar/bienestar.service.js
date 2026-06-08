@@ -1,4 +1,5 @@
 import pool from "../../config/db.js";
+import { AppError } from '../../utils/AppError.js';
 
 const MAX_NOTAS = 500;
 const MAX_TITULO = 200;
@@ -10,16 +11,16 @@ const RANGO_SUENO = [0, 24];
 const validarCheckin = (datos) => {
   const { estado_animo, energia, sueno_horas, notas } = datos;
   if (estado_animo && !ESTADOS_ANIMO.includes(estado_animo)) {
-    throw Object.assign(new Error(`Estado de ánimo inválido. Debe ser: ${ESTADOS_ANIMO.join(', ')}`), { status: 400 });
+    throw new AppError(`Estado de ánimo inválido. Debe ser: ${ESTADOS_ANIMO.join(', ')}`, 400);
   }
   if (energia !== undefined && (energia < RANGO_ENERGIA[0] || energia > RANGO_ENERGIA[1])) {
-    throw Object.assign(new Error(`Energía debe estar entre ${RANGO_ENERGIA[0]} y ${RANGO_ENERGIA[1]}`), { status: 400 });
+    throw new AppError(`Energía debe estar entre ${RANGO_ENERGIA[0]} y ${RANGO_ENERGIA[1]}`, 400);
   }
   if (sueno_horas !== undefined && (sueno_horas < RANGO_SUENO[0] || sueno_horas > RANGO_SUENO[1])) {
-    throw Object.assign(new Error(`Horas de sueño deben estar entre ${RANGO_SUENO[0]} y ${RANGO_SUENO[1]}`), { status: 400 });
+    throw new AppError(`Horas de sueño deben estar entre ${RANGO_SUENO[0]} y ${RANGO_SUENO[1]}`, 400);
   }
   if (notas && notas.length > MAX_NOTAS) {
-    throw Object.assign(new Error(`Notas no pueden exceder ${MAX_NOTAS} caracteres`), { status: 400 });
+    throw new AppError(`Notas no pueden exceder ${MAX_NOTAS} caracteres`, 400);
   }
 };
 
@@ -98,10 +99,10 @@ export const obtenerEstadisticas = async (usuarioId) => {
 export const crearDiario = async (usuarioId, datos) => {
   const { titulo, contenido, etiquetas, es_publico } = datos;
   if (titulo && titulo.length > MAX_TITULO) {
-    throw Object.assign(new Error(`Título no puede exceder ${MAX_TITULO} caracteres`), { status: 400 });
+    throw new AppError(`Título no puede exceder ${MAX_TITULO} caracteres`, 400);
   }
   if (contenido && contenido.length > MAX_CONTENIDO) {
-    throw Object.assign(new Error(`Contenido no puede exceder ${MAX_CONTENIDO} caracteres`), { status: 400 });
+    throw new AppError(`Contenido no puede exceder ${MAX_CONTENIDO} caracteres`, 400);
   }
   const { rows } = await pool.query(
     `INSERT INTO diario_personal (usuario_id, titulo, contenido, etiquetas, es_publico)
@@ -140,10 +141,10 @@ export const obtenerDiario = async (id, usuarioId) => {
 export const actualizarDiario = async (id, usuarioId, datos) => {
   const { titulo, contenido, etiquetas, es_publico } = datos;
   if (titulo && titulo.length > MAX_TITULO) {
-    throw Object.assign(new Error(`Título no puede exceder ${MAX_TITULO} caracteres`), { status: 400 });
+    throw new AppError(`Título no puede exceder ${MAX_TITULO} caracteres`, 400);
   }
   if (contenido && contenido.length > MAX_CONTENIDO) {
-    throw Object.assign(new Error(`Contenido no puede exceder ${MAX_CONTENIDO} caracteres`), { status: 400 });
+    throw new AppError(`Contenido no puede exceder ${MAX_CONTENIDO} caracteres`, 400);
   }
   const { rows } = await pool.query(
     `UPDATE diario_personal

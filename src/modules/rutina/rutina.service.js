@@ -98,19 +98,19 @@ export const obtenerDiaCompleto = async (usuarioId, fecha) => {
     ),
     pool.query(
       `SELECT p.id AS plan_id, p.libro_id, p.paginas_por_dia, p.habito_id,
-              l.titulo AS libro_titulo, l.paginas_totales, l.paginas_leidas,
-              COALESCE(lr.paginas_leidas, 0) AS leidas_hoy,
-              CASE WHEN lr.id IS NOT NULL THEN true ELSE false END AS completado_hoy
-       FROM lectura_planes p
-       JOIN lectura_libros l ON l.id = p.libro_id
-       LEFT JOIN lectura_registros lr ON lr.libro_id = p.libro_id AND lr.usuario_id = p.usuario_id AND lr.fecha = $4::date
-       WHERE p.usuario_id = $1
-         AND p.completado = false
-         AND $4::date >= p.fecha_inicio
-         AND $4::date <= p.fecha_fin
-         AND p.dias_lectura @> to_jsonb($5::int)
-       ORDER BY l.titulo`,
-      [usuarioId, diaSemana, diaSemana, fecha, (diaSemana + 1) % 7]
+               l.titulo AS libro_titulo, l.paginas_totales, l.paginas_leidas,
+               COALESCE(lr.paginas_leidas, 0) AS leidas_hoy,
+               CASE WHEN lr.id IS NOT NULL THEN true ELSE false END AS completado_hoy
+        FROM lectura_planes p
+        JOIN lectura_libros l ON l.id = p.libro_id
+        LEFT JOIN lectura_registros lr ON lr.libro_id = p.libro_id AND lr.usuario_id = p.usuario_id AND lr.fecha = $2::date
+        WHERE p.usuario_id = $1
+          AND p.completado = false
+          AND $2::date >= p.fecha_inicio
+          AND $2::date <= p.fecha_fin
+          AND p.dias_lectura @> to_jsonb($3::int)
+        ORDER BY l.titulo`,
+      [usuarioId, fecha, (diaSemana + 1) % 7]
     ),
   ]);
 

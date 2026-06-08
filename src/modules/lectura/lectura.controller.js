@@ -1,6 +1,120 @@
 import { manejarError } from '../../utils/error.handler.js';
 import * as service from './lectura.service.js';
 
+// ───────────────────────────
+// Stats
+// ───────────────────────────
+export const stats = async (req, res) => {
+  try {
+    const data = await service.obtenerStats(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+// ───────────────────────────
+// Notas y citas
+// ───────────────────────────
+export const obtenerNotas = async (req, res) => {
+  try {
+    const data = await service.obtenerNotas(req.params.libroId, req.usuario.id);
+    if (!data) return res.status(404).json({ ok: false, error: 'Libro no encontrado' });
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const guardarNotas = async (req, res) => {
+  try {
+    const data = await service.guardarNotas(req.params.libroId, req.usuario.id, req.body);
+    if (!data) return res.status(404).json({ ok: false, error: 'Libro no encontrado' });
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const agregarCita = async (req, res) => {
+  try {
+    const data = await service.agregarCita(req.params.libroId, req.usuario.id, req.body);
+    if (!data) return res.status(404).json({ ok: false, error: 'Libro no encontrado' });
+    res.status(201).json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const eliminarCita = async (req, res) => {
+  try {
+    const data = await service.eliminarCita(req.params.libroId, req.usuario.id, req.params.citaId);
+    if (!data) return res.status(404).json({ ok: false, error: 'Libro no encontrado' });
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+// ───────────────────────────
+// Metas
+// ───────────────────────────
+export const listarMetas = async (req, res) => {
+  try {
+    const metas = await service.obtenerMetas(req.usuario.id);
+    res.json({ ok: true, data: metas });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const crearMeta = async (req, res) => {
+  try {
+    const meta = await service.crearMeta(req.usuario.id, req.body);
+    res.status(201).json({ ok: true, data: meta });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const eliminarMeta = async (req, res) => {
+  try {
+    await service.eliminarMeta(req.params.id, req.usuario.id);
+    res.json({ ok: true });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const recalcularMetas = async (req, res) => {
+  try {
+    await service.recalcularProgresoMetas(req.usuario.id);
+    res.json({ ok: true });
+  } catch (err) { manejarError(res, err); }
+};
+
+// ───────────────────────────
+// Timer
+// ───────────────────────────
+export const iniciarTimer = async (req, res) => {
+  try {
+    const data = await service.iniciarTimer(req.usuario.id, req.body);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const detenerTimer = async (req, res) => {
+  try {
+    const data = await service.detenerTimer(req.usuario.id, req.body);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const timerEstado = async (req, res) => {
+  try {
+    const data = await service.timerEstado(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const pausarTimer = async (req, res) => {
+  try {
+    const data = await service.pausarTimer(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const reanudarTimer = async (req, res) => {
+  try {
+    const data = await service.reanudarTimer(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
 export const initTables = async (req, res) => {
   try {
     await service.initLecturaTables();
@@ -107,6 +221,14 @@ export const eliminarPlan = async (req, res) => {
   try {
     await service.eliminarPlan(req.params.id, req.usuario.id);
     res.json({ ok: true });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const recalcularPlan = async (req, res) => {
+  try {
+    const data = await service.recalcularPlan(req.params.id, req.usuario.id);
+    if (!data) return res.status(404).json({ ok: false, error: 'Plan no encontrado' });
+    res.json({ ok: true, data });
   } catch (err) { manejarError(res, err); }
 };
 

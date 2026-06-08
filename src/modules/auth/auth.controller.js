@@ -14,3 +14,10 @@ export const iniciarSesion = async (req, res) => {
     res.json({ ok: true, data: datos });
   } catch (err) { manejarError(res, err); }
 };
+
+export const obtenerPerfil = async (req, res) => {
+  try {
+    const data = await authService.obtenerPerfil(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};

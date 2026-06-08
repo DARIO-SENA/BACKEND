@@ -1,4 +1,5 @@
 import { manejarError } from '../../utils/error.handler.js';
+import { AppError } from '../../utils/AppError.js';
 import pool from '../../config/db.js';
 
 const quoteCsv = (v) => {
@@ -75,7 +76,7 @@ const queryModulo = async (usuarioId, modulo) => {
     return results;
   }
 
-  if (!queries[modulo]) throw Object.assign(new Error(`Modulo no valido: ${modulo}`), { status: 400 });
+  if (!queries[modulo]) throw new AppError(`Modulo no valido: ${modulo}`, 400);
   const q = queries[modulo];
   const { rows } = await pool.query(q.sql, [usuarioId]);
   return { [modulo]: { rows, columns: q.columns } };

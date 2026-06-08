@@ -1,6 +1,8 @@
-console.log('[EventBus] Inicializando listeners...');
+import logger from '../config/logger.js';
+
+logger.info('[EventBus] Inicializando listeners...');
 
 import './listeners/gamificacion.listener.js';
 import './listeners/metas.listener.js';
 
-console.log('[EventBus] Listeners cargados correctamente');
+logger.info('[EventBus] Listeners cargados correctamente');

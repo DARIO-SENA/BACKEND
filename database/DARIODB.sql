@@ -1485,6 +1485,7 @@ CREATE TABLE public.rutinas (
     nombre character varying(100),
     descripcion text,
     dificultad public.nivel_dificultad DEFAULT 'principiante'::public.nivel_dificultad,
+    dias_semana jsonb DEFAULT '[]'::jsonb,
     creado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     actualizado_en timestamp without time zone DEFAULT CURRENT_TIMESTAMP
 );

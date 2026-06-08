@@ -1,6 +1,7 @@
 import pool from '../../config/db.js';
 import * as gamificacionService from '../gamificacion/gamificacion.service.js';
 import * as tareasService from '../tareas/tareas.service.js';
+import { AppError } from '../../utils/AppError.js';
 import { llamarOpenAI, safeJsonParse } from '../ia/ia.service.js';
 
 const PROMPT_DESCOMPONER = `Eres un experto en OKRs. Descompón la siguiente meta en 3-5 Key Results (resultados clave) medibles y sugiera 2-3 tareas concretas para cada KR.
@@ -42,7 +43,7 @@ Responde SOLO con JSON:
 export const crearMeta = async (usuarioId, datos) => {
   const { titulo, descripcion, categoria, fecha_inicio, fecha_fin, es_borrador } = datos;
   if (!titulo || typeof titulo !== 'string' || titulo.trim().length === 0 || titulo.length > 200) {
-    throw Object.assign(new Error('Título requerido (máx 200 caracteres)'), { status: 400 });
+    throw new AppError('Título requerido (máx 200 caracteres)', 400);
   }
   const { rows } = await pool.query(
     `INSERT INTO metas (usuario_id, titulo, descripcion, categoria, fecha_inicio, fecha_fin, es_borrador)
@@ -154,11 +155,11 @@ export const crearKeyResult = async (metaId, usuarioId, datos) => {
     'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
     [metaId, usuarioId]
   );
-  if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta[0]) throw new AppError('Meta no encontrada', 404);
 
   const { titulo, descripcion, orden } = datos;
   if (!titulo || typeof titulo !== 'string' || titulo.trim().length === 0 || titulo.length > 200) {
-    throw Object.assign(new Error('Título del KR requerido (máx 200 caracteres)'), { status: 400 });
+    throw new AppError('Título del KR requerido (máx 200 caracteres)', 400);
   }
   const { rows } = await pool.query(
     `INSERT INTO key_results (meta_id, titulo, descripcion, orden)
@@ -173,7 +174,7 @@ export const obtenerKeyResults = async (metaId, usuarioId) => {
     'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
     [metaId, usuarioId]
   );
-  if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta[0]) throw new AppError('Meta no encontrada', 404);
 
   const { rows } = await pool.query(
     'SELECT * FROM key_results WHERE meta_id = $1 ORDER BY orden',
@@ -187,13 +188,13 @@ export const eliminarKeyResult = async (metaId, krId, usuarioId) => {
     'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
     [metaId, usuarioId]
   );
-  if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta[0]) throw new AppError('Meta no encontrada', 404);
 
   const { rowCount } = await pool.query(
     'DELETE FROM key_results WHERE id = $1 AND meta_id = $2',
     [krId, metaId]
   );
-  if (!rowCount) throw Object.assign(new Error('Key Result no encontrado'), { status: 404 });
+  if (!rowCount) throw new AppError('Key Result no encontrado', 404);
 
   await recalcularProgresoMeta(metaId);
   return true;
@@ -204,7 +205,7 @@ export const actualizarKeyResult = async (metaId, krId, usuarioId, datos) => {
     'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
     [metaId, usuarioId]
   );
-  if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta[0]) throw new AppError('Meta no encontrada', 404);
 
   const campos = [];
   const valores = [];
@@ -236,21 +237,21 @@ export const actualizarKeyResult = async (metaId, krId, usuarioId, datos) => {
 
 export const actualizarProgresoKR = async (metaId, krId, usuarioId, progreso) => {
   if (progreso < 0 || progreso > 100) {
-    throw Object.assign(new Error('Progreso debe estar entre 0 y 100'), { status: 400 });
+    throw new AppError('Progreso debe estar entre 0 y 100', 400);
   }
 
   const { rows: meta } = await pool.query(
     'SELECT id FROM metas WHERE id = $1 AND usuario_id = $2',
     [metaId, usuarioId]
   );
-  if (!meta[0]) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta[0]) throw new AppError('Meta no encontrada', 404);
 
   const { rows } = await pool.query(
     `UPDATE key_results SET progreso = $1 WHERE id = $2 AND meta_id = $3 RETURNING *`,
     [progreso, krId, metaId]
   );
 
-  if (!rows[0]) throw Object.assign(new Error('Key Result no encontrado'), { status: 404 });
+  if (!rows[0]) throw new AppError('Key Result no encontrado', 404);
 
   const metaActualizada = await recalcularProgresoMeta(metaId);
 
@@ -289,7 +290,7 @@ const recalcularProgresoMeta = async (metaId) => {
 
 export const descomponerConIA = async (usuarioId, metaId) => {
   const meta = await obtenerMetaPorId(metaId, usuarioId);
-  if (!meta) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta) throw new AppError('Meta no encontrada', 404);
 
   const prompt = PROMPT_DESCOMPONER
     .replace('{titulo}', meta.titulo)
@@ -325,7 +326,7 @@ export const descomponerConIA = async (usuarioId, metaId) => {
 
 export const planSemanal = async (usuarioId, metaId, fechaFin) => {
   const meta = await obtenerMetaPorId(metaId, usuarioId);
-  if (!meta) throw Object.assign(new Error('Meta no encontrada'), { status: 404 });
+  if (!meta) throw new AppError('Meta no encontrada', 404);
 
   const krsTexto = meta.key_results.map(kr => `- ${kr.titulo}`).join('\n');
 

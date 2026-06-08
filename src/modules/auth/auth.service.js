@@ -1,13 +1,23 @@
 import pool from '../../config/db.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { AppError } from '../../utils/AppError.js';
 import { registerSchema, loginSchema } from '../../validation/index.js';
 
-export const registrarUsuario = async ({ nombre, email, password }) => {
-  const parsed = registerSchema.safeParse({ nombre, email, password });
+export const obtenerPerfil = async (usuarioId) => {
+  const { rows } = await pool.query(
+    'SELECT id, usuario, nombre, email, telefono, creado_en FROM usuarios WHERE id = $1',
+    [usuarioId]
+  );
+  if (rows.length === 0) throw new AppError('Usuario no encontrado', 404);
+  return rows[0];
+};
+
+export const registrarUsuario = async ({ usuario, nombre, email, telefono, password }) => {
+  const parsed = registerSchema.safeParse({ usuario, nombre, email, telefono, password });
   if (!parsed.success) {
     const msg = parsed.error.issues[0].message;
-    throw Object.assign(new Error(msg), { status: 400 });
+    throw new AppError(msg, 400);
   }
 
   const existe = await pool.query(
@@ -16,16 +26,16 @@ export const registrarUsuario = async ({ nombre, email, password }) => {
   );
 
   if (existe.rows.length > 0) {
-    throw Object.assign(new Error('Error al registrar usuario'), { status: 409 });
+    throw new AppError('Error al registrar usuario', 409);
   }
 
   const hasheada = await bcrypt.hash(password, 10);
 
   const { rows } = await pool.query(
-    `INSERT INTO usuarios (nombre, email, password)
-     VALUES ($1, $2, $3)
-     RETURNING id, nombre, email, creado_en`,
-    [nombre, email, hasheada]
+    `INSERT INTO usuarios (usuario, nombre, email, telefono, password)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, usuario, nombre, email, telefono, creado_en`,
+    [usuario || null, nombre, email, telefono || null, hasheada]
   );
 
   return rows[0];
@@ -34,7 +44,7 @@ export const registrarUsuario = async ({ nombre, email, password }) => {
 export const iniciarSesionUsuario = async ({ email, password }) => {
   const parsed = loginSchema.safeParse({ email, password });
   if (!parsed.success) {
-    throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
+    throw new AppError('Credenciales inválidas', 401);
   }
 
   const { rows } = await pool.query(
@@ -43,10 +53,10 @@ export const iniciarSesionUsuario = async ({ email, password }) => {
   );
 
   const usuario = rows[0];
-  if (!usuario) throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
+  if (!usuario) throw new AppError('Credenciales inválidas', 401);
 
   const valida = await bcrypt.compare(password, usuario.password);
-  if (!valida) throw Object.assign(new Error('Credenciales inválidas'), { status: 401 });
+  if (!valida) throw new AppError('Credenciales inválidas', 401);
 
   const token = jwt.sign(
     { id: usuario.id, email: usuario.email, nombre: usuario.nombre },

@@ -1,4 +1,5 @@
 import pkg from "pg";
+import logger from './logger.js';
 const { Pool } = pkg;
 
 const pool = new Pool({
@@ -17,7 +18,7 @@ const pool = new Pool({
 });
 
 pool.on('error', (err) => {
-  console.error('🔴 Error inesperado en el pool de PostgreSQL:', err.message);
+  logger.error('Error inesperado en el pool de PostgreSQL:', err.message);
 });
 
 export default pool;

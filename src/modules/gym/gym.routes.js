@@ -6,6 +6,7 @@ import {
   obtenerRutina,
   actualizarRutina,
   eliminarRutina,
+  listarRutinasConEstado,
   crearEjercicio,
   listarEjercicios,
   actualizarEjercicio,
@@ -17,6 +18,7 @@ import {
   sugerirPeso,
   completarSesion,
   ultimaSesionEjercicio,
+  toggleRutinaGym,
 } from './gym.controller.js';
 
 export const gymRouter = Router();
@@ -24,11 +26,12 @@ export const gymRouter = Router();
 gymRouter.use(verificarToken);
 
 // ── Rutinas ──────────────────────────────────
-gymRouter.post('/rutinas',       crearRutina);
-gymRouter.get('/rutinas',        listarRutinas);
-gymRouter.get('/rutinas/:id',    obtenerRutina);
-gymRouter.put('/rutinas/:id',    actualizarRutina);
-gymRouter.delete('/rutinas/:id', eliminarRutina);
+gymRouter.post('/rutinas',             crearRutina);
+gymRouter.get('/rutinas',              listarRutinas);
+gymRouter.get('/rutinas/estado',       listarRutinasConEstado);
+gymRouter.get('/rutinas/:id',          obtenerRutina);
+gymRouter.put('/rutinas/:id',          actualizarRutina);
+gymRouter.delete('/rutinas/:id',       eliminarRutina);
 
 // ── Ejercicios ───────────────────────────────
 gymRouter.post('/ejercicios',          crearEjercicio);
@@ -50,3 +53,5 @@ gymRouter.get('/sugerencias/ejercicio/:ejercicioId', sugerirPeso);
 gymRouter.get('/ultima-sesion/:ejercicioId', ultimaSesionEjercicio);
 // ── Sesión completa ───────────────────────────────
 gymRouter.post('/sesion/completar', completarSesion);
+// ── Toggle rutina completada ──────────────────────
+gymRouter.post('/rutinas/toggle', toggleRutinaGym);

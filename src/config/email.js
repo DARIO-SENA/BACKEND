@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import logger from './logger.js';
 
 let transporter = null;
 
@@ -22,7 +23,7 @@ const getTransporter = () => {
 export const enviarEmail = async ({ to, subject, html }) => {
   const transport = getTransporter();
   if (!transport) {
-    console.warn('SMTP no configurado. Configura SMTP_HOST, SMTP_USER y SMTP_PASS en .env');
+    logger.warn('SMTP no configurado. Configura SMTP_HOST, SMTP_USER y SMTP_PASS en .env');
     return null;
   }
   const from = process.env.SMTP_FROM || 'noreply@dario.app';
