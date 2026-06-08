@@ -8,6 +8,8 @@ import swaggerUi from 'swagger-ui-express';
 
 import { errorHandler } from './middlewares/error.middleware.js';
 import { swaggerSpec } from './config/swagger.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { authRouter }          from './modules/auth/auth.routes.js';
 import { habitosRouter }       from './modules/habitos/habitos.routes.js';
 import { tareasRouter }        from './modules/tareas/tareas.routes.js';
@@ -36,8 +38,11 @@ const corsOrigins = process.env.CORS_ORIGINS
 
 app.use(helmet());
 app.use(cors({ origin: corsOrigins, credentials: true }));
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '10mb' }));
 app.use(morgan('dev'));
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

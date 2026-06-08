@@ -45,7 +45,8 @@ export const actualizarSettings = async (usuarioId, datos) => {
   return rows[0] || null;
 };
 
-export const iniciarSession = async (usuarioId, { tarea_id = null, duracion_minutos = null, descanso_minutos = null }) => {
+export const iniciarSession = async (usuarioId, opts = {}) => {
+  const { tarea_id = null, duracion_minutos = null, descanso_minutos = null } = opts || {};
   const settings = await obtenerSettings(usuarioId);
 
   const inicio = new Date();

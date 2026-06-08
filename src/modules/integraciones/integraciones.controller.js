@@ -70,7 +70,7 @@ const getCalendarClient = async (usuarioId) => {
   oauth2Client.setCredentials({
     access_token: tokens.google_access_token,
     refresh_token: tokens.google_refresh_token,
-    expiry_date: tokens.google_token_expiry,
+    expiry_date: new Date(tokens.google_token_expiry).getTime(),
   });
   oauth2Client.on('tokens', async (nuevos) => {
     const actualizados = {};
