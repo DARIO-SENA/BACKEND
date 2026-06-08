@@ -99,13 +99,13 @@ export const eliminarRutina = async (id, usuarioId) => {
 
 // Agregar ejercicio a una rutina
 export const crearEjercicio = async (usuarioId, body) => {
-  const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default } = body;
+  const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos } = body;
   const result = await pool.query(
-    `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default)
-     SELECT $1, $2, $3, $4, $5
-     FROM rutinas WHERE id = $1 AND usuario_id = $6
+    `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos)
+     SELECT $1, $2, $3, $4, $5, $6, $7
+     FROM rutinas WHERE id = $1 AND usuario_id = $8
      RETURNING ejercicios.*`,
-    [rutina_id, nombre, grupo_muscular, series_default || 3, repeticiones_default || 10, usuarioId]
+    [rutina_id, nombre, grupo_muscular, series_default ?? 3, repeticiones_default ?? 10, descanso ?? 90, duracion_segundos ?? 60, usuarioId]
   );
   if (result.rows.length === 0) {
     const err = new Error('Rutina no encontrada o no pertenece al usuario');
@@ -141,17 +141,19 @@ export const eliminarEjercicio = async (id, usuarioId) => {
 
 // Actualizar un ejercicio
 export const actualizarEjercicio = async (id, usuarioId, body) => {
-  const { nombre, grupo_muscular, series_default, repeticiones_default } = body;
+  const { nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos } = body;
   const result = await pool.query(
     `UPDATE ejercicios e
      SET nombre = COALESCE($1, e.nombre),
          grupo_muscular = COALESCE($2, e.grupo_muscular),
          series_default = COALESCE($3, e.series_default),
-         repeticiones_default = COALESCE($4, e.repeticiones_default)
+         repeticiones_default = COALESCE($4, e.repeticiones_default),
+         descanso = COALESCE($5, e.descanso),
+         duracion_segundos = COALESCE($6, e.duracion_segundos)
      FROM rutinas r
-     WHERE e.id = $5 AND e.rutina_id = r.id AND r.usuario_id = $6
+     WHERE e.id = $7 AND e.rutina_id = r.id AND r.usuario_id = $8
      RETURNING e.*`,
-    [nombre, grupo_muscular, series_default, repeticiones_default, id, usuarioId]
+    [nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos, id, usuarioId]
   );
   return result.rows[0] || null;
 };

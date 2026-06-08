@@ -38,18 +38,23 @@ export const llamarOpenAI = async (prompt, systemPrompt = null, formatoJson = tr
     return '¡Sigue así! Cada pequeño paso cuenta.';
   }
 
-  const messages = [];
-  if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
-  messages.push({ role: 'user', content: prompt });
+  try {
+    const messages = [];
+    if (systemPrompt) messages.push({ role: 'system', content: systemPrompt });
+    messages.push({ role: 'user', content: prompt });
 
-  const response = await getOpenAI().chat.completions.create({
-    model: LLM_MODEL,
-    messages,
-    temperature: 0.3,
-    ...(formatoJson ? { response_format: { type: 'json_object' } } : {}),
-  });
+    const response = await getOpenAI().chat.completions.create({
+      model: LLM_MODEL,
+      messages,
+      temperature: 0.3,
+      ...(formatoJson ? { response_format: { type: 'json_object' } } : {}),
+    });
 
-  return response.choices[0].message.content;
+    return response.choices[0].message.content;
+  } catch (err) {
+    console.error('[ia] Error llamando OpenAI:', err.message);
+    return '¡Sigue así! Cada pequeño paso cuenta.';
+  }
 };
 
 // ─── HELPERS ──────────────────────────────────────────────

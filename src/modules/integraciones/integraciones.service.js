@@ -38,7 +38,7 @@ export const buscarOCrearUsuarioGoogle = async (perfil) => {
 // Generar JWT para el usuario
 export const generarToken = (usuario) => {
   return jwt.sign(
-    { id: usuario.id, email: usuario.email },
+    { id: usuario.id, email: usuario.email, nombre: usuario.nombre },
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
@@ -48,13 +48,16 @@ export const generarToken = (usuario) => {
 
 // Guardar tokens de Google Calendar del usuario
 export const guardarTokensGoogle = async (usuarioId, tokens) => {
+  const expiryDate = tokens.expiry_date
+    ? new Date(tokens.expiry_date).toISOString()
+    : null;
   await pool.query(
     `UPDATE usuarios
      SET google_access_token = $1,
          google_refresh_token = $2,
          google_token_expiry = $3
      WHERE id = $4`,
-    [tokens.access_token, tokens.refresh_token, tokens.expiry_date, usuarioId]
+    [tokens.access_token, tokens.refresh_token, expiryDate, usuarioId]
   );
 };
 
