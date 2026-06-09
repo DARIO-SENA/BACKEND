@@ -25,8 +25,14 @@ const validarCheckin = (datos) => {
 };
 
 export const crearCheckin = async (usuarioId, datos) => {
-  validarCheckin(datos);
-  const { estado_animo, energia, sueno_horas, notas } = datos;
+  const normalizados = {
+    estado_animo: datos.estado_animo ?? datos.animo ?? null,
+    energia: datos.energia ?? null,
+    sueno_horas: datos.sueno_horas ?? datos.horas_sueno ?? null,
+    notas: datos.notas ?? null,
+  };
+  validarCheckin(normalizados);
+  if (!normalizados.estado_animo) throw new AppError('estado_animo es requerido', 400);
   const { rows } = await pool.query(
     `INSERT INTO checkins_emocionales (usuario_id, estado_animo, energia, sueno_horas, notas)
      VALUES ($1, $2, $3, $4, $5)
@@ -37,7 +43,7 @@ export const crearCheckin = async (usuarioId, datos) => {
            notas = EXCLUDED.notas,
            actualizado_en = CURRENT_TIMESTAMP
      RETURNING *`,
-    [usuarioId, estado_animo, energia, sueno_horas, notas]
+    [usuarioId, normalizados.estado_animo, normalizados.energia, normalizados.sueno_horas, normalizados.notas]
   );
   return rows[0];
 };

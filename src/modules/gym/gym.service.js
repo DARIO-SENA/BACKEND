@@ -142,13 +142,15 @@ export const listarRutinasConEstado = async (usuarioId) => {
 
 // Agregar ejercicio a una rutina
 export const crearEjercicio = async (usuarioId, body) => {
-  const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos } = body;
+  const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default } = body;
+  if (!rutina_id) throw new AppError('rutina_id es requerido', 400);
+  if (!nombre || !nombre.trim()) throw new AppError('Nombre del ejercicio requerido', 400);
   const result = await pool.query(
-    `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos)
-     SELECT $1, $2, $3, $4, $5, $6, $7
-     FROM rutinas WHERE id = $1 AND usuario_id = $8
+    `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default)
+     SELECT $1, $2, $3, $4, $5
+     FROM rutinas WHERE id = $1 AND usuario_id = $6
      RETURNING ejercicios.*`,
-    [rutina_id, nombre, grupo_muscular, series_default ?? 3, repeticiones_default ?? 10, descanso ?? 90, duracion_segundos ?? 60, usuarioId]
+    [rutina_id, nombre.trim(), grupo_muscular, series_default ?? 3, repeticiones_default ?? 10, usuarioId]
   );
   if (result.rows.length === 0) {
     throw new AppError('Rutina no encontrada o no pertenece al usuario', 404);

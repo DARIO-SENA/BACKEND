@@ -283,6 +283,71 @@ export const procesarFocoCompletado = async (usuarioId) => {
 
 // ─── LOGROS ────────────────────────────────────────────────
 
+const calcularProgreso = async (usuarioId, logro) => {
+  const c = logro.condicion;
+  let actual = 0;
+  try {
+    switch (c.tipo) {
+      case 'tareas_completadas': {
+        const { rows } = await pool.query(`SELECT COUNT(*) AS total FROM tareas WHERE usuario_id = $1 AND estado = 'completada'`, [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'tareas_alta_prioridad': {
+        const { rows } = await pool.query(`SELECT COUNT(*) AS total FROM tareas WHERE usuario_id = $1 AND estado = 'completada' AND prioridad = 'alta'`, [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'racha_dias': {
+        const perfil = await obtenerOCrearPerfil(usuarioId);
+        actual = perfil.racha_actual;
+        break;
+      }
+      case 'habitos_creados': {
+        const { rows } = await pool.query('SELECT COUNT(*) AS total FROM habitos WHERE usuario_id = $1', [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'nivel': {
+        const perfil = await obtenerOCrearPerfil(usuarioId);
+        actual = perfil.nivel;
+        break;
+      }
+      case 'puntos_totales': {
+        const perfil = await obtenerOCrearPerfil(usuarioId);
+        actual = perfil.puntos_totales;
+        break;
+      }
+      case 'hora_completada': {
+        const { rows } = await pool.query(`SELECT COUNT(*) AS total FROM tareas WHERE usuario_id = $1 AND estado = 'completada' AND EXTRACT(HOUR FROM actualizado_en) < $2`, [usuarioId, c.valor]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'metas_creadas': {
+        const { rows } = await pool.query('SELECT COUNT(*) AS total FROM metas WHERE usuario_id = $1', [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'metas_completadas': {
+        const { rows } = await pool.query("SELECT COUNT(*) AS total FROM metas WHERE usuario_id = $1 AND estado = 'completada'", [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'krs_completados': {
+        const { rows } = await pool.query('SELECT COUNT(*) AS total FROM key_results WHERE meta_id IN (SELECT id FROM metas WHERE usuario_id = $1) AND progreso >= 100', [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+      case 'meta_rapida': {
+        const { rows } = await pool.query(`SELECT COUNT(*) AS total FROM metas WHERE usuario_id = $1 AND estado = 'completada' AND fecha_fin IS NOT NULL AND fecha_inicio IS NOT NULL AND (fecha_fin - fecha_inicio) < 7`, [usuarioId]);
+        actual = parseInt(rows[0].total);
+        break;
+      }
+    }
+  } catch {}
+  return actual;
+};
+
 export const obtenerLogrosUsuario = async (usuarioId) => {
   const { rows } = await pool.query(
     `SELECT l.*,
@@ -293,7 +358,21 @@ export const obtenerLogrosUsuario = async (usuarioId) => {
      ORDER BY obtenido DESC, l.puntos DESC`,
     [usuarioId]
   );
-  return rows;
+  const logros = [];
+  for (const row of rows) {
+    const progreso_actual = await calcularProgreso(usuarioId, row);
+    const cumplido = progreso_actual >= row.condicion.valor;
+    if (cumplido && !row.obtenido) {
+      await pool.query(
+        'INSERT INTO logros_usuario (usuario_id, logro_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        [usuarioId, row.id]
+      );
+      await otorgarPuntos(usuarioId, row.puntos, `Logro desbloqueado: ${row.titulo}`, 'logro', row.id);
+      row.obtenido = true;
+    }
+    logros.push({ ...row, progreso_actual, progreso_total: row.condicion.valor });
+  }
+  return logros;
 };
 
 export const verificarLogros = async (usuarioId) => {

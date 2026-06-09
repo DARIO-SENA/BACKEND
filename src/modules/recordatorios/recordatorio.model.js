@@ -61,10 +61,15 @@ export const insertar = async (usuarioId, datos) => {
 };
 
 export const actualizar = async (id, usuarioId, datos) => {
-  const {
-    titulo, mensaje, fecha_hora, anticipacion_min,
-    es_recurrente, regla_recurrencia,
-  } = datos;
+  const actual = await encontrarPorId(id, usuarioId);
+  if (!actual) return null;
+
+  const titulo = datos.titulo ?? actual.titulo;
+  const mensaje = datos.mensaje ?? actual.mensaje;
+  const fecha_hora = datos.fecha_hora ?? actual.fecha_hora;
+  const anticipacion_min = datos.anticipacion_min ?? actual.anticipacion_min;
+  const es_recurrente = datos.es_recurrente ?? actual.es_recurrente;
+  const regla_recurrencia = datos.regla_recurrencia ?? actual.regla_recurrencia;
 
   const { rows } = await pool.query(
     `UPDATE recordatorios

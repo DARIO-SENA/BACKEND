@@ -133,10 +133,13 @@ export const obtenerBloques = async (usuarioId) => {
 
 export const crearBloque = async (usuarioId, data) => {
   const { nombre, hora_inicio, hora_fin } = data;
+  if (!nombre || !nombre.trim()) throw new AppError('Nombre requerido', 400);
+  if (!hora_inicio || !/^\d{2}:\d{2}$/.test(hora_inicio)) throw new AppError('hora_inicio debe ser HH:MM', 400);
+  if (!hora_fin || !/^\d{2}:\d{2}$/.test(hora_fin)) throw new AppError('hora_fin debe ser HH:MM', 400);
   const { rows } = await pool.query(
     `INSERT INTO bloques_tiempo (usuario_id, nombre, hora_inicio, hora_fin)
      VALUES ($1, $2, $3, $4) RETURNING *`,
-    [usuarioId, nombre, hora_inicio, hora_fin]
+    [usuarioId, nombre.trim(), hora_inicio, hora_fin]
   );
   return rows[0];
 };

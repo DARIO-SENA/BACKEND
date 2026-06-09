@@ -71,34 +71,36 @@ export const actualizar = async (id, usuarioId, datos) => {
   }
 
   const fechaBase = datos.fechaHora || datos.fecha_hora;
+  let fechaReal;
 
-  const fechaReal = calcularFechaReal(
-    fechaBase,
-    datos.anticipacion_min || 0
-  );
-
-  if (fechaReal <= new Date()) {
-    throw new AppError('La fecha debe ser futura', 400);
+  if (fechaBase) {
+    fechaReal = calcularFechaReal(fechaBase, datos.anticipacion_min || 0);
+    if (fechaReal <= new Date()) {
+      throw new AppError('La fecha debe ser futura', 400);
+    }
+    await cancelarJob(id);
+  } else {
+    fechaReal = existe.fecha_hora;
   }
-
-  await cancelarJob(id);
 
   const actualizado = await recordatorioModel.actualizar(id, usuarioId, {
     ...datos,
     fecha_hora: fechaReal,
   });
 
-  await agregarJob(
-    {
-      recordatorioId: id,
-      usuarioId,
-      titulo: datos.titulo || existe.titulo,
-      mensaje: datos.mensaje || existe.mensaje,
-    },
-    fechaReal
-  );
+  if (fechaBase) {
+    await agregarJob(
+      {
+        recordatorioId: id,
+        usuarioId,
+        titulo: datos.titulo || existe.titulo,
+        mensaje: datos.mensaje || existe.mensaje,
+      },
+      fechaReal
+    );
+  }
 
-  console.log(`🔄 Recordatorio ${id} actualizado y reprogramado`);
+  console.log(`🔄 Recordatorio ${id} actualizado`);
 
   return actualizado;
 };
