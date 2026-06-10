@@ -361,3 +361,364 @@ error: no existe la columna r.dias_semana
     at async Promise.all (index 5)
     at async Module.obtenerDiaCompleto (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.service.js:35:110)
     at async obtenerDia (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/rutina/rutina.controller.js:7:18)
+2026-06-08 14:00:36 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 14:21:10 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 14:25:23 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 14:48:27 [ERROR] Error en seed de logros:
+2026-06-08 14:48:30 [ERROR] Error en seed de logros:
+2026-06-08 14:51:40 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 14:55:17 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 15:02:59 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 15:07:23 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 18:09:20 [ERROR] Error ejecutando migraciones node-pg-migrate:
+2026-06-08 18:26:46 [ERROR] Cannot read properties of undefined (reading 'estado')
+TypeError: Cannot read properties of undefined (reading 'estado')
+    at cambiarEstado (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/habitos/habitos.controller.js:47:16)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at param (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:600:14)
+    at param (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:610:14)
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:664:3)
+2026-06-08 18:26:58 [ERROR] no existe la columna «descanso» en la relación «ejercicios»
+error: no existe la columna «descanso» en la relación «ejercicios»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:146:18)
+    at async crearEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:52:18)
+2026-06-08 18:29:24 [ERROR] no existe la columna «descanso» en la relación «ejercicios»
+error: no existe la columna «descanso» en la relación «ejercicios»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:146:18)
+    at async crearEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:52:18)
+2026-06-08 18:34:20 [ERROR] el valor nulo en la columna «nombre» de la relación «bloques_tiempo» viola la restricción “not-null”
+error: el valor nulo en la columna «nombre» de la relación «bloques_tiempo» viola la restricción “not-null”
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearBloque (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/agenda/agenda.service.js:136:20)
+    at async crearBloque (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/agenda/agenda.controller.js:48:20)
+2026-06-08 18:34:29 [ERROR] el valor nulo en la columna «estado_animo» de la relación «checkins_emocionales» viola la restricción “not-null”
+error: el valor nulo en la columna «estado_animo» de la relación «checkins_emocionales» viola la restricción “not-null”
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearCheckin (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/bienestar/bienestar.service.js:30:20)
+    at async createCheckin (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/bienestar/bienestar.controller.js:6:18)
+2026-06-08 18:34:39 [ERROR] la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+error: la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorio.model.js:69:20)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.service.js:86:23)
+    at async actualizarRecordatorio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.controller.js:34:18)
+2026-06-08 18:41:07 [ERROR] el valor nulo en la columna «fecha» de la relación «finanzas_transacciones» viola la restricción “not-null”
+error: el valor nulo en la columna «fecha» de la relación «finanzas_transacciones» viola la restricción “not-null”
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearTransaccion (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/finanzas/finanzas.service.js:182:20)
+    at async crearTransaccion (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/finanzas/finanzas.controller.js:87:18)
+2026-06-08 18:53:16 [ERROR] no existe la columna «descanso» en la relación «ejercicios»
+error: no existe la columna «descanso» en la relación «ejercicios»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.crearEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:148:18)
+    at async crearEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:52:18)
+2026-06-08 18:58:57 [ERROR] la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+error: la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorio.model.js:74:20)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.service.js:86:23)
+    at async actualizarRecordatorio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.controller.js:34:18)
+2026-06-08 18:59:08 [ERROR] la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+error: la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorio.model.js:74:20)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.service.js:86:23)
+    at async actualizarRecordatorio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.controller.js:34:18)
+2026-06-08 19:01:54 [ERROR] la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+error: la sintaxis de entrada no es válida para tipo timestamp: «0NaN-NaN-NaNTNaN:NaN:NaN.NaN+NaN:NaN»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorio.model.js:74:20)
+    at async Module.actualizar (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.service.js:86:23)
+    at async actualizarRecordatorio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/recordatorios/recordatorios.controller.js:34:18)
+2026-06-09 04:29:30 [ERROR] Uncaught Exception: EPIPE: broken pipe, write {"errno":-4047,"syscall":"write","code":"EPIPE"}
+Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+2026-06-10 10:31:42 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.interrumpirSession (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/pomodoro/pomodoro.service.js:97:20)
+    at async interrumpirSession (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/pomodoro/pomodoro.controller.js:35:18)
+2026-06-10 10:32:01 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.interrumpirSession (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/pomodoro/pomodoro.service.js:97:20)
+    at async interrumpirSession (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/pomodoro/pomodoro.controller.js:35:18)
+2026-06-10 10:49:18 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:103:18)
+    at async eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:44:16)
+2026-06-10 10:49:19 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:103:18)
+    at async eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:44:16)
+2026-06-10 10:50:51 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:103:18)
+    at async eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:44:16)
+2026-06-10 10:50:52 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:103:18)
+    at async eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:44:16)
+2026-06-10 10:53:04 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:103:18)
+    at async eliminarRutina (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:44:16)
+2026-06-10 12:05:20 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:06:42 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:06:43 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:14:14 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:14:15 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:15:52 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:18:29 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:21:08 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:22:53 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:22:54 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:23:07 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:23:20 [ERROR] ID inválido
+Error: ID inválido
+    at validarId (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:6:32)
+    at enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:12:5)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at processParams (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:582:12)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:291:5)
+2026-06-10 12:26:17 [ERROR] Ya existe una solicitud o amistad entre estos usuarios
+Error: Ya existe una solicitud o amistad entre estos usuarios
+    at Module.enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:18:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async enviarSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:13:18)
+2026-06-10 12:27:26 [ERROR] Estado inválido. Use: aceptada o rechazada
+Error: Estado inválido. Use: aceptada o rechazada
+    at Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:31:11)
+    at responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:38)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at param (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:600:14)
+    at param (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:610:14)
+2026-06-10 12:27:27 [ERROR] Estado inválido. Use: aceptada o rechazada
+Error: Estado inválido. Use: aceptada o rechazada
+    at Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:31:11)
+    at responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:38)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:295:15
+    at param (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:600:14)
+    at param (C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\router\index.js:610:14)
+2026-06-10 12:29:56 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:33:20)
+    at async responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:18)
+2026-06-10 12:29:58 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:33:20)
+    at async responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:18)
+2026-06-10 12:30:07 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:33:20)
+    at async responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:18)
+2026-06-10 12:30:07 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:33:20)
+    at async responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:18)
+2026-06-10 12:30:33 [ERROR] el registro «new» no tiene un campo «actualizado_en»
+error: el registro «new» no tiene un campo «actualizado_en»
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.service.js:33:20)
+    at async responderSolicitud (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/social/social.controller.js:20:18)
+2026-06-10 13:12:38 [ERROR] no existe la columna e.descanso
+error: no existe la columna e.descanso
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:188:18)
+    at async actualizarEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:74:18)
+2026-06-10 13:12:45 [ERROR] no existe la columna e.descanso
+error: no existe la columna e.descanso
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:188:18)
+    at async actualizarEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:74:18)
+2026-06-10 13:13:08 [ERROR] no existe la columna e.descanso
+error: no existe la columna e.descanso
+    at C:\Users\LAPTOP\OneDrive\Documents\DARIO-PROYECTOS\BACKEND\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Module.actualizarEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.service.js:188:18)
+    at async actualizarEjercicio (file:///C:/Users/LAPTOP/OneDrive/Documents/DARIO-PROYECTOS/BACKEND/src/modules/gym/gym.controller.js:74:18)

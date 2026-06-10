@@ -220,6 +220,32 @@ export async function runMigrations() {
       `
     },
     {
+      name: '010_tareas_icono_categorias_icono',
+      sql: `
+        ALTER TABLE tareas
+        ADD COLUMN IF NOT EXISTS icono VARCHAR(10) DEFAULT '';
+        ALTER TABLE categorias
+        ADD COLUMN IF NOT EXISTS icono VARCHAR(10) DEFAULT '';
+      `
+    },
+    {
+      name: '011_recordatorios_icono_categoria',
+      sql: `
+        ALTER TABLE recordatorios
+        ADD COLUMN IF NOT EXISTS icono VARCHAR(10) DEFAULT '',
+        ADD COLUMN IF NOT EXISTS categoria_id INTEGER REFERENCES categorias(id) ON DELETE SET NULL;
+      `
+    },
+    {
+      name: '012_gym_tables_actualizado_en',
+      sql: `
+        ALTER TABLE registros_entrenamiento
+        ADD COLUMN IF NOT EXISTS actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+        ALTER TABLE ejercicios
+        ADD COLUMN IF NOT EXISTS actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+      `
+    },
+    {
       name: '008_lectura_columnas_sync',
       sql: `
         DO $$
@@ -266,6 +292,13 @@ export async function runMigrations() {
           ALTER TABLE lectura_registros ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW();
         END;
         $$;
+      `
+    },
+    {
+      name: '013_amistades_actualizado_en',
+      sql: `
+        ALTER TABLE amistades
+        ADD COLUMN IF NOT EXISTS actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
       `
     },
   ];

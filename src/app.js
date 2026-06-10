@@ -29,6 +29,7 @@ import { exportarRouter } from './modules/exportar/exportar.routes.js';
 import { emailRouter } from './modules/email/email.routes.js';
 import { rutinaRouter } from './modules/rutina/rutina.routes.js';
 import { lecturaRouter } from './modules/lectura/lectura.routes.js';
+import { categoriasHabitosRouter } from './modules/categorias_habitos/categorias_habitos.routes.js';
 
 const app = express();
 
@@ -90,6 +91,8 @@ app.use('/api/rutina', rutinaRouter);
 rutinaRouter.prefix = '/api/rutina';
 app.use('/api/lectura', lecturaRouter);
 lecturaRouter.prefix = '/api/lectura';
+app.use('/api/categorias-habitos', categoriasHabitosRouter);
+categoriasHabitosRouter.prefix = '/api/categorias-habitos';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

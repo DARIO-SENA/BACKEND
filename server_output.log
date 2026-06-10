@@ -1,0 +1,615 @@
+2026-06-08 19:02:19 [32minfo[39m: [EventBus] Inicializando listeners...
+2026-06-08 19:02:19 [32minfo[39m: [EventBus] Listeners cargados correctamente
+2026-06-08 19:02:19 [33mwarn[39m: OPENAI_API_KEY no configurada. El módulo IA no estará disponible.
+2026-06-08 19:02:19 [32minfo[39m: Servidor corriendo en puerto 3000
+🚀 WORKER CONECTADO A REDIS Y LISTO
+🚀 Worker metas-notificaciones listo
+2026-06-08 19:02:19 [32minfo[39m: DB conectada: {"now":{"now":"2026-06-09T00:02:19.843Z"}}
+2026-06-08 19:02:19 [32minfo[39m: Ejecutando migraciones de base de datos...
+2026-06-08 19:02:19 [32minfo[39m: Base de datos existente — omitiendo esquema completo
+2026-06-08 19:02:19 [32minfo[39m: Migraciones completadas
+2026-06-08 19:02:19 [32minfo[39m: Ejecutando migraciones node-pg-migrate...
+◇ injected env (0) from .env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+No migrations to run!
+Migrations complete!
+2026-06-08 19:02:21 [32minfo[39m: Migraciones node-pg-migrate completadas
+✅ 5 recordatorio(s) reprogramado(s)
+⏰ Scheduler de metas iniciado (revisión cada hora)
+2026-06-08 19:02:21 [32minfo[39m:   ── GENERAL ──
+2026-06-08 19:02:21 [32minfo[39m:   POST    /register
+2026-06-08 19:02:21 [32minfo[39m:   POST    /login
+2026-06-08 19:02:21 [32minfo[39m:   GET     /me
+2026-06-08 19:02:21 [32minfo[39m:   POST    /
+2026-06-08 19:02:21 [32minfo[39m:   GET     /
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /:id
+2026-06-08 19:02:21 [32minfo[39m:   PATCH   /:id/estado
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /
+2026-06-08 19:02:21 [32minfo[39m:   GET     /:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /:id
+2026-06-08 19:02:21 [32minfo[39m:   PATCH   /:id/estado
+2026-06-08 19:02:21 [32minfo[39m:   POST    /programar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /dia
+2026-06-08 19:02:21 [32minfo[39m:   GET     /estadisticas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /semanal
+2026-06-08 19:02:21 [32minfo[39m:   POST    /programar
+2026-06-08 19:02:21 [32minfo[39m:   POST    /reagendar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /bloques
+2026-06-08 19:02:21 [32minfo[39m:   POST    /bloques
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /bloques/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /bloques/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /categorias
+2026-06-08 19:02:21 [32minfo[39m:   POST    /categorias
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /categorias/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /categorias/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /notificaciones
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /notificaciones/leer-todo
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /notificaciones/:id/leer
+2026-06-08 19:02:21 [32minfo[39m:   GET     /preferencias
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /preferencias
+2026-06-08 19:02:21 [32minfo[39m:   GET     /
+2026-06-08 19:02:21 [32minfo[39m:   POST    /
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /
+2026-06-08 19:02:21 [32minfo[39m:   GET     /:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /dashboard
+2026-06-08 19:02:21 [32minfo[39m:   GET     /semanal
+2026-06-08 19:02:21 [32minfo[39m:   GET     /por-dia
+2026-06-08 19:02:21 [32minfo[39m:   GET     /categorias
+2026-06-08 19:02:21 [32minfo[39m:   GET     /racha
+2026-06-08 19:02:21 [32minfo[39m:   POST    /progreso
+2026-06-08 19:02:21 [32minfo[39m:   GET     /reporte
+2026-06-08 19:02:21 [32minfo[39m:   POST    /rutinas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /rutinas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /rutinas/estado
+2026-06-08 19:02:21 [32minfo[39m:   GET     /rutinas/:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /rutinas/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /rutinas/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /ejercicios
+2026-06-08 19:02:21 [32minfo[39m:   GET     /ejercicios/:rutinaId
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /ejercicios/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /ejercicios/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /registros
+2026-06-08 19:02:21 [32minfo[39m:   GET     /historial
+2026-06-08 19:02:21 [32minfo[39m:   GET     /progresion/:ejercicioId
+2026-06-08 19:02:21 [32minfo[39m:   GET     /estadisticas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /sugerencias/ejercicio/:ejercicioId
+2026-06-08 19:02:21 [32minfo[39m:   GET     /ultima-sesion/:ejercicioId
+2026-06-08 19:02:21 [32minfo[39m:   POST    /sesion/completar
+2026-06-08 19:02:21 [32minfo[39m:   POST    /rutinas/toggle
+2026-06-08 19:02:21 [32minfo[39m:   POST    /amigos/solicitud
+2026-06-08 19:02:21 [32minfo[39m:   GET     /amigos
+2026-06-08 19:02:21 [32minfo[39m:   GET     /amigos/solicitudes
+2026-06-08 19:02:21 [32minfo[39m:   PATCH   /amigos/solicitud/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /amigos/:amigoId
+2026-06-08 19:02:21 [32minfo[39m:   POST    /proyectos
+2026-06-08 19:02:21 [32minfo[39m:   GET     /proyectos
+2026-06-08 19:02:21 [32minfo[39m:   GET     /proyectos/:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /proyectos/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /proyectos/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /proyectos/:id/miembros
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /proyectos/:id/miembros/:usuarioId
+2026-06-08 19:02:21 [32minfo[39m:   POST    /proyectos/:proyectoId/tareas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /proyectos/:proyectoId/tareas
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /proyectos/:proyectoId/tareas/:tareaId
+2026-06-08 19:02:21 [32minfo[39m:   POST    /tareas/:tareaId/comentarios
+2026-06-08 19:02:21 [32minfo[39m:   GET     /tareas/:tareaId/comentarios
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /tareas/:tareaId/comentarios/:comentarioId
+2026-06-08 19:02:21 [32minfo[39m:   GET     /perfil
+2026-06-08 19:02:21 [32minfo[39m:   GET     /logros
+2026-06-08 19:02:21 [32minfo[39m:   GET     /leaderboard
+2026-06-08 19:02:21 [32minfo[39m:   GET     /historial
+2026-06-08 19:02:21 [32minfo[39m:   POST    /tarea-completada
+2026-06-08 19:02:21 [32minfo[39m:   POST    /habito-completado
+2026-06-08 19:02:21 [32minfo[39m:   GET     /google
+2026-06-08 19:02:21 [32minfo[39m:   GET     /google/callback
+2026-06-08 19:02:21 [32minfo[39m:   GET     /google/status
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /google
+2026-06-08 19:02:21 [32minfo[39m:   GET     /calendar/eventos
+2026-06-08 19:02:21 [32minfo[39m:   POST    /calendar/eventos
+2026-06-08 19:02:21 [32minfo[39m:   POST    /whatsapp/enviar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /exportar/pdf
+2026-06-08 19:02:21 [32minfo[39m:   POST    /crear-tarea
+2026-06-08 19:02:21 [32minfo[39m:   POST    /crear-habito
+2026-06-08 19:02:21 [32minfo[39m:   POST    /crear-evento
+2026-06-08 19:02:21 [32minfo[39m:   POST    /chat
+2026-06-08 19:02:21 [32minfo[39m:   GET     /hoy-prioridades
+2026-06-08 19:02:21 [32minfo[39m:   GET     /resumen
+2026-06-08 19:02:21 [32minfo[39m:   GET     /predecir-duracion
+2026-06-08 19:02:21 [32minfo[39m:   POST    /optimizar-agenda
+2026-06-08 19:02:21 [32minfo[39m:   GET     /recomendar-habitos
+2026-06-08 19:02:21 [32minfo[39m:   POST    /sugerir-rutina
+2026-06-08 19:02:21 [32minfo[39m:   GET     /recomendar-amigos
+2026-06-08 19:02:21 [32minfo[39m:   GET     /recomendar-proyectos
+2026-06-08 19:02:21 [32minfo[39m:   POST    /sugerir-logro
+2026-06-08 19:02:21 [32minfo[39m:   GET     /patrones
+2026-06-08 19:02:21 [32minfo[39m:   GET     /anomalias
+2026-06-08 19:02:21 [32minfo[39m:   GET     /sobrecarga
+2026-06-08 19:02:21 [32minfo[39m:   GET     /settings
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /settings
+2026-06-08 19:02:21 [32minfo[39m:   POST    /sessions
+2026-06-08 19:02:21 [32minfo[39m:   GET     /sessions
+2026-06-08 19:02:21 [32minfo[39m:   PATCH   /sessions/:id/completar
+2026-06-08 19:02:21 [32minfo[39m:   PATCH   /sessions/:id/interrumpir
+2026-06-08 19:02:21 [32minfo[39m:   GET     /estadisticas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /tareas-sugeridas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /categorias
+2026-06-08 19:02:21 [32minfo[39m:   POST    /categorias
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /categorias/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /categorias/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /cuentas
+2026-06-08 19:02:21 [32minfo[39m:   GET     /cuentas/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /cuentas
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /cuentas/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /cuentas/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /transacciones
+2026-06-08 19:02:21 [32minfo[39m:   POST    /transacciones
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /transacciones/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /transacciones/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /transferencias
+2026-06-08 19:02:21 [32minfo[39m:   GET     /presupuestos
+2026-06-08 19:02:21 [32minfo[39m:   POST    /presupuestos
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /presupuestos/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /presupuestos/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /metas
+2026-06-08 19:02:21 [32minfo[39m:   POST    /metas
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /metas
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /metas/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /metas/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /metas/:id/aportar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /deudas
+2026-06-08 19:02:21 [32minfo[39m:   POST    /deudas
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /deudas/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /deudas/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /deudas/:id/pagar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /resumen/mensual
+2026-06-08 19:02:21 [32minfo[39m:   GET     /dashboard
+2026-06-08 19:02:21 [32minfo[39m:   GET     /health
+2026-06-08 19:02:21 [32minfo[39m:   POST    /checkin
+2026-06-08 19:02:21 [32minfo[39m:   GET     /checkin/hoy
+2026-06-08 19:02:21 [32minfo[39m:   GET     /checkin/historial
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /checkin/hoy
+2026-06-08 19:02:21 [32minfo[39m:   GET     /estadisticas
+2026-06-08 19:02:21 [32minfo[39m:   POST    /diario
+2026-06-08 19:02:21 [32minfo[39m:   GET     /diario
+2026-06-08 19:02:21 [32minfo[39m:   GET     /diario/aleatorio
+2026-06-08 19:02:21 [32minfo[39m:   GET     /diario/:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /diario/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /diario/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /insights
+2026-06-08 19:02:21 [32minfo[39m:   POST    /pausa/programar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /pausa/ejercicios
+2026-06-08 19:02:21 [32minfo[39m:   POST    /pausa/completar
+2026-06-08 19:02:21 [32minfo[39m:   POST    /
+2026-06-08 19:02:21 [32minfo[39m:   GET     /
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /
+2026-06-08 19:02:21 [32minfo[39m:   GET     /dashboard
+2026-06-08 19:02:21 [32minfo[39m:   GET     /timeline
+2026-06-08 19:02:21 [32minfo[39m:   GET     /:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /plan-semanal
+2026-06-08 19:02:21 [32minfo[39m:   POST    /:metaId/krs
+2026-06-08 19:02:21 [32minfo[39m:   GET     /:metaId/krs
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /:metaId/krs/:krId
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /:metaId/krs/:krId
+2026-06-08 19:02:21 [32minfo[39m:   PATCH   /:metaId/krs/:krId/progreso
+2026-06-08 19:02:21 [32minfo[39m:   POST    /:metaId/descomponer-ia
+2026-06-08 19:02:21 [32minfo[39m:   GET     /datos
+2026-06-08 19:02:21 [32minfo[39m:   GET     /preferencias-email
+2026-06-08 19:02:21 [32minfo[39m:   POST    /preferencias-email
+2026-06-08 19:02:21 [32minfo[39m:   POST    /enviar-resumen-semanal
+2026-06-08 19:02:21 [32minfo[39m:   GET     /dia
+2026-06-08 19:02:21 [32minfo[39m:   GET     /semana
+2026-06-08 19:02:21 [32minfo[39m:   POST    /habitos/toggle
+2026-06-08 19:02:21 [32minfo[39m:   GET     /plantillas
+2026-06-08 19:02:21 [32minfo[39m:   POST    /plantillas
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /plantillas/:diaSemana
+2026-06-08 19:02:21 [32minfo[39m:   POST    /aplicar-semana
+2026-06-08 19:02:21 [32minfo[39m:   POST    /limpiar-semana
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /plantillas/bloques
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /plantillas/bloques/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /init
+2026-06-08 19:02:21 [32minfo[39m:   GET     /dashboard
+2026-06-08 19:02:21 [32minfo[39m:   GET     /stats
+2026-06-08 19:02:21 [32minfo[39m:   POST    /timer/iniciar
+2026-06-08 19:02:21 [32minfo[39m:   POST    /timer/detener
+2026-06-08 19:02:21 [32minfo[39m:   POST    /timer/pausar
+2026-06-08 19:02:21 [32minfo[39m:   POST    /timer/reanudar
+2026-06-08 19:02:21 [32minfo[39m:   GET     /timer/estado
+2026-06-08 19:02:21 [32minfo[39m:   GET     /libros
+2026-06-08 19:02:21 [32minfo[39m:   POST    /libros
+2026-06-08 19:02:21 [32minfo[39m:   GET     /libros/:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /libros/:id
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /libros/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /libros/:libroId/notas
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /libros/:libroId/notas
+2026-06-08 19:02:21 [32minfo[39m:   POST    /libros/:libroId/citas
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /libros/:libroId/citas/:citaId
+2026-06-08 19:02:21 [32minfo[39m:   GET     /libros/:libroId/registros
+2026-06-08 19:02:21 [32minfo[39m:   POST    /libros/:libroId/registros
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /libros/:libroId/registros/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /registros/toggle
+2026-06-08 19:02:21 [32minfo[39m:   GET     /planes
+2026-06-08 19:02:21 [32minfo[39m:   POST    /planes
+2026-06-08 19:02:21 [32minfo[39m:   GET     /planes/:id
+2026-06-08 19:02:21 [32minfo[39m:   PUT     /planes/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /planes/:id/recalcular
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /planes/:id
+2026-06-08 19:02:21 [32minfo[39m:   GET     /metas
+2026-06-08 19:02:21 [32minfo[39m:   POST    /metas
+2026-06-08 19:02:21 [32minfo[39m:   DELETE  /metas/:id
+2026-06-08 19:02:21 [32minfo[39m:   POST    /metas/recalcular
+2026-06-08 19:02:21 [32minfo[39m:   GET     /
+2026-06-08 19:02:21 [32minfo[39m:   GET     /api/health
+2026-06-08 19:02:21 [32minfo[39m: 231 endpoints totales
+[0mPOST /api/auth/login [32m200[0m 109.456 ms - 295[0m
+[0mPOST /api/recordatorios [32m201[0m 6.408 ms - 374[0m
+🔄 Recordatorio 139 actualizado
+[0mPUT /api/recordatorios/139 [32m200[0m 5.633 ms - 373[0m
+[0mPOST /api/auth/login [32m200[0m 65.926 ms - 295[0m
+[0mPOST /api/tareas/programar [32m201[0m 13.521 ms - 534[0m
+[0mPOST /api/auth/login [32m200[0m 68.701 ms - 295[0m
+[0mPOST /api/tareas [32m201[0m 2.901 ms - 444[0m
+[0mPATCH /api/tareas/504/estado [32m200[0m 3.458 ms - 445[0m
+[0mPOST /api/auth/login [32m200[0m 65.770 ms - 295[0m
+[0mPOST /api/habitos [32m201[0m 3.040 ms - 312[0m
+[0mPATCH /api/habitos/107/estado [32m200[0m 3.164 ms - 311[0m
+[0mPOST /api/auth/login [32m200[0m 69.379 ms - 295[0m
+[0mPOST /api/gym/rutinas [32m201[0m 2.991 ms - 213[0m
+[0mPOST /api/gym/ejercicios [32m201[0m 3.332 ms - 170[0m
+[0mPOST /api/auth/login [32m200[0m 65.950 ms - 295[0m
+[0mPOST /api/agenda/bloques [32m201[0m 3.082 ms - 236[0m
+[0mPOST /api/auth/login [32m200[0m 65.950 ms - 295[0m
+[0mPOST /api/bienestar/checkin [32m201[0m 2.533 ms - 229[0m
+[0mPOST /api/auth/login [32m200[0m 63.916 ms - 295[0m
+[0mPOST /api/recordatorios [32m201[0m 3.269 ms - 370[0m
+🔄 Recordatorio 140 actualizado
+[0mPUT /api/recordatorios/140 [32m200[0m 3.556 ms - 369[0m
+[0mPOST /api/auth/login [32m200[0m 63.738 ms - 295[0m
+[0mPOST /api/metas [32m201[0m 25.814 ms - 287[0m
+[0mPOST /api/metas/48/krs [32m201[0m 2.434 ms - 190[0m
+[0mPATCH /api/metas/48/krs/117/progreso [32m200[0m 5.882 ms - 483[0m
+[0mPOST /api/auth/login [32m200[0m 173.266 ms - 290[0m
+[0mGET /api/recordatorios/notificaciones [32m200[0m 8.600 ms - 5557[0m
+[0mGET /api/habitos [32m200[0m 30.379 ms - 2713[0m
+2026-06-08 19:35:21 [32minfo[39m: [Redis] Conectado
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 146.047 ms - 21805[0m
+[0mGET /api/recordatorios [32m200[0m 279.671 ms - 7561[0m
+[0mGET /api/metas [32m200[0m 402.324 ms - 2867[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 36.720 ms - 235[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 475.254 ms - 6724[0m
+[0mGET /api/gym/estadisticas [32m200[0m 23.296 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 32.111 ms - 386[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 496.322 ms - 5701[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 561.264 ms - 94[0m
+[0mGET /api/analytics/dashboard [32m200[0m 432.737 ms - 126[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 9.822 ms - 94[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 21.263 ms - 21805[0m
+[0mGET /api/habitos [32m200[0m 36.002 ms - 2713[0m
+[0mGET /api/metas [32m200[0m 35.991 ms - 2867[0m
+[0mGET /api/recordatorios [32m200[0m 39.143 ms - 7561[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 17.992 ms - 5701[0m
+[0mGET /api/analytics/dashboard [32m200[0m 23.968 ms - 126[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 33.422 ms - 235[0m
+[0mGET /api/gym/estadisticas [32m200[0m 29.773 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 25.916 ms - 386[0m
+[0mGET /api/habitos [32m200[0m 27.539 ms - 2713[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 28.920 ms - 21805[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 23.349 ms - 94[0m
+[0mGET /api/recordatorios [32m200[0m 34.105 ms - 7561[0m
+[0mGET /api/metas [32m200[0m 25.172 ms - 2867[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 237.254 ms - 6724[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 43.949 ms - 5701[0m
+[0mGET /api/analytics/dashboard [32m200[0m 38.946 ms - 126[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 26.257 ms - 235[0m
+[0mGET /api/gym/estadisticas [32m200[0m 21.681 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 14.199 ms - 386[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 174.291 ms - 6724[0m
+[0mPATCH /api/habitos/93/estado [32m200[0m 49.225 ms - 360[0m
+[0mPATCH /api/habitos/94/estado [32m200[0m 1.760 ms - 352[0m
+[0mPATCH /api/habitos/93/estado [32m200[0m 5.306 ms - 360[0m
+[0mPATCH /api/habitos/94/estado [32m200[0m 5.494 ms - 352[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 5.766 ms - 386[0m
+[0mGET /api/social/amigos [32m200[0m 74.445 ms - 21[0m
+[0mGET /api/habitos [32m200[0m 2.754 ms - 2713[0m
+[0mGET /api/auth/me [32m200[0m 80.175 ms - 144[0m
+[0mGET /api/recordatorios/notificaciones [32m200[0m 7.928 ms - 5557[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 35.046 ms - 94[0m
+[0mGET /api/habitos [32m200[0m 49.816 ms - 2713[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 244.868 ms - 6724[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 247.243 ms - 21805[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 12.828 ms - 235[0m
+[0mGET /api/gym/estadisticas [32m200[0m 13.499 ms - 171[0m
+[0mGET /api/metas [32m200[0m 281.895 ms - 2867[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 6.770 ms - 386[0m
+[0mGET /api/recordatorios [32m200[0m 306.871 ms - 7561[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 502.221 ms - 5701[0m
+[0mGET /api/analytics/dashboard [32m200[0m 631.060 ms - 126[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 2.853 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 8.278 ms - -[0m
+[0mGET /api/habitos [36m304[0m 11.029 ms - -[0m
+[0mGET /api/metas [36m304[0m 12.496 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 18.154 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 17.167 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 12.899 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 11.391 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 6.803 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 4.623 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 49.351 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 2.584 ms - -[0m
+[0mGET /api/recordatorios/notificaciones [36m304[0m 4.837 ms - -[0m
+[0mGET /api/habitos [36m304[0m 4.262 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 7.065 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 8.748 ms - -[0m
+[0mGET /api/metas [36m304[0m 10.298 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 11.133 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 17.107 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 8.488 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 7.655 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 9.807 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 3.800 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 47.684 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 2.025 ms - -[0m
+[0mGET /api/recordatorios/notificaciones [36m304[0m 5.007 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 2.164 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 7.395 ms - -[0m
+[0mGET /api/habitos [36m304[0m 9.808 ms - -[0m
+[0mGET /api/metas [36m304[0m 7.368 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 12.088 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 10.245 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 8.482 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 6.954 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 5.140 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 2.401 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 35.906 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 4.052 ms - -[0m
+[0mGET /api/social/amigos [36m304[0m 2.102 ms - -[0m
+[0mGET /api/habitos [36m304[0m 1.769 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 121.767 ms - -[0m
+[0mGET /api/recordatorios/notificaciones [36m304[0m 10.679 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 12.122 ms - -[0m
+[0mGET /api/habitos [36m304[0m 27.025 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 147.280 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 13.482 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 11.519 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 24.540 ms - -[0m
+[0mGET /api/metas [36m304[0m 216.237 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 461.666 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 466.699 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 487.053 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 491.595 ms - -[0m
+[0mGET /api/habitos [36m304[0m 8.105 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 32.685 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 24.144 ms - -[0m
+[0mGET /api/metas [36m304[0m 23.235 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 22.606 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 35.768 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 22.923 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 17.548 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 17.968 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 12.346 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 109.399 ms - -[0m
+[0mGET /api/habitos [32m200[0m 8.476 ms - 2713[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 12.103 ms - 21805[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 8.935 ms - 94[0m
+[0mGET /api/metas [32m200[0m 11.932 ms - 2867[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 32.660 ms - 5701[0m
+[0mGET /api/recordatorios [32m200[0m 39.474 ms - 7561[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 5.277 ms - 235[0m
+[0mGET /api/analytics/dashboard [32m200[0m 7.739 ms - 126[0m
+[0mGET /api/gym/estadisticas [32m200[0m 7.887 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 8.648 ms - 386[0m
+[0mGET /api/recordatorios/notificaciones [32m200[0m 7.621 ms - 5557[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 76.778 ms - 6724[0m
+[0mGET /api/habitos [32m200[0m 10.228 ms - 2713[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 7.982 ms - 21805[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 7.688 ms - 94[0m
+[0mGET /api/metas [32m200[0m 8.423 ms - 2867[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 7.575 ms - 5701[0m
+[0mGET /api/recordatorios [32m200[0m 12.737 ms - 7561[0m
+[0mGET /api/analytics/dashboard [32m200[0m 6.261 ms - 126[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 7.380 ms - 235[0m
+[0mGET /api/gym/estadisticas [32m200[0m 6.679 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 6.637 ms - 386[0m
+[0mGET /api/recordatorios/notificaciones [32m200[0m 6.614 ms - 5557[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 39.447 ms - 6724[0m
+[0mGET /api/auth/me [32m200[0m 3.039 ms - 144[0m
+[0mGET /api/recordatorios/notificaciones [32m200[0m 7.708 ms - 5557[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 12.012 ms - 21805[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 12.641 ms - 94[0m
+[0mGET /api/metas [32m200[0m 14.733 ms - 2867[0m
+[0mGET /api/habitos [32m200[0m 23.075 ms - 2713[0m
+[0mGET /api/recordatorios [32m200[0m 20.022 ms - 7561[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 16.319 ms - 5701[0m
+[0mGET /api/analytics/dashboard [32m200[0m 14.087 ms - 126[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 11.906 ms - 235[0m
+[0mGET /api/gym/estadisticas [32m200[0m 11.793 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 12.573 ms - 386[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 72.098 ms - 6724[0m
+[0mGET /api/auth/me [32m200[0m 121.165 ms - 144[0m
+[0mGET /api/recordatorios/notificaciones [32m200[0m 8.415 ms - 5557[0m
+[0mGET /api/habitos [32m200[0m 9.630 ms - 2713[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 16.295 ms - 21805[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 2.930 ms - 94[0m
+[0mGET /api/metas [32m200[0m 6.600 ms - 2867[0m
+[0mGET /api/recordatorios [32m200[0m 22.691 ms - 7561[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 7.916 ms - 235[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 153.556 ms - 6724[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 294.943 ms - 5701[0m
+[0mGET /api/analytics/dashboard [32m200[0m 352.792 ms - 126[0m
+[0mGET /api/gym/estadisticas [32m200[0m 347.183 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 364.918 ms - 386[0m
+[0mGET /api/habitos [32m200[0m 3.423 ms - 2713[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 3.874 ms - 94[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 13.690 ms - 21805[0m
+[0mGET /api/metas [32m200[0m 11.293 ms - 2867[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 13.197 ms - 5701[0m
+[0mGET /api/analytics/dashboard [32m200[0m 6.330 ms - 126[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 5.702 ms - 235[0m
+[0mGET /api/recordatorios [32m200[0m 12.785 ms - 7561[0m
+[0mGET /api/gym/estadisticas [32m200[0m 6.780 ms - 171[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 6.916 ms - 386[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 45.226 ms - 6724[0m
+[0mGET /api/habitos [32m200[0m 6.441 ms - 2713[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 12.596 ms - 21805[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 41.410 ms - 6724[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 4.399 ms - 94[0m
+[0mGET /api/metas [32m200[0m 12.489 ms - 2867[0m
+[0mGET /api/analytics/dashboard [32m200[0m 12.754 ms - 126[0m
+[0mGET /api/recordatorios [32m200[0m 20.294 ms - 7561[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 3.968 ms - 386[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 145.630 ms - 5701[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 161.865 ms - 235[0m
+[0mGET /api/gym/estadisticas [32m200[0m 175.777 ms - 171[0m
+[0mGET /api/habitos [32m200[0m 5.942 ms - 2713[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [32m200[0m 7.760 ms - 21805[0m
+[0mGET /api/ia/resumen?tipo=diario [32m200[0m 5.081 ms - 94[0m
+[0mGET /api/metas [32m200[0m 10.881 ms - 2867[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [32m200[0m 10.486 ms - 5701[0m
+[0mGET /api/recordatorios [32m200[0m 13.917 ms - 7561[0m
+[0mGET /api/analytics/dashboard [32m200[0m 8.152 ms - 126[0m
+[0mGET /api/bienestar/checkin/hoy [32m200[0m 5.548 ms - 235[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [32m200[0m 4.977 ms - 386[0m
+[0mGET /api/gym/estadisticas [32m200[0m 3.933 ms - 171[0m
+[0mGET /api/gamificacion/perfil [32m200[0m 41.162 ms - 6724[0m
+[0mGET /api/auth/me [36m304[0m 63.848 ms - -[0m
+[0mGET /api/recordatorios/notificaciones [36m304[0m 5.775 ms - -[0m
+[0mGET /api/habitos [36m304[0m 4.708 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 8.786 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 52.426 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 2.732 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 4.952 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 9.978 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 121.347 ms - -[0m
+[0mGET /api/metas [36m304[0m 128.285 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 148.279 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 296.112 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 328.606 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 3.286 ms - -[0m
+[0mGET /api/recordatorios/notificaciones [36m304[0m 9.249 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 3.573 ms - -[0m
+[0mGET /api/habitos [36m304[0m 8.074 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 9.084 ms - -[0m
+[0mGET /api/metas [36m304[0m 10.453 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 14.237 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 11.224 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 8.542 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 8.153 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 6.990 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 6.161 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 41.135 ms - -[0m
+[0mGET /api/habitos [36m304[0m 5.639 ms - -[0m
+[0mGET /api/tareas?fechaInicio=2026-06-09&fechaFin=2026-06-09 [36m304[0m 11.521 ms - -[0m
+[0mGET /api/ia/resumen?tipo=diario [36m304[0m 9.725 ms - -[0m
+[0mGET /api/metas [36m304[0m 13.979 ms - -[0m
+[0mGET /api/rutina/dia?fecha=2026-06-09 [36m304[0m 16.634 ms - -[0m
+[0mGET /api/recordatorios [36m304[0m 22.072 ms - -[0m
+[0mGET /api/analytics/dashboard [36m304[0m 9.702 ms - -[0m
+[0mGET /api/bienestar/checkin/hoy [36m304[0m 8.023 ms - -[0m
+[0mGET /api/gym/estadisticas [36m304[0m 9.172 ms - -[0m
+[0mGET /api/gamificacion/leaderboard?tipo=total [36m304[0m 5.077 ms - -[0m
+[0mGET /api/gamificacion/perfil [36m304[0m 49.703 ms - -[0m
+[0mGET /api/tareas [32m200[0m 10.315 ms - 21805[0m
+[0mGET /api/habitos [32m200[0m 2.147 ms - 2713[0m
+2026-06-09 00:29:25 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-09 04:29:30 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-09 04:29:30 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-09 04:29:30 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+🚀 Worker metas-notificaciones listo
+🚀 WORKER CONECTADO A REDIS Y LISTO
+Coach diario enviado a usuario 43
+Coach diario completado: coach-43-2026-06-09
+Coach diario enviado a usuario 42
+Coach diario completado: coach-42-2026-06-09
+Coach diario enviado a usuario 44
+Coach diario completado: coach-44-2026-06-09
+⚡ EJECUTANDO JOB: rec-135
+⚡ EJECUTANDO JOB: rec-136
+⚡ EJECUTANDO JOB: rec-137
+⚡ EJECUTANDO JOB: rec-138
+⚡ EJECUTANDO JOB: rec-140
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: {
+  recordatorioId: 135,
+  usuarioId: 44,
+  titulo: 'E2E Reminder',
+  mensaje: null
+}
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: {
+  recordatorioId: 136,
+  usuarioId: 44,
+  titulo: 'E2E Reminder 2',
+  mensaje: null
+}
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: {
+  recordatorioId: 137,
+  usuarioId: 44,
+  titulo: 'E2E Reminder 3',
+  mensaje: null
+}
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: {
+  recordatorioId: 138,
+  usuarioId: 44,
+  titulo: 'E2E Reminder Final',
+  mensaje: null
+}
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: { recordatorioId: 140, usuarioId: 44, titulo: 'FINAL Reminder' }
+✅ PROCESADO: 138
+✅ PROCESADO: 136
+✅ PROCESADO: 140
+✅ PROCESADO: 137
+✅ Job rec-138 completado
+🎯 JOB COMPLETADO: rec-138
+🎯 JOB COMPLETADO: rec-136
+🎯 JOB COMPLETADO: rec-140
+🎯 JOB COMPLETADO: rec-137
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: {
+  recordatorioId: 134,
+  usuarioId: 44,
+  titulo: 'Test Reminder',
+  mensaje: 'Remind me'
+}
+📩 JOB RECIBIDO EN WORKER: enviar-recordatorio
+📦 DATA: { recordatorioId: 139, usuarioId: 44, titulo: 'E2E Reminder Final' }
+✅ Job rec-136 completado
+✅ Job rec-140 completado
+✅ Job rec-137 completado
+✅ PROCESADO: 139
+✅ PROCESADO: 134
+✅ Job rec-139 completado
+🎯 JOB COMPLETADO: rec-139
+🎯 JOB COMPLETADO: rec-134
+✅ Job rec-134 completado
+✅ PROCESADO: 135
+✅ Job rec-135 completado
+🎯 JOB COMPLETADO: rec-135
+2026-06-09 17:03:04 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-09 17:59:29 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-09 17:59:29 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-09 17:59:29 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+🚀 Worker metas-notificaciones listo
+🚀 WORKER CONECTADO A REDIS Y LISTO
+2026-06-09 17:59:40 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-10 08:15:25 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-10 08:15:26 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-10 08:15:26 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-10 08:15:26 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+🚀 WORKER CONECTADO A REDIS Y LISTO
+🚀 Worker metas-notificaciones listo
+2026-06-10 08:15:31 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-10 08:15:31 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+2026-06-10 08:15:31 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)
+🚀 Worker metas-notificaciones listo
+🚀 WORKER CONECTADO A REDIS Y LISTO
+2026-06-10 08:15:36 [33mwarn[39m: [Redis] Reintentando conexión en 200ms (intento 1/10)

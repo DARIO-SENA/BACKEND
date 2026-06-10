@@ -16,6 +16,12 @@ router.put('/notificaciones/:id/leer',  ctrl.marcarLeida);
 router.get('/preferencias', ctrl.obtenerPreferencias);
 router.put('/preferencias', ctrl.actualizarPreferencias);
 
+// ─── CATEGORÍAS ─────────────────────────────────────────────
+router.get('/categorias',     ctrl.obtenerCategorias);
+router.post('/categorias',    ctrl.crearCategoria);
+router.put('/categorias/:id', ctrl.actualizarCategoria);
+router.delete('/categorias/:id', ctrl.eliminarCategoria);
+
 // ─── RECORDATORIOS ─────────────────────────────────────────
 router.get('/',       ctrl.listarRecordatorios);
 router.post('/',      ctrl.crearRecordatorio);

@@ -9,11 +9,15 @@ export const crearHabito = async (usuarioId, datos) => {
   if (!parsed.success) {
     throw new AppError(parsed.error.issues[0].message, 400);
   }
-  const { titulo, descripcion, frecuencia, dias_semana } = parsed.data;
+  let { titulo, descripcion, frecuencia, icono, categoria, categoria_id, dias_semana } = parsed.data;
+  if (categoria_id && !categoria) {
+    const cat = await pool.query('SELECT nombre FROM categorias_habitos WHERE id = $1 AND usuario_id = $2', [categoria_id, usuarioId]);
+    if (cat.rows.length > 0) categoria = cat.rows[0].nombre;
+  }
   const { rows } = await pool.query(
-    `INSERT INTO habitos (usuario_id, titulo, descripcion, frecuencia, dias_semana)
-     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-    [usuarioId, titulo, descripcion, frecuencia, JSON.stringify(dias_semana)]
+    `INSERT INTO habitos (usuario_id, titulo, descripcion, frecuencia, icono, categoria, categoria_id, dias_semana)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+    [usuarioId, titulo, descripcion, frecuencia, icono, categoria, categoria_id, JSON.stringify(dias_semana)]
   );
   return rows[0];
 };
@@ -21,7 +25,12 @@ export const crearHabito = async (usuarioId, datos) => {
 export const listarHabitos = async (usuarioId, limite = 50, pagina = 1) => {
   const offset = (pagina - 1) * limite;
   const { rows } = await pool.query(
-    `SELECT * FROM habitos WHERE usuario_id = $1 ORDER BY creado_en DESC LIMIT $2 OFFSET $3`,
+    `SELECT h.*, c.nombre as categoria_nombre, c.icono as categoria_icono, c.color as categoria_color,
+            CASE WHEN rh.id IS NOT NULL THEN true ELSE false END as completado_hoy
+     FROM habitos h
+     LEFT JOIN categorias_habitos c ON h.categoria_id = c.id
+     LEFT JOIN registros_habitos rh ON rh.habito_id = h.id AND rh.fecha = CURRENT_DATE
+     WHERE h.usuario_id = $1 ORDER BY h.creado_en DESC LIMIT $2 OFFSET $3`,
     [usuarioId, limite, offset]
   );
   const { rows: [{ count }] } = await pool.query(
@@ -40,8 +49,10 @@ export const actualizarHabito = async (id, usuarioId, datos) => {
 
   // 1. Buscar hábito actual
   const actual = await pool.query(
-    `SELECT * FROM habitos
-     WHERE id = $1 AND usuario_id = $2`,
+    `SELECT h.*, c.nombre as categoria_nombre, c.icono as categoria_icono, c.color as categoria_color
+     FROM habitos h
+     LEFT JOIN categorias_habitos c ON h.categoria_id = c.id
+     WHERE h.id = $1 AND h.usuario_id = $2`,
     [id, usuarioId]
   );
 
@@ -56,6 +67,13 @@ export const actualizarHabito = async (id, usuarioId, datos) => {
   const descripcion = datos.descripcion ?? habitoActual.descripcion;
   const frecuencia = datos.frecuencia ?? habitoActual.frecuencia;
   const completado = datos.completado ?? habitoActual.completado;
+  const icono = datos.icono ?? habitoActual.icono;
+  let categoria = datos.categoria ?? habitoActual.categoria;
+  const categoria_id = datos.categoria_id ?? habitoActual.categoria_id;
+  if (datos.categoria_id !== undefined && categoria_id && !categoria) {
+    const cat = await pool.query('SELECT nombre FROM categorias_habitos WHERE id = $1 AND usuario_id = $2', [categoria_id, usuarioId]);
+    if (cat.rows.length > 0) categoria = cat.rows[0].nombre;
+  }
   const dias_semana = datos.dias_semana ?? habitoActual.dias_semana;
 
   // 3. Actualizar
@@ -65,18 +83,17 @@ export const actualizarHabito = async (id, usuarioId, datos) => {
          descripcion = $2,
          frecuencia = $3,
          completado = $4,
-         dias_semana = $5,
+         icono = $5,
+         categoria = $6,
+         categoria_id = $7,
+         dias_semana = $8,
          actualizado_en = NOW()
-     WHERE id = $6 AND usuario_id = $7
+     WHERE id = $9 AND usuario_id = $10
      RETURNING *`,
-    [titulo, descripcion, frecuencia, completado, JSON.stringify(dias_semana), id, usuarioId]
+    [titulo, descripcion, frecuencia, completado, icono, categoria, categoria_id, JSON.stringify(dias_semana), id, usuarioId]
   );
 
   const habitoActualizado = rows[0];
-
-  if (!habitoActual.completado && completado === true) {
-    eventBus.emit(EVENTS.HABIT_COMPLETED, { usuarioId, habitoId: id });
-  }
 
   return habitoActualizado;
 };
@@ -102,8 +119,20 @@ export const cambiarEstadoHabito = async (id, usuarioId, estado) => {
 
   const habitoActualizado = rows[0];
 
-  if (!habitoActual.completado && completado) {
-    eventBus.emit(EVENTS.HABIT_COMPLETED, { usuarioId, habitoId: id });
+  if (completado) {
+    if (!habitoActual.completado) {
+      await pool.query(
+        `INSERT INTO registros_habitos (habito_id, completado, fecha) VALUES ($1, true, CURRENT_DATE)
+         ON CONFLICT DO NOTHING`,
+        [id]
+      );
+      eventBus.emit(EVENTS.HABIT_COMPLETED, { usuarioId, habitoId: id });
+    }
+  } else {
+    await pool.query(
+      `DELETE FROM registros_habitos WHERE habito_id = $1 AND fecha = CURRENT_DATE`,
+      [id]
+    );
   }
 
   return habitoActualizado;

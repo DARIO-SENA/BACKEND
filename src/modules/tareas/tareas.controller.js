@@ -78,9 +78,9 @@ export const obtenerCategorias = async (req, res) => {
 
 export const crearCategoria = async (req, res) => {
   try {
-    const { nombre, color } = req.body;
+    const { nombre, color, icono } = req.body;
     if (!nombre) return res.status(400).json({ ok: false, error: 'Nombre requerido' });
-    const categoria = await tareasService.crearCategoria(req.usuario.id, nombre, color);
+    const categoria = await tareasService.crearCategoria(req.usuario.id, nombre, color, icono);
     res.status(201).json({ ok: true, data: categoria });
   } catch (error) { manejarError(res, error); }
 };
@@ -95,9 +95,9 @@ export const eliminarCategoria = async (req, res) => {
 
 export const actualizarCategoria = async (req, res) => {
   try {
-    const { nombre, color } = req.body;
-    if (!nombre && !color) return res.status(400).json({ ok: false, error: 'Nombre o color requerido' });
-    const categoria = await tareasService.actualizarCategoria(req.params.id, req.usuario.id, { nombre, color });
+    const { nombre, color, icono } = req.body;
+    if (!nombre && !color && icono === undefined) return res.status(400).json({ ok: false, error: 'Nombre o color requerido' });
+    const categoria = await tareasService.actualizarCategoria(req.params.id, req.usuario.id, { nombre, color, icono });
     if (!categoria) return res.status(404).json({ ok: false, error: 'Categoría no encontrada' });
     res.json({ ok: true, data: categoria });
   } catch (error) { manejarError(res, error); }

@@ -4,6 +4,7 @@ import { manejarError } from '../../utils/error.handler.js';
 import * as recordatoriosService  from './recordatorios.service.js';
 import * as notificacionesService from './notificaciones.service.js';
 import * as preferenciasService   from './preferencias.service.js';
+import * as tareasService from '../tareas/tareas.service.js';
 
 // ─── RECORDATORIOS ─────────────────────────────────────────
 
@@ -87,5 +88,42 @@ export const actualizarPreferencias = async (req, res) => {
   try {
     const data = await preferenciasService.actualizar(req.usuario.id, req.body);
     res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+// ─── CATEGORÍAS ────────────────────────────────────────────
+
+export const obtenerCategorias = async (req, res) => {
+  try {
+    const categorias = await tareasService.obtenerCategorias(req.usuario.id);
+    res.json({ ok: true, data: categorias });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const crearCategoria = async (req, res) => {
+  try {
+    const { nombre, color, icono } = req.body;
+    if (!nombre) return res.status(400).json({ ok: false, error: 'Nombre requerido' });
+    const categoria = await tareasService.crearCategoria(req.usuario.id, nombre, color, icono);
+    res.status(201).json({ ok: true, data: categoria });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const actualizarCategoria = async (req, res) => {
+  try {
+    const { nombre, color, icono } = req.body;
+    if (!nombre && !color && icono === undefined)
+      return res.status(400).json({ ok: false, error: 'Nombre o color requerido' });
+    const categoria = await tareasService.actualizarCategoria(req.params.id, req.usuario.id, { nombre, color, icono });
+    if (!categoria) return res.status(404).json({ ok: false, error: 'Categoría no encontrada' });
+    res.json({ ok: true, data: categoria });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const eliminarCategoria = async (req, res) => {
+  try {
+    const eliminada = await tareasService.eliminarCategoria(req.params.id, req.usuario.id);
+    if (!eliminada) return res.status(404).json({ ok: false, error: 'Categoría no encontrada' });
+    res.json({ ok: true, mensaje: 'Categoría eliminada correctamente' });
   } catch (err) { manejarError(res, err); }
 };

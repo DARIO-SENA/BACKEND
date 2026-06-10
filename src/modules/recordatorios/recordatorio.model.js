@@ -12,13 +12,18 @@ export const encontrarTodos = async (usuarioId, filtros = {}) => {
   if (estado) { condiciones.push(`estado = $${i++}`); valores.push(estado); }
 
   const { rows } = await pool.query(
-    `SELECT * FROM recordatorios
-     WHERE ${condiciones.join(' AND ')}
-     ORDER BY fecha_hora ASC`,
+    `SELECT r.*,
+            c.nombre AS categoria_nombre, c.color AS categoria_color, c.icono AS categoria_icono
+     FROM recordatorios r
+     LEFT JOIN categorias c ON r.categoria_id = c.id
+     WHERE r.${condiciones.join(' AND r.')}
+     ORDER BY r.fecha_hora ASC`,
     valores
   );
   const { rows: [{ count }] } = await pool.query(
-    `SELECT COUNT(*) FROM recordatorios WHERE ${condiciones.join(' AND ')}`,
+    `SELECT COUNT(*) FROM recordatorios r
+     LEFT JOIN categorias c ON r.categoria_id = c.id
+     WHERE r.${condiciones.join(' AND r.')}`,
     valores
   );
   return { data: rows, total: parseInt(count) };
@@ -46,16 +51,19 @@ export const insertar = async (usuarioId, datos) => {
     tipo = 'manual', referencia_id = null, titulo, mensaje = null,
     fecha_hora, anticipacion_min = 0,
     es_recurrente = false, regla_recurrencia = null,
+    icono = '', categoria_id = null,
   } = datos;
 
   const { rows } = await pool.query(
     `INSERT INTO recordatorios
      (usuario_id, tipo, referencia_id, titulo, mensaje,
-      fecha_hora, anticipacion_min, es_recurrente, regla_recurrencia)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      fecha_hora, anticipacion_min, es_recurrente, regla_recurrencia,
+      icono, categoria_id)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
      RETURNING *`,
     [usuarioId, tipo, referencia_id, titulo, mensaje,
-     fecha_hora, anticipacion_min, es_recurrente, regla_recurrencia]
+     fecha_hora, anticipacion_min, es_recurrente, regla_recurrencia,
+     icono, categoria_id]
   );
   return rows[0];
 };
@@ -70,16 +78,19 @@ export const actualizar = async (id, usuarioId, datos) => {
   const anticipacion_min = datos.anticipacion_min ?? actual.anticipacion_min;
   const es_recurrente = datos.es_recurrente ?? actual.es_recurrente;
   const regla_recurrencia = datos.regla_recurrencia ?? actual.regla_recurrencia;
+  const icono = datos.icono !== undefined ? datos.icono : actual.icono;
+  const categoria_id = datos.categoria_id !== undefined ? datos.categoria_id : actual.categoria_id;
 
   const { rows } = await pool.query(
     `UPDATE recordatorios
      SET titulo = $1, mensaje = $2, fecha_hora = $3,
          anticipacion_min = $4, es_recurrente = $5,
-         regla_recurrencia = $6, estado = 'pendiente'
-     WHERE id = $7 AND usuario_id = $8
+         regla_recurrencia = $6, estado = 'pendiente',
+         icono = $7, categoria_id = $8
+     WHERE id = $9 AND usuario_id = $10
      RETURNING *`,
     [titulo, mensaje, fecha_hora, anticipacion_min,
-     es_recurrente, regla_recurrencia, id, usuarioId]
+     es_recurrente, regla_recurrencia, icono, categoria_id, id, usuarioId]
   );
   return rows[0] || null;
 };

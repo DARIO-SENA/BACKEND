@@ -18,7 +18,8 @@ export const obtenerTareas = async (usuarioId, filtros = {}) => {
   if (categoria_id) { condiciones.push(`t.categoria_id = $${i++}`);   valores.push(categoria_id); }
 
   const { rows } = await pool.query(
-    `SELECT t.*, c.nombre AS categoria_nombre, c.color AS categoria_color
+    `SELECT t.*, c.nombre AS categoria_nombre, c.color AS categoria_color, c.icono AS categoria_icono,
+            t.estado = 'completada' AND t.actualizado_en::date = CURRENT_DATE AS completado_hoy
      FROM tareas t
      LEFT JOIN categorias c ON t.categoria_id = c.id
      WHERE ${condiciones.join(' AND ')}
@@ -49,7 +50,7 @@ export const crearTarea = async (usuarioId, datos) => {
   const {
     titulo, descripcion, prioridad, duracion_minutos,
     fecha_inicio, fecha_fin, fecha_limite,
-    todo_el_dia, categoria_id,
+    todo_el_dia, categoria_id, icono,
     es_recurrente, recurrencia, dias_semana,
   } = parsed.data;
   const auto_programado = false;
@@ -57,11 +58,11 @@ export const crearTarea = async (usuarioId, datos) => {
   const { rows } = await pool.query(
     `INSERT INTO tareas (
        usuario_id, titulo, descripcion, prioridad, duracion_minutos,
-       fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id,
+       fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id, icono,
        es_recurrente, recurrencia, auto_programado, dias_semana
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *`,
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING *`,
     [usuarioId, titulo, descripcion, prioridad, duracion_minutos,
-     fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id,
+     fecha_inicio, fecha_fin, fecha_limite, todo_el_dia, categoria_id, icono,
      es_recurrente, recurrencia, auto_programado, JSON.stringify(dias_semana)]
   );
 
@@ -194,10 +195,10 @@ export const obtenerCategorias = async (usuarioId) => {
   return rows;
 };
 
-export const crearCategoria = async (usuarioId, nombre, color) => {
+export const crearCategoria = async (usuarioId, nombre, color, icono) => {
   const { rows } = await pool.query(
-    'INSERT INTO categorias (usuario_id, nombre, color) VALUES ($1, $2, $3) RETURNING *',
-    [usuarioId, nombre, color]
+    'INSERT INTO categorias (usuario_id, nombre, color, icono) VALUES ($1, $2, $3, $4) RETURNING *',
+    [usuarioId, nombre, color, icono || '']
   );
   return rows[0];
 };
@@ -216,6 +217,7 @@ export const actualizarCategoria = async (id, usuarioId, datos) => {
   let i = 1;
   if (datos.nombre) { campos.push(`nombre = $${i++}`); valores.push(datos.nombre); }
   if (datos.color)  { campos.push(`color = $${i++}`); valores.push(datos.color); }
+  if (datos.icono !== undefined) { campos.push(`icono = $${i++}`); valores.push(datos.icono); }
   if (campos.length === 0) return null;
   valores.push(id, usuarioId);
   const { rows } = await pool.query(

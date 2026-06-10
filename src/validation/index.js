@@ -17,6 +17,9 @@ export const crearHabitoSchema = z.object({
   titulo: z.string().min(1, "Título requerido").max(200),
   descripcion: z.string().optional().default(""),
   frecuencia: z.enum(["diario", "semanal", "mensual"]).optional().default("diario"),
+  icono: z.string().max(10).optional().default(""),
+  categoria: z.string().max(50).optional().nullable().default(null),
+  categoria_id: z.number().int().optional().nullable().default(null),
   dias_semana: z.array(z.number().int().min(0).max(6)).optional().default([]),
 });
 
@@ -25,6 +28,9 @@ export const actualizarHabitoSchema = z.object({
   descripcion: z.string().optional(),
   frecuencia: z.enum(["diario", "semanal", "mensual"]).optional(),
   completado: z.boolean().optional(),
+  icono: z.string().max(10).optional(),
+  categoria: z.string().max(50).optional().nullable(),
+  categoria_id: z.number().int().optional().nullable(),
   dias_semana: z.array(z.number().int().min(0).max(6)).optional(),
 });
 
@@ -38,6 +44,7 @@ export const crearTareaSchema = z.object({
   fecha_limite: z.string().datetime().optional().nullable().default(null),
   todo_el_dia: z.boolean().optional().default(false),
   categoria_id: z.number().int().optional().nullable().default(null),
+  icono: z.string().max(10).optional().default(""),
   es_recurrente: z.boolean().optional().default(false),
   recurrencia: z.string().optional().nullable().default(null),
   dias_semana: z.array(z.number().int().min(0).max(6)).optional().default([]),
@@ -54,6 +61,7 @@ export const actualizarTareaSchema = z.object({
   fecha_limite: z.string().datetime().optional().nullable(),
   todo_el_dia: z.boolean().optional(),
   categoria_id: z.number().int().optional().nullable(),
+  icono: z.string().max(10).optional(),
   es_recurrente: z.boolean().optional(),
   recurrencia: z.string().optional().nullable(),
   dias_semana: z.array(z.number().int().min(0).max(6)).optional(),
