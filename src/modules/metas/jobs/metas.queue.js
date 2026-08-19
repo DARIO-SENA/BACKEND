@@ -1,5 +1,6 @@
 import { Queue, QueueEvents } from 'bullmq';
 import { redisConfig } from '../../../config/redis.js';
+import logger from '../../../config/logger.js';
 
 export const colaMetas = new Queue('metas-notificaciones', {
   connection: redisConfig,
@@ -16,9 +17,9 @@ const eventos = new QueueEvents('metas-notificaciones', {
 });
 
 eventos.on('completed', ({ jobId }) => {
-  console.log(`✅ Meta Job ${jobId} completado`);
+  logger.info(`Meta Job ${jobId} completado`);
 });
 
 eventos.on('failed', ({ jobId, failedReason }) => {
-  console.error(`❌ Meta Job ${jobId} falló: ${failedReason}`);
+  logger.error(`Meta Job ${jobId} falló: ${failedReason}`);
 });

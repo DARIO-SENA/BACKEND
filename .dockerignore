@@ -1,5 +1,16 @@
 node_modules
 .env
+.env.*
 .git
 .gitignore
+.github
+.vscode
 *.md
+*.log
+logs/
+tests/
+__tests__/
+scripts/
+database/
+migrations/
+docker-compose*.yml

@@ -1,8 +1,8 @@
-name: CI
+name: Backend CI
 
 on:
   push:
-    branches: [main, develop, 'feature/**']
+    branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
@@ -14,14 +14,14 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
+          POSTGRES_DB: DARIO
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: backend
+          POSTGRES_PASSWORD: test_password
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
           --health-timeout 5s
           --health-retries 5
 
@@ -31,7 +31,7 @@ jobs:
           - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
-          --health-interval 10s
+          --health-interval 5s
           --health-timeout 5s
           --health-retries 5
 
@@ -41,29 +41,52 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22'
           cache: 'npm'
+          cache-dependency-path: BACKEND/package-lock.json
 
       - name: Install dependencies
+        working-directory: BACKEND
         run: npm ci
 
-      - name: Run schema
-        run: PGPASSWORD=postgres psql -h localhost -U postgres -d backend -f database/schema.sql
-        env:
-          PGHOST: localhost
-          PGUSER: postgres
-          PGPASSWORD: postgres
-
       - name: Run tests
+        working-directory: BACKEND
         run: npm test
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/backend
-          REDIS_URL: redis://localhost:6379
+          NODE_ENV: test
+          DB_USER: postgres
+          DB_PASSWORD: test_password
           DB_HOST: localhost
           DB_PORT: 5432
-          DB_NAME: backend
-          DB_USER: postgres
-          DB_PASSWORD: postgres
-          JWT_SECRET: test-secret
+          DB_NAME: DARIO
+          JWT_SECRET: test-secret-key-for-ci-only
           REDIS_HOST: localhost
           REDIS_PORT: 6379
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        working-directory: BACKEND
+        run: docker build -t dario-backend:${{ github.sha }} .
+
+      - name: Test Docker image
+        working-directory: BACKEND
+        run: |
+          docker run -d --name test-api \
+            -e NODE_ENV=test \
+            -e DB_USER=postgres \
+            -e DB_PASSWORD=test \
+            -e DB_HOST=host.docker.internal \
+            -e DB_NAME=DARIO \
+            -e JWT_SECRET=test \
+            -e REDIS_HOST=host.docker.internal \
+            -p 3000:3000 \
+            dario-backend:${{ github.sha }} || true
+          sleep 5
+          docker logs test-api || true

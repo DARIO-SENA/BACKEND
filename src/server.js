@@ -12,6 +12,7 @@ import { iniciarSchedulerMetas } from './modules/metas/jobs/metas.scheduler.js';
 import { enviarResumenesPendientes } from './services/email.service.js';
 import cron from 'node-cron';
 import pool from './config/db.js';
+import { getRedisClient } from './config/redis.js';
 import logger from './config/logger.js';
 
 const REQUIRED_ENV = ['DB_USER', 'DB_PASSWORD', 'DB_HOST', 'DB_NAME', 'JWT_SECRET', 'REDIS_HOST'];
@@ -40,6 +41,8 @@ const gracefulShutdown = async (signal) => {
     await colaRecordatorios.close();
     await colaCoach.close();
     await colaRevision.close();
+    const redis = getRedisClient();
+    if (redis) await redis.quit();
     await pool.end();
     logger.info('Conexiones cerradas correctamente');
     process.exit(0);
@@ -55,7 +58,7 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 const PORT = process.env.PORT || 3000;
 
 import { imprimirRutas } from './utils/routes.logger.js';
-import { runMigrations, runNodePgMigrations } from '../database/migrate.js';
+import { runMigrations } from '../database/migrate.js';
 
 app.listen(PORT, async () => {
   logger.info(`Servidor corriendo en puerto ${PORT}`);
@@ -68,7 +71,6 @@ app.listen(PORT, async () => {
   }
 
   await runMigrations();
-  await runNodePgMigrations();
 
   await iniciarScheduler();
   try {
@@ -84,8 +86,12 @@ app.listen(PORT, async () => {
   iniciarSchedulerMetas();
 
   cron.schedule('0 8 * * 1', async () => {
-    logger.info('Ejecutando envio de resumenes semanales...');
-    await enviarResumenesPendientes();
+    try {
+      logger.info('Ejecutando envio de resumenes semanales...');
+      await enviarResumenesPendientes();
+    } catch (err) {
+      logger.error('Error en envio de resumenes semanales:', err.message);
+    }
   });
 
   imprimirRutas(app);

@@ -1,6 +1,7 @@
 import { Worker } from 'bullmq';
 import { redisConfig } from '../../../config/redis.js';
 import pool from '../../../config/db.js';
+import logger from '../../../config/logger.js';
 
 const procesarNotificacionMeta = async (job) => {
   const { metaId, usuarioId, titulo, fecha_fin } = job.data;
@@ -25,9 +26,9 @@ const procesarNotificacionMeta = async (job) => {
       ]
     );
 
-    console.log(`✅ Notificación meta creada: ${titulo} (usuario ${usuarioId})`);
+    logger.info(`Notificación meta creada: ${titulo} (usuario ${usuarioId})`);
   } catch (error) {
-    console.error('Error procesando notificación meta:', error.message);
+    logger.error('Error procesando notificación meta:', error.message);
   }
 };
 
@@ -42,11 +43,11 @@ try {
     }
   );
 
-  worker.on('ready', () => console.log('🚀 Worker metas-notificaciones listo'));
-  worker.on('completed', (job) => console.log('🎯 Meta job completado:', job.id));
-  worker.on('failed', (job, err) => console.error('❌ Meta job falló:', job?.id, err.message));
+  worker.on('ready', () => logger.info('Worker metas-notificaciones listo'));
+  worker.on('completed', (job) => logger.info('Meta job completado:', job.id));
+  worker.on('failed', (job, err) => logger.error('Meta job falló:', job?.id, err.message));
 } catch (err) {
-  console.error('💥 Error creando worker metas-notificaciones:', err.message);
+  logger.error('Error creando worker metas-notificaciones:', err.message);
 }
 
 export default worker;

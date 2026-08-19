@@ -108,16 +108,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: _migrations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public._migrations (
-    name character varying(255) NOT NULL,
-    applied_at timestamp without time zone DEFAULT now()
-);
-
-
---
 -- Name: amistades; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2020,13 +2010,6 @@ ALTER TABLE ONLY public.tareas_compartidas ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY public.usuarios ALTER COLUMN id SET DEFAULT nextval('public.usuarios_id_seq'::regclass);
 
 
---
--- Name: _migrations _migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public._migrations
-    ADD CONSTRAINT _migrations_pkey PRIMARY KEY (name);
-
 
 --
 -- Name: amistades amistades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
@@ -3506,5 +3489,4 @@ ALTER TABLE ONLY public.tareas
 -- PostgreSQL database dump complete
 --
 
-\unrestrict zve1qreJ1Tpwl91RpIyOFdYecYv5IhGbhy69pL0RpFgffAE9yTGYXmfRiBKoseq
 

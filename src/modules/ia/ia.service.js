@@ -527,3 +527,15 @@ export const detectarSobrecarga = async (usuarioId) => {
   const respuesta = await llamarOpenAI(prompt, null, true);
   return safeJsonParse(respuesta, { sobrecarga: false, recomendacion: 'No se pudo analizar' });
 };
+
+export const obtenerHistorialChat = async (usuarioId, sessionId = 'default') => {
+  const { rows } = await pool.query(
+    `SELECT id, mensaje, respuesta, herramientas_usadas, tokens_usados, creado_en
+     FROM conversaciones_ia
+     WHERE usuario_id = $1
+     ORDER BY creado_en DESC
+     LIMIT 50`,
+    [usuarioId]
+  );
+  return rows;
+};

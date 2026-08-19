@@ -187,18 +187,18 @@ export const obtenerEstadisticas = async (usuarioId) => {
   return rows[0];
 };
 
-export const obtenerCategorias = async (usuarioId) => {
+export const obtenerCategorias = async (usuarioId, tipo = 'tarea') => {
   const { rows } = await pool.query(
-    'SELECT * FROM categorias WHERE usuario_id = $1 ORDER BY nombre',
-    [usuarioId]
+    'SELECT * FROM categorias WHERE usuario_id = $1 AND tipo = $2 ORDER BY nombre',
+    [usuarioId, tipo]
   );
   return rows;
 };
 
-export const crearCategoria = async (usuarioId, nombre, color, icono) => {
+export const crearCategoria = async (usuarioId, nombre, color, icono, tipo = 'tarea') => {
   const { rows } = await pool.query(
-    'INSERT INTO categorias (usuario_id, nombre, color, icono) VALUES ($1, $2, $3, $4) RETURNING *',
-    [usuarioId, nombre, color, icono || '']
+    'INSERT INTO categorias (usuario_id, nombre, color, icono, tipo) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [usuarioId, nombre, color, icono || '', tipo]
   );
   return rows[0];
 };

@@ -133,3 +133,19 @@ export const toggleRutinaGym = async (req, res) => {
     res.json({ ok: true, data: result });
   } catch (err) { manejarError(res, err); }
 };
+
+export const listarBiblioteca = async (req, res) => {
+  try {
+    const data = await gymService.listarBibliotecaEjercicios(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const asignarEjercicio = async (req, res) => {
+  try {
+    const { ejercicioId, rutinaId } = req.body;
+    if (!ejercicioId || !rutinaId) return res.status(400).json({ ok: false, error: 'ejercicioId y rutinaId requeridos' });
+    const data = await gymService.asignarEjercicioARutina(ejercicioId, rutinaId, req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};

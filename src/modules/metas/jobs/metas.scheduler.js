@@ -1,5 +1,6 @@
 import pool from '../../../config/db.js';
 import { colaMetas } from './metas.queue.js';
+import logger from '../../../config/logger.js';
 
 export const revisarMetasProximasAVencer = async () => {
   try {
@@ -37,10 +38,10 @@ export const revisarMetasProximasAVencer = async () => {
     }
 
     if (rows.length > 0) {
-      console.log(`📅 ${rows.length} meta(s) próxima(s) a vencer encolada(s)`);
+      logger.info(`${rows.length} meta(s) próxima(s) a vencer encolada(s)`);
     }
   } catch (err) {
-    console.error('Error revisando metas próximas a vencer:', err.message);
+    logger.error('Error revisando metas próximas a vencer:', err.message);
   }
 };
 
@@ -57,5 +58,5 @@ export const iniciarSchedulerMetas = () => {
   }).catch(() => {
     programarProximaRevision();
   });
-  console.log('⏰ Scheduler de metas iniciado (revisión cada hora)');
+  logger.info('Scheduler de metas iniciado (revisión cada hora)');
 };

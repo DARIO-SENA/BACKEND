@@ -63,6 +63,34 @@ export const initLecturaTables = async () => {
   `);
 
   await pool.query(`
+    DO $$
+    DECLARE
+      con_name TEXT;
+      has_new INTEGER;
+    BEGIN
+      -- Check if the 0-10 constraint already exists
+      SELECT COUNT(*) INTO has_new FROM pg_constraint con
+        JOIN pg_class rel ON rel.oid = con.conrelid
+        WHERE rel.relname = 'lectura_libros' AND con.contype = 'c'
+        AND pg_get_constraintdef(con.oid) LIKE '%puntuacion%'
+        AND pg_get_constraintdef(con.oid) LIKE '%10%';
+      IF has_new = 0 THEN
+        -- Drop any old puntuacion constraints
+        FOR con_name IN (
+          SELECT con.conname FROM pg_constraint con
+          JOIN pg_class rel ON rel.oid = con.conrelid
+          WHERE rel.relname = 'lectura_libros' AND con.contype = 'c'
+          AND pg_get_constraintdef(con.oid) LIKE '%puntuacion%'
+        ) LOOP
+          EXECUTE 'ALTER TABLE lectura_libros DROP CONSTRAINT ' || con_name;
+        END LOOP;
+        EXECUTE 'ALTER TABLE lectura_libros ADD CONSTRAINT lectura_libros_puntuacion_check CHECK (puntuacion >= 0 AND puntuacion <= 10)';
+      END IF;
+    END;
+    $$;
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS lectura_metas (
       id SERIAL PRIMARY KEY,
       usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -98,11 +126,11 @@ export const obtenerLibro = async (id, usuarioId) => {
 };
 
 export const crearLibro = async (usuarioId, datos) => {
-  const { titulo, autor, paginas_totales, portada, genero } = datos;
+  const { titulo, autor, paginas_totales, portada, genero, puntuacion } = datos;
   const { rows } = await pool.query(
-    `INSERT INTO lectura_libros (usuario_id, titulo, autor, paginas_totales, portada, genero)
-     VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
-    [usuarioId, titulo, autor || '', paginas_totales || 0, portada || '', genero || '']
+    `INSERT INTO lectura_libros (usuario_id, titulo, autor, paginas_totales, portada, genero, puntuacion)
+     VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+    [usuarioId, titulo, autor || '', paginas_totales || 0, portada || '', genero || '', puntuacion || 0]
   );
   return rows[0];
 };
@@ -373,6 +401,13 @@ export const actualizarPlan = async (id, usuarioId, datos) => {
   if (campos.length === 0) return null;
 
   const planActual = (await pool.query(`SELECT * FROM lectura_planes WHERE id = $1 AND usuario_id = $2`, [id, usuarioId])).rows[0];
+
+  if (datos.completado === true && planActual?.libro_id) {
+    await pool.query(
+      `UPDATE lectura_libros SET estado = 'completado', updated_at = NOW() WHERE id = $1`,
+      [planActual.libro_id]
+    );
+  }
 
   const shouldRecalc = datos.dias_lectura !== undefined || datos.fecha_inicio !== undefined || datos.fecha_fin !== undefined;
   if (shouldRecalc && planActual) {

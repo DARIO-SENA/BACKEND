@@ -2,14 +2,25 @@
 
 import pool from '../../config/db.js';
 
+const TIPOS_VALIDOS = ['manual', 'tarea', 'habito', 'evento'];
+const ESTADOS_VALIDOS = ['pendiente', 'completado', 'cancelado'];
+
 export const encontrarTodos = async (usuarioId, filtros = {}) => {
   const { tipo, estado } = filtros;
   const valores = [usuarioId];
-  const condiciones = ['usuario_id = $1'];
+  const condiciones = ['r.usuario_id = $1'];
   let i = 2;
 
-  if (tipo)   { condiciones.push(`tipo = $${i++}`);   valores.push(tipo); }
-  if (estado) { condiciones.push(`estado = $${i++}`); valores.push(estado); }
+  if (tipo) {
+    if (!TIPOS_VALIDOS.includes(tipo)) throw new Error(`Tipo inválido. Valores permitidos: ${TIPOS_VALIDOS.join(', ')}`);
+    condiciones.push(`r.tipo = $${i++}`);
+    valores.push(tipo);
+  }
+  if (estado) {
+    if (!ESTADOS_VALIDOS.includes(estado)) throw new Error(`Estado inválido. Valores permitidos: ${ESTADOS_VALIDOS.join(', ')}`);
+    condiciones.push(`r.estado = $${i++}`);
+    valores.push(estado);
+  }
 
   const { rows } = await pool.query(
     `SELECT r.*,

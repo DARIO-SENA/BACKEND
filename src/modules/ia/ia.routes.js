@@ -148,6 +148,7 @@ router.post('/crear-evento', nlpLimiter, ctrl.crearEventoNLP);
  *         description: Error del servidor
  */
 router.post('/chat',            chatLimiter, ctrl.chat);
+router.get('/chat/historial',   ctrl.obtenerHistorial);
 
 /**
  * @openapi

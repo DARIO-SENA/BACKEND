@@ -35,7 +35,7 @@ const app = express();
 
 const corsOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',').map(s => s.trim())
-  : ['http://localhost:5173'];
+  : ['http://localhost', 'http://localhost:5173', 'http://localhost:5174'];
 
 app.use(helmet());
 app.use(cors({ origin: corsOrigins, credentials: true }));
@@ -49,6 +49,22 @@ const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
   message: { error: 'Demasiados intentos. Intenta de nuevo en 15 minutos' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 100,
+  message: { error: 'Demasiadas peticiones. Intenta de nuevo en 1 minuto' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const iaLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 15,
+  message: { error: 'Demasiadas peticiones a IA. Intenta de nuevo en 1 minuto' },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -73,7 +89,7 @@ app.use('/api/gamificacion', gamificacionRouter);
 gamificacionRouter.prefix = '/api/gamificacion';
 app.use('/api/integraciones', integracionesRouter);
 integracionesRouter.prefix = '/api/integraciones';
-app.use('/api/ia', iaRouter);
+app.use('/api/ia', iaLimiter, iaRouter);
 iaRouter.prefix = '/api/ia';
 app.use('/api/pomodoro', pomodoroRouter);
 pomodoroRouter.prefix = '/api/pomodoro';

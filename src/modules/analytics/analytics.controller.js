@@ -53,3 +53,17 @@ export const generarReporte = async (req, res) => {
     res.json({ ok: true, data: reporte });
   } catch (err) { manejarError(res, err); }
 };
+
+export const obtenerAnalyticsCompletos = async (req, res) => {
+  try {
+    const data = await analyticsService.obtenerAnalyticsCompletos(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};
+
+export const obtenerAnalyticsHabitos = async (req, res) => {
+  try {
+    const data = await analyticsService.obtenerAnalyticsHabitos(req.usuario.id);
+    res.json({ ok: true, data });
+  } catch (err) { manejarError(res, err); }
+};

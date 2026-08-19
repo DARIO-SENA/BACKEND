@@ -301,6 +301,21 @@ export async function runMigrations() {
         ADD COLUMN IF NOT EXISTS actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
       `
     },
+    {
+      name: '014_categorias_tipo',
+      sql: `
+        ALTER TABLE categorias
+        ADD COLUMN IF NOT EXISTS tipo VARCHAR(20) NOT NULL DEFAULT 'tarea';
+        CREATE INDEX IF NOT EXISTS idx_categorias_tipo ON categorias(tipo);
+      `
+    },
+    {
+      name: '015_libros_puntuacion_1_10',
+      sql: `
+        ALTER TABLE lectura_libros DROP CONSTRAINT IF EXISTS lectura_libros_puntuacion_check;
+        ALTER TABLE lectura_libros ADD CONSTRAINT lectura_libros_puntuacion_check CHECK (puntuacion >= 0 AND puntuacion <= 10);
+      `
+    },
   ];
 
   for (const m of dynamicMigrations) {

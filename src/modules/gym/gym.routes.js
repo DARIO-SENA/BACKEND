@@ -19,6 +19,8 @@ import {
   completarSesion,
   ultimaSesionEjercicio,
   toggleRutinaGym,
+  listarBiblioteca,
+  asignarEjercicio,
 } from './gym.controller.js';
 
 export const gymRouter = Router();
@@ -53,5 +55,9 @@ gymRouter.get('/sugerencias/ejercicio/:ejercicioId', sugerirPeso);
 gymRouter.get('/ultima-sesion/:ejercicioId', ultimaSesionEjercicio);
 // ── Sesión completa ───────────────────────────────
 gymRouter.post('/sesion/completar', completarSesion);
+// ── Biblioteca de ejercicios ──────────────────────
+gymRouter.get('/biblioteca', listarBiblioteca);
+gymRouter.post('/ejercicios/asignar', asignarEjercicio);
+
 // ── Toggle rutina completada ──────────────────────
 gymRouter.post('/rutinas/toggle', toggleRutinaGym);

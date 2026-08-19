@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { verificarToken } from '../../middlewares/auth.middleware.js';
+import { manejarError } from '../../utils/error.handler.js';
 import pool from '../../config/db.js';
 import { enviarResumenesPendientes } from '../../services/email.service.js';
 
@@ -13,9 +14,7 @@ router.get('/preferencias-email', async (req, res) => {
       [req.usuario.id]
     );
     res.json({ ok: true, data: { activo: rows[0]?.email_semanal_activo || false } });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 });
 
 router.post('/preferencias-email', async (req, res) => {
@@ -26,18 +25,14 @@ router.post('/preferencias-email', async (req, res) => {
       [!!activo, req.usuario.id]
     );
     res.json({ ok: true, data: { activo: !!activo } });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 });
 
 router.post('/enviar-resumen-semanal', async (req, res) => {
   try {
     await enviarResumenesPendientes();
     res.json({ ok: true, data: { mensaje: 'Resúmenes enviados' } });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
-  }
+  } catch (err) { manejarError(res, err); }
 });
 
 export { router as emailRouter };

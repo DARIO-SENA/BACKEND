@@ -95,7 +95,7 @@ export const actualizarPreferencias = async (req, res) => {
 
 export const obtenerCategorias = async (req, res) => {
   try {
-    const categorias = await tareasService.obtenerCategorias(req.usuario.id);
+    const categorias = await tareasService.obtenerCategorias(req.usuario.id, 'recordatorio');
     res.json({ ok: true, data: categorias });
   } catch (err) { manejarError(res, err); }
 };
@@ -104,7 +104,7 @@ export const crearCategoria = async (req, res) => {
   try {
     const { nombre, color, icono } = req.body;
     if (!nombre) return res.status(400).json({ ok: false, error: 'Nombre requerido' });
-    const categoria = await tareasService.crearCategoria(req.usuario.id, nombre, color, icono);
+    const categoria = await tareasService.crearCategoria(req.usuario.id, nombre, color, icono, 'recordatorio');
     res.status(201).json({ ok: true, data: categoria });
   } catch (err) { manejarError(res, err); }
 };

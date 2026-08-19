@@ -13,5 +13,7 @@ router.get('/categorias', analyticsCtrl.obtenerTareasPorCategoria);
 router.get('/racha',      analyticsCtrl.obtenerRacha);
 router.post('/progreso',  analyticsCtrl.guardarProgreso);
 router.get('/reporte',     analyticsCtrl.generarReporte);
+router.get('/completas',   analyticsCtrl.obtenerAnalyticsCompletos);
+router.get('/habitos',     analyticsCtrl.obtenerAnalyticsHabitos);
 
 export { router as analyticsRouter };

@@ -140,21 +140,20 @@ export const listarRutinasConEstado = async (usuarioId) => {
 // EJERCICIOS
 // ─────────────────────────────────────────
 
-// Agregar ejercicio a una rutina
+// Agregar ejercicio a una rutina (o a la biblioteca si no se especifica rutina)
 export const crearEjercicio = async (usuarioId, body) => {
-  const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default } = body;
-  if (!rutina_id) throw new AppError('rutina_id es requerido', 400);
+  const { rutina_id, nombre, grupo_muscular, series_default, repeticiones_default, descanso } = body;
   if (!nombre || !nombre.trim()) throw new AppError('Nombre del ejercicio requerido', 400);
-  const result = await pool.query(
-    `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default)
-     SELECT $1, $2, $3, $4, $5
-     FROM rutinas WHERE id = $1 AND usuario_id = $6
-     RETURNING ejercicios.*`,
-    [rutina_id, nombre.trim(), grupo_muscular, series_default ?? 3, repeticiones_default ?? 10, usuarioId]
-  );
-  if (result.rows.length === 0) {
-    throw new AppError('Rutina no encontrada o no pertenece al usuario', 404);
+  if (rutina_id) {
+    const rutina = await pool.query('SELECT id FROM rutinas WHERE id = $1 AND usuario_id = $2', [rutina_id, usuarioId]);
+    if (rutina.rows.length === 0) throw new AppError('Rutina no encontrada o no pertenece al usuario', 404);
   }
+  const result = await pool.query(
+    `INSERT INTO ejercicios (rutina_id, nombre, grupo_muscular, series_default, repeticiones_default, descanso)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING *`,
+    [rutina_id || null, nombre.trim(), grupo_muscular, series_default ?? 3, repeticiones_default ?? 10, descanso ?? 90]
+  );
   return result.rows[0];
 };
 
@@ -199,6 +198,35 @@ export const actualizarEjercicio = async (id, usuarioId, body) => {
     [nombre, grupo_muscular, series_default, repeticiones_default, descanso, duracion_segundos, id, usuarioId]
   );
   return result.rows[0] || null;
+};
+
+// Listar todos los ejercicios del usuario (biblioteca global)
+export const listarBibliotecaEjercicios = async (usuarioId) => {
+  const result = await pool.query(
+    `SELECT e.*, r.nombre AS rutina_nombre
+     FROM ejercicios e
+     LEFT JOIN rutinas r ON e.rutina_id = r.id AND r.usuario_id = $1
+     WHERE r.usuario_id = $1 OR e.rutina_id IS NULL
+     ORDER BY e.nombre ASC`,
+    [usuarioId]
+  );
+  return result.rows;
+};
+
+// Asignar ejercicio de biblioteca a una rutina
+export const asignarEjercicioARutina = async (ejercicioId, rutinaId, usuarioId) => {
+  const rutina = await pool.query('SELECT id FROM rutinas WHERE id = $1 AND usuario_id = $2', [rutinaId, usuarioId]);
+  if (rutina.rows.length === 0) throw new AppError('Rutina no encontrada', 404);
+  const ejercicio = await pool.query(
+    `SELECT id, rutina_id FROM ejercicios WHERE id = $1`, [ejercicioId]
+  );
+  if (ejercicio.rows.length === 0) throw new AppError('Ejercicio no encontrado', 404);
+  if (ejercicio.rows[0].rutina_id) throw new AppError('El ejercicio ya pertenece a una rutina', 400);
+  const result = await pool.query(
+    `UPDATE ejercicios SET rutina_id = $1 WHERE id = $2 RETURNING *`,
+    [rutinaId, ejercicioId]
+  );
+  return result.rows[0];
 };
 
 // ─────────────────────────────────────────
@@ -369,20 +397,41 @@ export const verProgresion = async (usuarioId, ejercicioId) => {
 // ─────────────────────────────────────────
 
 export const obtenerEstadisticas = async (usuarioId) => {
+  const weekStart = new Date();
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1);
+  const weekStartStr = weekStart.toISOString().split('T')[0];
+
   const { rows } = await pool.query(
     `SELECT
-       COUNT(DISTINCT re.id)          AS total_entrenamientos,
-       COUNT(DISTINCT re.ejercicio_id) AS ejercicios_distintos,
-       COUNT(se.id)                   AS total_series,
-       COALESCE(SUM(se.repeticiones), 0) AS total_repeticiones,
-       COALESCE(MAX(se.peso_kg), 0)   AS peso_maximo,
-       COUNT(DISTINCT DATE(re.fecha)) AS dias_entrenados
+       COUNT(DISTINCT re.id)            AS total_entrenamientos,
+       COUNT(DISTINCT re.ejercicio_id)  AS ejercicios_distintos,
+       COUNT(se.id)                     AS total_sets,
+       COALESCE(SUM(se.repeticiones), 0) AS total_reps,
+       COALESCE(MAX(se.peso_kg), 0)     AS peso_maximo,
+       COUNT(DISTINCT DATE(re.fecha))   AS dias_entrenados,
+       COUNT(DISTINCT CASE WHEN re.fecha >= $2 THEN re.id END) AS entrenamientos_semana
      FROM registros_entrenamiento re
      LEFT JOIN series_entrenamiento se ON se.registro_id = re.id
      WHERE re.usuario_id = $1`,
+    [usuarioId, weekStartStr]
+  );
+
+  const prs = await pool.query(
+    `SELECT e.nombre, sub.peso_kg, sub.fecha
+     FROM (
+       SELECT re.ejercicio_id, MAX(se.peso_kg) AS peso_kg, MAX(re.fecha) AS fecha
+       FROM series_entrenamiento se
+       JOIN registros_entrenamiento re ON re.id = se.registro_id
+       WHERE re.usuario_id = $1
+       GROUP BY re.ejercicio_id
+     ) sub
+     JOIN ejercicios e ON e.id = sub.ejercicio_id
+     ORDER BY sub.fecha DESC
+     LIMIT 5`,
     [usuarioId]
   );
-  return rows[0];
+
+  return { ...rows[0], prs_recientes: prs.rows };
 };
 
 // ─────────────────────────────────────────
