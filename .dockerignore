@@ -10,7 +10,5 @@ node_modules
 logs/
 tests/
 __tests__/
-scripts/
 database/
-migrations/
 docker-compose*.yml

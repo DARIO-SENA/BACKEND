@@ -58,7 +58,6 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 const PORT = process.env.PORT || 3000;
 
 import { imprimirRutas } from './utils/routes.logger.js';
-import { runMigrations } from '../database/migrate.js';
 
 app.listen(PORT, async () => {
   logger.info(`Servidor corriendo en puerto ${PORT}`);
@@ -69,8 +68,6 @@ app.listen(PORT, async () => {
   } catch (err) {
     logger.error('Error DB:', err.message);
   }
-
-  await runMigrations();
 
   await iniciarScheduler();
   try {
